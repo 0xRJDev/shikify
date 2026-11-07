@@ -24,6 +24,8 @@
 
 Open this button on your phone, then patch your own copy of a supported app in Morphe Manager. Morphe Manager will offer new Shikify versions as they are released.
 
+**Want beta versions?** Turn on `pre-release` for Shikify in Morphe Manager's patch sources.
+
 **Prefer to do it by hand?**
 
 1. Download `shikify-1.1.1.mpp` from this repository's releases.

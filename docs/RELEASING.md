@@ -20,3 +20,6 @@ The manual `Build release artifacts` workflow offers the same build, preparation
 
 After publishing, users can import the asset as a local source or add your GitHub repository as a source in Morphe Manager. The updater needs the root descriptor committed to the repository and the matching downloadable published release. This layout follows [hxreborn's patches-bundle schema](https://github.com/hxreborn/morphe-patches/blob/main/patches-bundle.json), with an empty detached-signature URL because no signing key has been established.
 
+## Beta releases
+
+Betas use the `dev` branch and versions such as `1.1.2-dev.1`. Publish them as GitHub pre-releases. Morphe Manager reads `patches-bundle.json` from `dev` when `pre-release` is on for this source, so `main` stays on the last stable version. When a beta is ready, merge `dev` into `main` without squashing and release the stable version.
