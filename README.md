@@ -1,4 +1,6 @@
-# Shikify
+<h1 align="center">
+  <img src=".github/assets/header.png" alt="Shikify" width="720">
+</h1>
 
 Material 3 and Material You patches for **Boost for Reddit 1.14.3** (`com.rubenmayayo.reddit`), for use with [Morphe](https://github.com/MorpheApp). The design takes a lot from Sync for Reddit: wallpaper colours, rounded surfaces, subtle glass and quick loading.
 
