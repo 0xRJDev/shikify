@@ -31,6 +31,7 @@ import java.lang.reflect.Method;
 
 /** Separate, theme-aware preference pages; other patch sources retain their own menus. */
 public final class SurfaceSettingsActivity extends Activity {
+    /** Lets the Material 3 track keep its own width instead of SwitchCompat's old minimum. */
     private static final Method ENFORCE_SWITCH_WIDTH=enforceSwitchWidth();
     /** Material 3's opacity for disabled content. */
     private static final float DISABLED_SLIDER_ALPHA=0.38f;
