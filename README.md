@@ -45,15 +45,15 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 <p align="center"><sub><code>com.rubenmayayo.reddit</code> • Version 1.14.3 • <a href="docs/PATCHES.md">25 patches</a></sub></p>
 
 <table>
-<tr><th>Feature</th><th>What you get</th></tr>
-<tr><td>🎨 <b>Material You throughout</b></td><td>Wallpaper colours for surfaces, side panel, settings, dialogs and empty screens. Upvotes and downvotes keep their Reddit colours.</td></tr>
-<tr><td>🔍 <b>Sync-style search</b></td><td>A rebuilt search page with Material 3 styling.</td></tr>
-<tr><td>💬 <b>Comments</b></td><td>Header with the subreddit and post title, compact metadata, rounded thread groups and remembered thread position.</td></tr>
-<tr><td>👆 <b>Gestures</b></td><td>Distance-based swipe actions on comments and posts, hold to peek at media and predictive back.</td></tr>
-<tr><td>🖼️ <b>Media</b></td><td>Image and gallery action pills at the bottom, and a quicker swipe to close.</td></tr>
-<tr><td>🔮 <b>Glass</b></td><td>Blurred floating pills that stay subtle and pause their extra effects during motion.</td></tr>
-<tr><td>🔤 <b>System font</b></td><td>An optional separate patch that follows your phone's font for posts, comments and names.</td></tr>
-<tr><td>⚡ <b>Faster loading</b></td><td>No one-second request queue at launch, valid saved logins reused, feeds and comments loaded in parallel, and HTTP/2.</td></tr>
+<tr><th></th><th>Feature</th><th>What you get</th></tr>
+<tr><td align="center"><img src=".github/assets/chibi-color.png" alt="" width="64"></td><td><b>Material You throughout</b></td><td>Wallpaper colours for surfaces, side panel, settings, dialogs and empty screens. Upvotes and downvotes keep their Reddit colours.</td></tr>
+<tr><td align="center">🔍</td><td><b>Sync-style search</b></td><td>A rebuilt search page with Material 3 styling.</td></tr>
+<tr><td align="center"><img src=".github/assets/chibi-comments.png" alt="" width="64"></td><td><b>Comments</b></td><td>Header with the subreddit and post title, compact metadata, rounded thread groups and remembered thread position.</td></tr>
+<tr><td align="center"><img src=".github/assets/chibi-gestures.png" alt="" width="64"></td><td><b>Gestures</b></td><td>Distance-based swipe actions on comments and posts, hold to peek at media and predictive back.</td></tr>
+<tr><td align="center"><img src=".github/assets/chibi-media.png" alt="" width="64"></td><td><b>Media</b></td><td>Image and gallery action pills at the bottom, and a quicker swipe to close.</td></tr>
+<tr><td align="center"><img src=".github/assets/chibi-glass.png" alt="" width="64"></td><td><b>Glass</b></td><td>Blurred floating pills that stay subtle and pause their extra effects during motion.</td></tr>
+<tr><td align="center"><img src=".github/assets/chibi-font.png" alt="" width="64"></td><td><b>System font</b></td><td>An optional separate patch that follows your phone's font for posts, comments and names.</td></tr>
+<tr><td align="center"><img src=".github/assets/chibi-speed.png" alt="" width="64"></td><td><b>Faster loading</b></td><td>No one-second request queue at launch, valid saved logins reused, feeds and comments loaded in parallel, and HTTP/2.</td></tr>
 </table>
 
 **More Boost pages:** [All 25 patches](docs/PATCHES.md) • [Settings](docs/SETTINGS.md) • [Changelog](changelog.md)
