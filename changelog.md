@@ -1,3 +1,9 @@
+# Version 1.1.2-dev.3
+
+- Videos stop playing as soon as you leave the video viewer, by Back or by swiping.
+- Glass sliders dim when glass effects are off.
+- The bottom navigation bar no longer flickers between tabs.
+
 # Version 1.1.2-dev.2
 
 - Patches are now grouped under Appearance, Comments, Media, Navigation and Performance headers in Morphe Manager.

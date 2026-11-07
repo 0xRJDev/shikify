@@ -498,6 +498,13 @@ val boostViewerPolishPatch = bytecodePatch(
         val closing=Fingerprint(definingClass="Lcom/rubenmayayo/reddit/ui/fragments/imagemodel/ImageModelFragment;",name="onDestroy",returnType="V",parameters=emptyList(),isStatic=false).method
         val delete=closing.implementation!!.instructions.withIndex().single { (_,instruction)->instruction.methodReference()?.let { it.definingClass=="Lju0;" && it.name=="d" }==true }.index
         closing.removeInstruction(delete)
+        // The video viewer pauses only when it is not finishing, and leaves closing to onDestroy, which
+        // Android can run seconds later. Pause in both cases so backing out stops the sound at once.
+        val pause=Fingerprint(definingClass=VIDEO_ACTIVITY,name="onPause",returnType="V",parameters=emptyList(),isStatic=false).method
+        val pauseBody=pause.implementation!!.instructions.toList()
+        val finishing=pauseBody.withIndex().single { (_,instruction)->instruction.methodReference()?.let { it.definingClass=="Landroid/app/Activity;" && it.name=="isFinishing" }==true }.index
+        check(pauseBody[finishing+1].opcode==Opcode.MOVE_RESULT && pauseBody[finishing+2].opcode==Opcode.IF_NEZ) { "Video viewer pause check changed" }
+        for(index in listOf(finishing+2,finishing+1,finishing))pause.removeInstruction(index)
         val method = Fingerprint(definingClass = "Lcom/rubenmayayo/reddit/ui/fragments/imagemodel/ImageModelFragment;",
             name = "onResume", returnType = "V", parameters = emptyList(), isStatic = false).method
         if (!method.hasHook("Lapp/morphe/extension/boost/ViewerPolishTweaks;", "onResume"))

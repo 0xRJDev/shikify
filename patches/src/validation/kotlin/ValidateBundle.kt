@@ -491,6 +491,7 @@ fun main(args: Array<String>) = runBlocking {
     val fontLookup=patched["Lps2;"]!!.methods.single { it.name=="e0" }.implementation!!.instructions.toList()
     check(((fontLookup[0] as ReferenceInstruction).reference as com.android.tools.smali.dexlib2.iface.reference.FieldReference).name=="DEFAULT" && fontLookup[1].opcode==Opcode.RETURN_OBJECT) { "System font lookup is not patched" }
     check(patched["Lcom/rubenmayayo/reddit/ui/fragments/imagemodel/ImageModelFragment;"]!!.methods.single { it.name=="onDestroy" }.implementation!!.instructions.none { ((it as? ReferenceInstruction)?.reference as? MethodReference)?.let { ref->ref.definingClass=="Lju0;" && ref.name=="d" }==true }) { "Gallery still deletes its shared file" }
+    check(patched["Lcom/rubenmayayo/reddit/ui/activities/MediaVideoActivity;"]!!.methods.single { it.name=="onPause" }.implementation!!.instructions.none { ((it as? ReferenceInstruction)?.reference as? MethodReference)?.name=="isFinishing" }) { "Video viewer can keep playing after closing" }
     check(settleHooks == 4) { "Expected four media dismiss settle hooks, got $settleHooks" }
     check(flairHooks == 1) { "Expected one flair colour hook, got $flairHooks" }
     check(noticeHooks >= 100) { "Expected the Toast callers to be redirected, got $noticeHooks" }
