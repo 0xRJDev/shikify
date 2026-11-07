@@ -44,17 +44,21 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 
 <p align="center"><sub><code>com.rubenmayayo.reddit</code> • Version 1.14.3 • <a href="docs/PATCHES.md">25 patches</a></sub></p>
 
-<table>
-<tr><th></th><th>Feature</th><th>What you get</th></tr>
-<tr><td align="center"><img src=".github/assets/chibi-color.png" alt="" width="64"></td><td><b>Material You throughout</b></td><td>Wallpaper colours for surfaces, side panel, settings, dialogs and empty screens. Upvotes and downvotes keep their Reddit colours.</td></tr>
-<tr><td align="center"><img src=".github/assets/chibi-search.png" alt="" width="64"></td><td><b>Sync-style search</b></td><td>A rebuilt search page with Material 3 styling.</td></tr>
-<tr><td align="center"><img src=".github/assets/chibi-comments.png" alt="" width="64"></td><td><b>Comments</b></td><td>Header with the subreddit and post title, compact metadata, rounded thread groups and remembered thread position.</td></tr>
-<tr><td align="center"><img src=".github/assets/chibi-gestures.png" alt="" width="64"></td><td><b>Gestures</b></td><td>Distance-based swipe actions on comments and posts, hold to peek at media and predictive back.</td></tr>
-<tr><td align="center"><img src=".github/assets/chibi-media.png" alt="" width="64"></td><td><b>Media</b></td><td>Image and gallery action pills at the bottom, and a quicker swipe to close.</td></tr>
-<tr><td align="center"><img src=".github/assets/chibi-glass.png" alt="" width="64"></td><td><b>Glass</b></td><td>Blurred floating pills that stay subtle and pause their extra effects during motion.</td></tr>
-<tr><td align="center"><img src=".github/assets/chibi-font.png" alt="" width="64"></td><td><b>System font</b></td><td>An optional separate patch that follows your phone's font for posts, comments and names.</td></tr>
-<tr><td align="center"><img src=".github/assets/chibi-speed.png" alt="" width="64"></td><td><b>Faster loading</b></td><td>No one-second request queue at launch, valid saved logins reused, feeds and comments loaded in parallel, and HTTP/2.</td></tr>
-</table>
+<p align="center"><img src=".github/assets/features.png" alt="Boost for Reddit features: Material You throughout. Sync-style search. Comments. Gestures. Media. Glass. System font. Faster loading." width="100%"></p>
+
+<details>
+<summary>Read as text</summary>
+
+- **Material You throughout:** Wallpaper colours for surfaces, side panel, settings, dialogs and empty screens. Upvotes and downvotes keep their Reddit colours.
+- **Sync-style search:** A rebuilt search page with Material 3 styling.
+- **Comments:** Header with the subreddit and post title, compact metadata, rounded thread groups and remembered thread position.
+- **Gestures:** Distance-based swipe actions on comments and posts, hold to peek at media and predictive back.
+- **Media:** Image and gallery action pills at the bottom, and a quicker swipe to close.
+- **Glass:** Blurred floating pills that stay subtle and pause their extra effects during motion.
+- **System font:** An optional separate patch that follows your phone's font for posts, comments and names.
+- **Faster loading:** No one-second request queue at launch, valid saved logins reused, feeds and comments loaded in parallel, and HTTP/2.
+
+</details>
 
 **More Boost pages:** [All 25 patches](docs/PATCHES.md) • [Settings](docs/SETTINGS.md) • [Changelog](changelog.md)
 
