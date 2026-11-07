@@ -123,7 +123,7 @@ Built with the official [Morphe patches template](https://github.com/MorpheApp/m
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-<p align="center"><img src=".github/assets/end-card.png" alt="Next time on Shikify! More apps are on the way!" width="100%"></p>
+<p align="center"><img src=".github/assets/next-time.png" alt="Next time on Shikify! More apps are on the way!" width="100%"></p>
 
 <div align="center">
 
