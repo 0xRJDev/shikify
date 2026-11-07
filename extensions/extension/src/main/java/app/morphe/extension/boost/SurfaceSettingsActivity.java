@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -22,12 +24,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.SwitchCompat;
+import java.lang.reflect.Method;
 
 /** Separate, theme-aware preference pages; other patch sources retain their own menus. */
 public final class SurfaceSettingsActivity extends Activity {
+    private static final Method ENFORCE_SWITCH_WIDTH=enforceSwitchWidth();
     /** Material 3's opacity for disabled content. */
     private static final float DISABLED_SLIDER_ALPHA=0.38f;
     private LinearLayout group;
@@ -253,21 +257,42 @@ public final class SurfaceSettingsActivity extends Activity {
     }
     private void section(String value){group=null;TextView view=label(value,14,accent);view.setPadding(dp(28),dp(20),dp(28),dp(4));body.addView(view);}
     private void note(String value){group=null;TextView view=label(value,14,secondary);view.setPadding(dp(28),dp(16),dp(28),dp(12));body.addView(view);}
+    private static Method enforceSwitchWidth(){
+        try{
+            Method method=SwitchCompat.class.getDeclaredMethod("setEnforceSwitchWidth",boolean.class);
+            method.setAccessible(true);
+            return method;
+        }catch(NoSuchMethodException ignored){return null;}
+    }
+    private Drawable switchDrawable(String name){
+        Drawable drawable=getDrawable(getResources().getIdentifier(name,"drawable",getPackageName())).mutate();
+        drawable.setTintList(getColorStateList(getResources().getIdentifier(name+"_tint","color",getPackageName())));
+        return drawable;
+    }
     private void toggle(String name,String summary,String key){
         LinearLayout row=row(name,summary);
-        Switch toggle=new Switch(this);
+        int layout=getResources().getIdentifier("preference_widget_switch_compat","layout",getPackageName());
+        SwitchCompat toggle=(SwitchCompat)getLayoutInflater().inflate(layout,row,false);
+        toggle.setThumbTintList(null);
+        toggle.setThumbDrawable(switchDrawable("mtrl_switch_thumb"));
+        Drawable track=switchDrawable("mtrl_switch_track");
+        toggle.setTrackTintList(null);
+        toggle.setTrackDrawable(new LayerDrawable(new Drawable[]{track,switchDrawable("mtrl_switch_track_decoration")}));
+        toggle.setSwitchMinWidth(track.getIntrinsicWidth());
+        if(ENFORCE_SWITCH_WIDTH!=null)try{ENFORCE_SWITCH_WIDTH.invoke(toggle,false);}catch(ReflectiveOperationException ignored){}
+        toggle.setSplitTrack(false);
+        toggle.setClickable(true);
+        toggle.setFocusable(true);
         toggle.setContentDescription(name);
         toggle.setChecked(enabled(this,key));
-        int[][] states={new int[]{android.R.attr.state_checked},new int[]{}};
-        toggle.setThumbTintList(new ColorStateList(states,new int[]{accent,secondary}));
-        toggle.setTrackTintList(new ColorStateList(states,new int[]{(accent&0xffffff)|0x66000000,outline}));
-        row.addView(toggle,new LinearLayout.LayoutParams(dp(56),dp(48)));
+        toggle.refreshDrawableState();
+        row.addView(toggle);
         toggle.setOnCheckedChangeListener((button,value)->{
             prefs(this).edit().putBoolean("shikify_"+key,value).apply();
             if("feed_pill_blur".equals(key))updateGlassControls();
             if(page==5)confirmRestart();
         });
-        row.setOnClickListener(v->toggle.setChecked(!toggle.isChecked()));
+        row.setOnClickListener(v->toggle.performClick());
     }
     private SeekBar slider(String name,String key,int fallback,int min,int max,String suffix,boolean stringValue){
         int current=stringValue ? SurfaceAppearanceTweaks.number(prefs(this),"shikify_"+key,fallback,min,max):number(this,key,fallback,min,max);
