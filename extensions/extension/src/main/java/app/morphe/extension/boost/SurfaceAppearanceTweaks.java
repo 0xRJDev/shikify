@@ -158,6 +158,7 @@ public final class SurfaceAppearanceTweaks {
         final WeakReference<View> decor;
         final SharedPreferences preferences;
         final boolean media;
+        final View.OnApplyWindowInsetsListener navigationInsetsListener=this::navigationInsets;
         final ArrayList<Layer> layers=new ArrayList<>();
         WeakReference<ViewTreeObserver> observer;
         WeakReference<View> appBar,bottom,protection,toolbar;
@@ -188,6 +189,7 @@ public final class SurfaceAppearanceTweaks {
         int appliedOpacity=-1;
         boolean active,prepared,disposed,tinted;
         int tintAttempts;
+        boolean navigationLayoutChanged;
         Screen(Activity activity,boolean media){
             owner=new WeakReference<>(activity);
             decor=new WeakReference<>(activity.getWindow().getDecorView());
@@ -445,10 +447,18 @@ public final class SurfaceAppearanceTweaks {
             if(view instanceof android.widget.ImageButton){((android.widget.ImageButton)view).setImageTintList(tint);Haptics.tap(view);}
             else if(view instanceof ViewGroup){ViewGroup group=(ViewGroup)view;for(int index=0;index<group.getChildCount();index++)tintButtons(group.getChildAt(index),tint);}
         }
+        private WindowInsets navigationInsets(View nav,WindowInsets insets){
+            updateBounds(insets);
+            return insets;
+        }
         void updateBounds(){
+            updateBounds(null);
+        }
+        void updateBounds(WindowInsets insets){
             View root=decor.get();
             if(root==null || status==null)return;
-            WindowInsets insets=root.getRootWindowInsets();
+            WindowInsets rootInsets=root.getRootWindowInsets();
+            if(rootInsets!=null)insets=rootInsets;
             int top=0,bottom=0;
             if(insets!=null){
                 if(Build.VERSION.SDK_INT>=30){
@@ -475,6 +485,7 @@ public final class SurfaceAppearanceTweaks {
                     }
                 }
                 if(nav!=null){
+                    nav.setOnApplyWindowInsetsListener(navigationInsetsListener);
                     float density=root.getResources().getDisplayMetrics().density;int horizontal=Math.round(16*density),gap=Math.round(12*density);
                     if(feedPill==null)feedPill=pillBackground(root.getContext(),MaterialYouTweaks.color(root.getContext(),"colorSurfaceContainerHigh",android.R.attr.colorBackground),40);
                     if(Build.VERSION.SDK_INT>=31 && active && feedBlurEnabled){
@@ -494,7 +505,11 @@ public final class SurfaceAppearanceTweaks {
                         if(nav.getBackground()!=feedPill)nav.setBackground(feedPill);
                     }
                     nav.setClipToOutline(true);
-                    if(nav.getPaddingBottom()!=0)nav.setPaddingRelative(nav.getPaddingStart(),nav.getPaddingTop(),nav.getPaddingEnd(),0);pressNavigation(nav);
+                    if(nav.getPaddingBottom()!=bottom){
+                        nav.setPaddingRelative(nav.getPaddingStart(),nav.getPaddingTop(),nav.getPaddingEnd(),bottom);
+                        navigationLayoutChanged=true;
+                    }
+                    pressNavigation(nav);
                     if(nav.getLayoutParams() instanceof ViewGroup.MarginLayoutParams){
                         ViewGroup.MarginLayoutParams params=(ViewGroup.MarginLayoutParams)nav.getLayoutParams();
                         int safeLeft=0,safeRight=0;
@@ -510,6 +525,7 @@ public final class SurfaceAppearanceTweaks {
                             params.setMarginEnd(right);
                             params.bottomMargin=below;
                             nav.setLayoutParams(params);
+                            navigationLayoutChanged=true;
                         }
                     }
                 }
@@ -564,7 +580,10 @@ public final class SurfaceAppearanceTweaks {
             if(active && mediaTop!=null)mediaTop.update();
             if(active && unifiedChrome!=null)unifiedChrome.frame();if(active && drawer!=null){drawer.update();if(headerGradient!=null)headerGradient.statusAlpha(1-drawer.open());}
             if(active && !tinted && compactFlag!=null && headerGradient!=null)tintHeader();
-            return true;
+            View nav=media || bottom==null ? null:bottom.get();
+            boolean ready=!navigationLayoutChanged || nav==null || !nav.isShown() || !nav.isLayoutRequested();
+            navigationLayoutChanged=false;
+            return ready;
         }
     }
     static final class Layer {final WeakReference<View> view;Layer(View view){this.view=new WeakReference<>(view);}}
