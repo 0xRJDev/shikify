@@ -1,28 +1,30 @@
 <div align="center">
 
-<img src=".github/assets/title-card.png" alt="Shikify, シキファイ. Patching your apps, one episode at a time!" width="100%">
+<img src=".github/assets/title-card-tilt.png" alt="Shikify" width="100%">
 
 **Material 3 and Material You patches for Android apps**
 
 <sub>For use with [Morphe](https://github.com/MorpheApp) • Now supporting Boost for Reddit, with more apps to come</sub>
 
-<a href="#install"><img src=".github/assets/btn-install.png" alt="Install" width="132"></a>
-<a href="#features"><img src=".github/assets/btn-features.png" alt="Features" width="132"></a>
-<a href="#build"><img src=".github/assets/btn-build.png" alt="Build" width="132"></a>
-<a href="changelog.md"><img src=".github/assets/btn-news.png" alt="What's new" width="132"></a>
-<a href="#disclaimer"><img src=".github/assets/btn-disclaimer.png" alt="Disclaimer" width="132"></a>
-<a href="#credits"><img src=".github/assets/btn-credits.png" alt="Credits" width="132"></a>
+<a href="#install"><img src=".github/assets/button-install.png" alt="Install" width="128"></a>
+<a href="#features"><img src=".github/assets/button-features.png" alt="Features" width="128"></a>
+<a href="#build"><img src=".github/assets/button-build.png" alt="Build" width="128"></a>
+<a href="changelog.md"><img src=".github/assets/button-news.png" alt="What's new" width="128"></a>
+<a href="#disclaimer"><img src=".github/assets/button-disclaimer.png" alt="Disclaimer" width="128"></a>
+<a href="#credits"><img src=".github/assets/button-credits.png" alt="Credits" width="128"></a>
 
 </div>
 
 > [!WARNING]
 > **Boost patches are only tested with [Patcheddit](https://github.com/wchill/patcheddit).** They are developed and used alongside Patcheddit. Other patch sources, or Boost without Patcheddit, are untested.
 
-### <a name="install"></a><img src=".github/assets/card-install.png" alt="Episode 1: Install! Let's get you patched!" width="100%">
+### <a name="install"></a><img src=".github/assets/ep-install.png" alt="Episode 1: Install! Let's get you patched!" width="100%">
 
-<a href="https://morphe.software/add-source?github=0xRJDev/shikify"><img src=".github/assets/btn-add.png" alt="Add to Morphe" width="132"></a>
+<a href="https://morphe.software/add-source?github=0xRJDev/shikify"><img src=".github/assets/button-add.png" alt="Add to Morphe" width="150"></a>
 
 Open this button on your phone, then patch your own copy of a supported app in Morphe Manager. Morphe Manager will offer new Shikify versions as they are released.
+
+**Want beta versions?** Turn on `pre-release` for Shikify in Morphe Manager's patch sources.
 
 **Prefer to do it by hand?**
 
@@ -32,7 +34,7 @@ Open this button on your phone, then patch your own copy of a supported app in M
 
 No app APKs, account credentials or OAuth client IDs are included. Keep any patches you already rely on, such as [Patcheddit](https://github.com/wchill/patcheddit) for Boost, selected when you patch.
 
-### <a name="features"></a><img src=".github/assets/card-features.png" alt="Episode 2: Current Features! It can do all of this?!" width="100%">
+### <a name="features"></a><img src=".github/assets/ep-features.png" alt="Episode 2: Current Features! It can do all of this?!" width="100%">
 
 <p align="center"><img src=".github/assets/marquee-boost.gif" alt="Boost for Reddit" width="720"></p>
 
@@ -60,7 +62,7 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 
 **System requirements:** Android 7.0 or later. Wallpaper colours and blur need Android 12 or later.
 
-### <a name="build"></a><img src=".github/assets/card-build.png" alt="Episode 3: Build It Yourself! For those who like the hard way." width="100%">
+### <a name="build"></a><img src=".github/assets/ep-build.png" alt="Episode 3: Build It Yourself! For those who like the hard way." width="100%">
 
 On x86_64 Linux, install Bash, Git, Python 3.12+ and a Java launcher, then run:
 
@@ -78,7 +80,7 @@ BOOST_APK=/absolute/path/to/boost-1.14.3.apk ./build.sh
 
 The bundle is written to `output/shikify-1.1.1.mpp`. See [validation](docs/VALIDATION.md) and [releasing](docs/RELEASING.md).
 
-### <a name="disclaimer"></a><img src=".github/assets/card-disclaimer.png" alt="Important notice: Disclaimer. Please read this bit!" width="100%">
+### <a name="disclaimer"></a><img src=".github/assets/ep-disclaimer.png" alt="Important notice: Disclaimer. Please read this bit!" width="100%">
 
 These patches are provided as is, without warranty of any kind, for **educational and personal use only**.
 
@@ -89,7 +91,7 @@ These patches are provided as is, without warranty of any kind, for **educationa
 - **No affiliation.** This project is not affiliated with, endorsed by or connected to Reddit, Boost for Reddit, Patcheddit, Morphe, Google or any app developer. All trademarks belong to their respective owners.
 - **Takedown requests.** If you are a rights holder and believe something here infringes your rights, open an issue naming the exact file or patch and describing the concern. It will be reviewed promptly and in good faith.
 
-### <a name="credits"></a><img src=".github/assets/card-credits.png" alt="Roll credits: Credits and Licence. See you next episode!" width="100%">
+### <a name="credits"></a><img src=".github/assets/ep-credits.png" alt="Roll credits: Credits and Licence. See you next episode!" width="100%">
 
 GPL-3.0; see [LICENSE](LICENSE). The adapted Material loading renderer keeps its Apache-2.0 notices; see [NOTICE](NOTICE) and the [third-party licence](third-party/licenses/Apache-2.0.txt).
 
@@ -112,12 +114,12 @@ Built with the official [Morphe patches template](https://github.com/MorpheApp/m
 
 </div>
 
-<p align="center"><img src=".github/assets/next-time.png" alt="Next time on Shikify! More apps are on the way!" width="100%"></p>
+<p align="center"><img src=".github/assets/ep-next.png" alt="Next time on Shikify! More apps are on the way!" width="100%"></p>
 
 <div align="center">
 
-<img src=".github/assets/btn-browser.png" alt="Best viewed in any browser" width="132">
-<a href="LICENSE"><img src=".github/assets/btn-gpl.png" alt="GPL-3.0" width="132"></a>
-<a href="https://github.com/0xRJDev/shikify/issues"><img src=".github/assets/btn-guestbook.png" alt="Sign my guestbook" width="132"></a>
+<img src=".github/assets/button-browser.png" alt="Best viewed in any browser" width="128">
+<a href="LICENSE"><img src=".github/assets/button-gpl.png" alt="GPL-3.0" width="128"></a>
+<a href="https://github.com/0xRJDev/shikify/issues"><img src=".github/assets/button-guestbook.png" alt="Sign my guestbook" width="128"></a>
 
 </div>
