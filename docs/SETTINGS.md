@@ -2,7 +2,7 @@
 
 Open Boost Settings → Shikify Settings, immediately below Morphe. The classic Appearance screen has a shortcut. A replacement settings homepage can also expose its native/classic settings fallback.
 
-- Glass & appearance: glass toggle, dialog blur, blur strength, glass tint, side panel, empty screens, notices, floating menus, inline flairs and search page.
+- Glass & appearance: glass toggle, dialog blur, blur strength, glass tint, side panel, empty screens, notices, floating menus, inline flairs and search page. Blur strength and glass tint are dimmed while glass is off.
 - Comments & gestures: dynamic header, remembered thread position, comment and post swipes, haptic feedback and full swipe travel.
 - Media viewers: explains stock black backgrounds, image/gallery pills and native video controls. Old dimming preferences are retained in storage but no longer used.
 - Performance: blur refresh interval. Larger intervals reduce capture work and do not change the display refresh rate.

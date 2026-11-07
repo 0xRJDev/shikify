@@ -23,9 +23,11 @@ import android.widget.TextView;
 
 /** Separate, theme-aware preference pages; other patch sources retain their own menus. */
 public final class SurfaceSettingsActivity extends Activity {
+    private static final float DISABLED_SLIDER_ALPHA=0.38f;
     private LinearLayout group;
     private LinearLayout body;
     private TextView title;
+    private SeekBar blurStrength,glassTint;
     private int page,background,foreground,secondary,accent,outline;
     static SharedPreferences prefs(Context context){return PreferenceManager.getDefaultSharedPreferences(context);}
     static boolean enabled(Context context,String key){return prefs(context).getBoolean("shikify_"+key,true);}
@@ -87,7 +89,7 @@ public final class SurfaceSettingsActivity extends Activity {
     private void show(int value){
         page=Math.max(0,Math.min(5,value));
         if(body.getParent() instanceof ScrollView)((ScrollView)body.getParent()).scrollTo(0,0);
-        body.removeAllViews();group=null;
+        body.removeAllViews();group=null;blurStrength=glassTint=null;
         String[] titles={"Shikify Settings","Glass & appearance","Comments & gestures","Media viewers","Performance","Loading"};
         title.setText(titles[page]);
         setTitle(titles[page]);
@@ -104,8 +106,9 @@ public final class SurfaceSettingsActivity extends Activity {
             section("Glass surfaces");
             toggle("Glass effects","Use frosted surfaces for floating controls","feed_pill_blur");
             toggle("Dialog blur","Blur the screen behind dialogs and menus","dialog_blur");
-            slider("Blur strength","blur_amount",7,0,25," dp",false);
-            slider("Glass tint","glass_tint",40,0,80,"%",false);
+            blurStrength=slider("Blur strength","blur_amount",7,0,25," dp",false);
+            glassTint=slider("Glass tint","glass_tint",40,0,80,"%",false);
+            updateGlassControls();
             note("Lower tint makes glass clearer. Colours follow Boost’s Material You theme.");
             section("Material 3");
             toggle("Side panel","Rounded boxes and wallpaper colours","side_panel");
@@ -147,6 +150,16 @@ public final class SurfaceSettingsActivity extends Activity {
         if(Features.onlineCheck())section("Connection");
         if(Features.onlineCheck())toggle("Improved online check","Try requests when Android reports a block","online_check");
         note("Restart Boost for these to apply. HTTP/2 is chosen when you patch.");
+    }
+    private void updateGlassControls(){
+        boolean active=enabled(this,"feed_pill_blur");
+        for(SeekBar slider:new SeekBar[]{blurStrength,glassTint}){
+            if(slider!=null){
+                slider.setEnabled(active);
+                slider.setAlpha(active ? 1:DISABLED_SLIDER_ALPHA);
+                ((View)slider.getTag()).setAlpha(active ? 1:DISABLED_SLIDER_ALPHA);
+            }
+        }
     }
     private TextView label(String text,int size,int color){TextView view=new TextView(this);view.setText(text);view.setTextSize(size);view.setTextColor(color);return view;}
     private void ripple(View view){
@@ -206,15 +219,19 @@ public final class SurfaceSettingsActivity extends Activity {
         toggle.setThumbTintList(new ColorStateList(states,new int[]{accent,secondary}));
         toggle.setTrackTintList(new ColorStateList(states,new int[]{(accent&0xffffff)|0x66000000,outline}));
         row.addView(toggle,new LinearLayout.LayoutParams(dp(56),dp(48)));
-        toggle.setOnCheckedChangeListener((button,value)->prefs(this).edit().putBoolean("shikify_"+key,value).apply());
+        toggle.setOnCheckedChangeListener((button,value)->{
+            prefs(this).edit().putBoolean("shikify_"+key,value).apply();
+            if("feed_pill_blur".equals(key))updateGlassControls();
+        });
         row.setOnClickListener(v->toggle.setChecked(!toggle.isChecked()));
     }
-    private void slider(String name,String key,int fallback,int min,int max,String suffix,boolean stringValue){
+    private SeekBar slider(String name,String key,int fallback,int min,int max,String suffix,boolean stringValue){
         int current=stringValue ? SurfaceAppearanceTweaks.number(prefs(this),"shikify_"+key,fallback,min,max):number(this,key,fallback,min,max);
         LinearLayout heading=row(name,null);
         TextView value=label(current+suffix,14,secondary);
         heading.addView(value);
         SeekBar seek=new SeekBar(this);
+        seek.setTag(heading);
         seek.setMax(max-min);
         seek.setProgress(current-min);
         seek.setProgressTintList(ColorStateList.valueOf(accent));
@@ -225,5 +242,6 @@ public final class SurfaceSettingsActivity extends Activity {
         LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(-1,dp(48));
         params.leftMargin=params.rightMargin=dp(20);
         box().addView(seek,params);
+        return seek;
     }
 }
