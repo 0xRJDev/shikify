@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src=".github/assets/title-card.png" alt="Shikify, シキファイ. Patching your apps, one episode at a time!" width="100%">
+<img src=".github/assets/title-card.gif" alt="Shikify, シキファイ. Patching your apps, one episode at a time!" width="100%">
 
 **Material 3 and Material You patches for Android apps**
 
@@ -19,6 +19,10 @@
 > **Boost patches are only tested with [Patcheddit](https://github.com/wchill/patcheddit).** They are developed and used alongside Patcheddit 2.1.0-dev.4. Other patch sources, or Boost without Patcheddit, are untested.
 >
 > **Mostly vibe coded.** Use at your own risk. See the [disclaimer](#disclaimer).
+
+<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
+
+<p align="center"><img src=".github/assets/profile.png" alt="Character profile: Shikify-chan, シキファイちゃん. Job: app mechanic. Weapon: trusty wrench. Likes Material You and HTTP/2. Hates queues, jitter and ugly menus. Special move: Instant Saved Login!" width="100%"></p>
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
@@ -62,7 +66,7 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 
 **System requirements:** Android 7.0 or later. Wallpaper colours and blur need Android 12 or later.
 
-<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
+<p align="center"><img src=".github/assets/eyecatch.gif" alt="Shikify! Back after these messages!" width="100%"></p>
 
 ### <a name="build"></a><img src=".github/assets/card-build.png" alt="Episode 3: Build It Yourself! For those who like the hard way." width="100%">
 
