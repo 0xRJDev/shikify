@@ -22,9 +22,7 @@
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-### <a name="install"></a><img src=".github/assets/title-install.png" alt="Episode 1: Install!" height="44">
-
-<img src=".github/assets/sub-install.png" alt="Let's get you patched!" height="30">
+### <a name="install"></a><img src=".github/assets/card-install.png" alt="Episode 1: Install! Let's get you patched!" width="100%">
 
 <a href="https://morphe.software/add-source?github=0xRJDev/shikify"><img src=".github/assets/btn-add.png" alt="Add to Morphe" width="132"></a>
 
@@ -40,9 +38,7 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-### <a name="features"></a><img src=".github/assets/title-features.png" alt="Episode 2: Current features!" height="44">
-
-<img src=".github/assets/sub-features.png" alt="Whoa... it can do all of this?!" height="30">
+### <a name="features"></a><img src=".github/assets/card-features.png" alt="Episode 2: Current Features! It can do all of this?!" width="100%">
 
 <p align="center"><img src=".github/assets/marquee-boost.gif" alt="Boost for Reddit" width="720"></p>
 
@@ -68,9 +64,7 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-### <a name="build"></a><img src=".github/assets/title-build.png" alt="Episode 3: Build it yourself!" height="44">
-
-<img src=".github/assets/sub-build.png" alt="For those who like doing things the hard way." height="30">
+### <a name="build"></a><img src=".github/assets/card-build.png" alt="Episode 3: Build It Yourself! For those who like the hard way." width="100%">
 
 On x86_64 Linux, install Bash, Git, Python 3.12+ and a Java launcher, then run:
 
@@ -90,7 +84,7 @@ The bundle is written to `output/shikify-1.1.0.mpp`. See [validation](docs/VALID
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-### <a name="disclaimer"></a><img src=".github/assets/title-disclaimer.png" alt="Disclaimer" height="44">
+### <a name="disclaimer"></a><img src=".github/assets/card-disclaimer.png" alt="Important notice: Disclaimer. Please read this bit!" width="100%">
 
 These patches are provided as is, without warranty of any kind, for **educational and personal use only**.
 
@@ -104,7 +98,7 @@ These patches are provided as is, without warranty of any kind, for **educationa
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-### <a name="credits"></a><img src=".github/assets/title-credits.png" alt="Credits and licence" height="44">
+### <a name="credits"></a><img src=".github/assets/card-credits.png" alt="Roll credits: Credits and Licence. See you next episode!" width="100%">
 
 GPL-3.0; see [LICENSE](LICENSE). The adapted Material loading renderer keeps its Apache-2.0 notices; see [NOTICE](NOTICE) and the [third-party licence](third-party/licenses/Apache-2.0.txt).
 
