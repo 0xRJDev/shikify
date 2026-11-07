@@ -5,17 +5,15 @@ Shikify has two channels. `dev` holds betas, which Morphe Manager offers when `p
 ## Contributing a change
 
 1. Branch from `dev` and open a pull request into `dev`.
-2. Add a short line for your change under `# Unreleased` at the top of `changelog.md`, beneath a heading for the app, and start it with the patch it changes. Create the headings if they are missing:
+2. Add a line for your change under `# Unreleased` at the top of `changelog.md`, in the list for its app. Create the heading and the app line if they are missing:
 
    ```markdown
    # Unreleased
 
-   ## Boost for Reddit
-
-   - **Inline flairs:** Flair text now sits in the middle of its pill.
+   Boost for Reddit:
+   - Flair text now sits in the middle of its pill.
    ```
 
-   For a change that is not part of one patch, such as Shikify Settings, name the feature instead.
 3. Do not change `version` in `gradle.properties`. Versions are set when a release is made, so several changes can go out together.
 
 The build workflow runs on every pull request. It fails if the committed `patches-list.json` differs from the generated one, so rebuild and commit it when you add, rename or remove a patch.
