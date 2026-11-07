@@ -4,6 +4,8 @@ Material 3 and Material You patches for **Boost for Reddit 1.14.3** (`com.rubenm
 
 Shikify is an independent project. It is not affiliated with Morphe, Boost for Reddit, Sync for Reddit or Reddit.
 
+> **Only tested with Patcheddit.** Shikify is developed and used alongside Patcheddit 2.1.0-dev.4. Other patch sources, or Boost without Patcheddit, are untested.
+
 ## Install
 
 **[Add Shikify to Morphe](https://morphe.software/add-source?github=0xRJDev/shikify)** on your phone, then patch your own Boost 1.14.3 APK in Morphe Manager. Morphe Manager will offer new Shikify versions as they are released.
