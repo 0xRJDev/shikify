@@ -257,7 +257,20 @@ final class HeaderGradient {
             swipe.getLocationInWindow(parentLocation);
             float translation=entry.getValue().base+Math.max(0,contentTop-parentLocation[1]);
             if(Math.abs(icon.getTranslationY()-translation)>.5f)icon.setTranslationY(translation);
+            if(parked(swipe,icon))icon.setVisibility(View.INVISIBLE);
         }
+    }
+    /**
+     * The refresh circle normally rests out of sight above the list. The header shift brings that
+     * spot on screen, so a circle left behind by an interrupted animation stays visible. Pulling
+     * or refreshing makes it visible again.
+     */
+    private static boolean parked(View swipe,View icon){
+        if(icon.getVisibility()!=View.VISIBLE || Boolean.TRUE.equals(CommentsChromeTweaks.field(swipe,"c")))return false;
+        android.view.animation.Animation animation=icon.getAnimation();
+        if(animation!=null && !animation.hasEnded())return false;
+        Object rest=CommentsChromeTweaks.field(swipe,"Q");
+        return rest instanceof Integer && icon.getTop()<=(Integer)rest;
     }
     private static void clearScrim(View view,String getter,String setter){
         try{

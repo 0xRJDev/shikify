@@ -487,6 +487,7 @@ fun main(args: Array<String>) = runBlocking {
     check(hooks.values.sum() == 21 && hooks.size == 16 && loadingAvatarHooks == 4 && anchorHooks == 1 && platformHooks == 2 && completionHooks == 3 && feedCompletionHooks == 4 && profileCompletionHooks==1) { "Unexpected hook count: $hooks" }
     val fontLookup=patched["Lps2;"]!!.methods.single { it.name=="e0" }.implementation!!.instructions.toList()
     check(((fontLookup[0] as ReferenceInstruction).reference as com.android.tools.smali.dexlib2.iface.reference.FieldReference).name=="DEFAULT" && fontLookup[1].opcode==Opcode.RETURN_OBJECT) { "System font lookup is not patched" }
+    check(patched["Lcom/rubenmayayo/reddit/ui/fragments/imagemodel/ImageModelFragment;"]!!.methods.single { it.name=="onDestroy" }.implementation!!.instructions.none { ((it as? ReferenceInstruction)?.reference as? MethodReference)?.let { ref->ref.definingClass=="Lju0;" && ref.name=="d" }==true }) { "Gallery still deletes its shared file" }
     check(settleHooks == 4) { "Expected four media dismiss settle hooks, got $settleHooks" }
     check(flairHooks == 1) { "Expected one flair colour hook, got $flairHooks" }
     check(noticeHooks >= 100) { "Expected the Toast callers to be redirected, got $noticeHooks" }

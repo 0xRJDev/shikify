@@ -474,6 +474,11 @@ val boostViewerPolishPatch = bytecodePatch(
     compatibleWith(boostCompatibility)
     dependsOn(boostChromeExtensionPatch, shikifyVideoSurfaceResourcesPatch)
     execute {
+        // A closing gallery is destroyed after the next one opens, and both use the same file for
+        // the same image. Deleting it blacks out the reopened page. Boost trims media_cache itself.
+        val closing=Fingerprint(definingClass="Lcom/rubenmayayo/reddit/ui/fragments/imagemodel/ImageModelFragment;",name="onDestroy",returnType="V",parameters=emptyList(),isStatic=false).method
+        val delete=closing.implementation!!.instructions.withIndex().single { (_,instruction)->instruction.methodReference()?.let { it.definingClass=="Lju0;" && it.name=="d" }==true }.index
+        closing.removeInstruction(delete)
         val method = Fingerprint(definingClass = "Lcom/rubenmayayo/reddit/ui/fragments/imagemodel/ImageModelFragment;",
             name = "onResume", returnType = "V", parameters = emptyList(), isStatic = false).method
         if (!method.hasHook("Lapp/morphe/extension/boost/ViewerPolishTweaks;", "onResume"))

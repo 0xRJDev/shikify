@@ -1,3 +1,8 @@
+# Version 1.1.2-dev.1
+
+- Fixed the refresh circle sometimes staying stuck near the status bar.
+- Fixed a gallery going black when reopened straight after closing it.
+
 # Version 1.1.1
 
 - Renamed two patches to Material You and Material search. If they show as unselected in Morphe Manager, select them again.
