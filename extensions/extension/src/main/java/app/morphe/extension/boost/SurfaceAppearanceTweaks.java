@@ -189,6 +189,7 @@ public final class SurfaceAppearanceTweaks {
         int appliedOpacity=-1;
         boolean active,prepared,disposed,tinted;
         int tintAttempts;
+        /** Set when the bottom bar's padding changes, so drawing waits for its new layout. */
         boolean navigationLayoutChanged;
         Screen(Activity activity,boolean media){
             owner=new WeakReference<>(activity);
