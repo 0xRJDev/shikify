@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 /** Separate, theme-aware preference pages; other patch sources retain their own menus. */
 public final class SurfaceSettingsActivity extends Activity {
+    /** Material 3's opacity for disabled content. */
     private static final float DISABLED_SLIDER_ALPHA=0.38f;
     private LinearLayout group;
     private LinearLayout body;
