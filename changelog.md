@@ -1,8 +1,10 @@
 # Version 1.1.2-dev.4
 
-- Flair text now sits in the middle of its pill instead of near the bottom.
-- Shikify Settings uses Material 3 switches.
-- Changing a Loading setting offers to restart Boost so it applies straight away.
+## Boost for Reddit
+
+- **Inline flairs:** Flair text now sits in the middle of its pill instead of near the bottom.
+- **Shikify Settings:** Settings use Material 3 switches.
+- **Performance:** Changing a Loading setting offers to restart Boost so it applies straight away.
 
 # Version 1.1.2-dev.3
 
