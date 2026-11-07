@@ -3,9 +3,13 @@ package app.morphe.extension.boost;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,6 +24,7 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /** Separate, theme-aware preference pages; other patch sources retain their own menus. */
 public final class SurfaceSettingsActivity extends Activity {
@@ -150,7 +155,44 @@ public final class SurfaceSettingsActivity extends Activity {
         if(Features.firstPage())toggle("Smaller first page","Ask for 25 posts on the first page","first_page");
         if(Features.onlineCheck())section("Connection");
         if(Features.onlineCheck())toggle("Improved online check","Try requests when Android reports a block","online_check");
-        note("Restart Boost for these to apply. HTTP/2 is chosen when you patch.");
+        note("HTTP/2 is chosen when you patch.");
+    }
+    private void confirmRestart(){
+        int theme=getResources().getIdentifier("ThemeOverlay.Material3.MaterialAlertDialog","style",getPackageName());
+        AlertDialog confirmation=new AlertDialog.Builder(this,theme)
+            .setTitle("Restart Boost?")
+            .setMessage("Restart Boost to apply loading changes.")
+            .setNegativeButton("Later",null)
+            .setPositiveButton("Restart",(dialog,which)->{
+                Intent launch=getPackageManager().getLaunchIntentForPackage(getPackageName());
+                if(launch==null || !prefs(this).edit().commit()){
+                    Toast.makeText(this,"Could not restart Boost. Close and reopen the app.",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Intent restart=Intent.makeRestartActivityTask(launch.getComponent());
+                restart.setPackage(getPackageName());
+                startActivity(restart);
+                System.exit(0);
+            })
+            .show();
+        GradientDrawable surface=new GradientDrawable();
+        surface.setColor(MaterialYouTweaks.color(this,"colorSurfaceContainerHigh",android.R.attr.colorBackground));
+        surface.setCornerRadius(getResources().getDimension(getResources().getIdentifier("m3_sys_shape_corner_value_extra_large","dimen",getPackageName())));
+        int inset=getResources().getDimensionPixelSize(getResources().getIdentifier("mtrl_alert_dialog_background_inset_start","dimen",getPackageName()));
+        confirmation.getWindow().setBackgroundDrawable(new InsetDrawable(surface,inset));
+        dialogText(confirmation.findViewById(getResources().getIdentifier("alertTitle","id","android")),"TextAppearance.Material3.HeadlineSmall",foreground);
+        dialogText(confirmation.findViewById(android.R.id.message),"TextAppearance.Material3.BodyMedium",secondary);
+        for(int button:new int[]{DialogInterface.BUTTON_NEGATIVE,DialogInterface.BUTTON_POSITIVE}){
+            TextView action=confirmation.getButton(button);
+            dialogText(action,"TextAppearance.Material3.LabelLarge",accent);
+            action.setAllCaps(false);
+        }
+        DialogTweaks.onShow(confirmation);
+    }
+    private void dialogText(TextView view,String appearance,int color){
+        if(view==null)return;
+        view.setTextAppearance(this,getResources().getIdentifier(appearance,"style",getPackageName()));
+        view.setTextColor(color);
     }
     private void updateGlassControls(){
         boolean active=enabled(this,"feed_pill_blur");
@@ -223,6 +265,7 @@ public final class SurfaceSettingsActivity extends Activity {
         toggle.setOnCheckedChangeListener((button,value)->{
             prefs(this).edit().putBoolean("shikify_"+key,value).apply();
             if("feed_pill_blur".equals(key))updateGlassControls();
+            if(page==5)confirmRestart();
         });
         row.setOnClickListener(v->toggle.setChecked(!toggle.isChecked()));
     }
