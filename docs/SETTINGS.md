@@ -6,7 +6,7 @@ Open Boost Settings → Shikify Settings, immediately below Morphe. The classic 
 - Comments & gestures: dynamic header, remembered thread position, comment and post swipes, haptic feedback and full swipe travel.
 - Media viewers: explains stock black backgrounds, image/gallery pills and native video controls. Dimming preferences from older versions still apply, though they no longer have a setting.
 - Performance: blur refresh interval. Larger intervals reduce capture work and do not change the display refresh rate.
-- Loading: parallel loading, no startup queue, instant login, smaller first page and improved online check. Restart Boost for these to apply.
+- Loading: parallel loading, no startup queue, instant login, smaller first page and improved online check. Changing a switch offers a restart dialog. Restart applies the saved changes, and Later keeps them for the next launch.
 
 Notices, Floating menus, Inline flairs, Search page and the Loading switches only appear when their patch was selected. HTTP/2 Reddit connection, Sliding screen transitions and Use system font are chosen when you patch and have no switch.
 
