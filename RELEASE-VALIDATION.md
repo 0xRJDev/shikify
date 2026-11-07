@@ -1,4 +1,4 @@
-# Release validation — 1.1.2-dev.1
+# Release validation — 1.1.2-dev.2
 
 Compiled the bundle and applied all 25 patches to original Boost 1.14.3: register-safe hooks, native mappings and runtime references passed, along with wrapper regressions and 30 host thread-boundary checks. Applied together with Patcheddit 2.1.0-dev.4 in both orders. Each patch was also applied alone and left out in turn.
 

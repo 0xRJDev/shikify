@@ -69,6 +69,9 @@ fun main(args: Array<String>) = runBlocking {
     check(patches.size == 25 && patches.map { it.name }.toSet() == expectedNames) {
         "Expected 25 unprefixed public patches, got ${patches.map { it.name }}"
     }
+    check(patches.groupingBy { it.category }.eachCount()==mapOf("Appearance" to 9,"Comments" to 5,"Media" to 3,"Navigation" to 2,"Performance" to 6)) {
+        "Unexpected patch categories: ${patches.groupingBy { it.category }.eachCount()}"
+    }
     for (patch in patches) {
         check(patch.compatibility!!.single().packageName == "com.rubenmayayo.reddit")
         check(patch.compatibility!!.single().targets.single().version == "1.14.3")

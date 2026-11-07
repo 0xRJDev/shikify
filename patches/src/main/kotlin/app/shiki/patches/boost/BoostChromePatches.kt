@@ -26,6 +26,15 @@ private const val VIDEO_ACTIVITY = "Lcom/rubenmayayo/reddit/ui/activities/MediaV
 private const val GALLERY_ACTIVITY = "Lcom/rubenmayayo/reddit/ui/activities/GalleryActivity;"
 private const val COMMENTS_EXTENSION = "Lapp/morphe/extension/boost/CommentsChromeTweaks;"
 private const val GALLERY_EXTENSION = "Lapp/morphe/extension/boost/GalleryBottomActionsTweaks;"
+/** Headers in Morphe Manager's patch list. Patches without one appear above every header. */
+private object ShikifyCategory {
+    const val APPEARANCE = "Appearance"
+    const val COMMENTS = "Comments"
+    const val MEDIA = "Media"
+    const val NAVIGATION = "Navigation"
+    const val PERFORMANCE = "Performance"
+}
+
 private val boostCompatibility = Compatibility(
     name = "Boost for Reddit",
     packageName = "com.rubenmayayo.reddit",
@@ -188,6 +197,7 @@ val boostDynamicCommentsHeaderPatch = bytecodePatch(
     description = "Show r/subreddit and the post title throughout the comments screen, preserving native menu and search actions.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.COMMENTS)
     dependsOn(boostChromeExtensionPatch)
     execute {
         Fingerprint(definingClass = COMMENTS_EXTENSION, name = "dynamicHeaderEnabled", returnType = "Z",
@@ -202,6 +212,7 @@ val boostHideHorizontalCommentDividersPatch = bytecodePatch(
     description = "Make horizontal comment and load-more dividers transparent while retaining spacing and vertical thread indicators.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.COMMENTS)
     dependsOn(boostChromeExtensionPatch)
     execute {
         enableCommentFeature("hideDividersEnabled")
@@ -220,6 +231,7 @@ val boostBottomGalleryActionsPatch = bytecodePatch(
     description = "Compact image and gallery action pills with navigation insets; move video download beside the other actions.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.MEDIA)
     dependsOn(boostChromeExtensionPatch)
     execute {
         val create = Fingerprint(
@@ -269,6 +281,7 @@ val boostCommentSwipeActionsPatch = bytecodePatch(
     description = "Swipe left by distance: short upvotes, medium downvotes, long replies. Preview the selected icon and release to act.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.COMMENTS)
     dependsOn(boostChromeExtensionPatch)
     execute {
         enableCommentFeature("swipeActionsEnabled")
@@ -338,6 +351,7 @@ val boostPredictiveBackPatch = bytecodePatch(
     description = "Enable Android's predictive Back animations across supported screens, preserving draft prompts, drawers and browser history.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.NAVIGATION)
     dependsOn(boostChromeExtensionPatch, boostPredictiveBackManifestPatch)
     execute {
         val extension = "Lapp/morphe/extension/boost/PredictiveBackTweaks;"
@@ -384,6 +398,7 @@ val boostPostSwipeActionsPatch = bytecodePatch(
     description = "Swipe posts left through upvote, downvote, save and hide; rows follow your finger.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.NAVIGATION)
     dependsOn(boostChromeExtensionPatch)
     execute {
         Fingerprint(definingClass = SWIPE_EXTENSION, name = "postSwipesEnabled", returnType = "Z",
@@ -423,6 +438,7 @@ val boostMediaPeekPatch = bytecodePatch(
     description = "Hold a loaded post image or inline comment image/GIF to preview it; release to dismiss.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.MEDIA)
     dependsOn(boostChromeExtensionPatch)
     execute {
         enableCommentFeature("mediaPeekEnabled")
@@ -436,6 +452,7 @@ val boostInlineMediaExpansionPatch = bytecodePatch(
     description = "Double tap an existing inline image/GIF to expand it in place; single tap retains Boost's viewer.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.COMMENTS)
     dependsOn(boostChromeExtensionPatch)
     execute { enableCommentFeature("inlineMediaEnabled") }
 }
@@ -446,6 +463,7 @@ val boostCommentLayoutPatch = bytecodePatch(
     description = "Group avatar, username, points, time and awards in a compact flowing header; retain native actions and flair.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.COMMENTS)
     dependsOn(boostChromeExtensionPatch)
     execute { enableCommentFeature("commentLayoutEnabled"); enableRowCompletion() }
 }
@@ -472,6 +490,7 @@ val boostViewerPolishPatch = bytecodePatch(
     description = "Restore native media rendering and close the viewer as soon as a swipe passes its threshold.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.MEDIA)
     dependsOn(boostChromeExtensionPatch, shikifyVideoSurfaceResourcesPatch)
     execute {
         // A closing gallery is destroyed after the next one opens, and both use the same file for
@@ -860,6 +879,7 @@ val shikifySystemFontPatch = bytecodePatch(
     description = "Use your phone's system font for posts, comments, names and the rest of the app. Boost's own font settings stop applying.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.APPEARANCE)
     dependsOn(shikifySystemFontResourcesPatch)
     execute {
         // Every Boost font preference resolves through this one lookup.
@@ -1118,6 +1138,7 @@ val boostMaterialYouPatch = bytecodePatch(
     description = "Wallpaper-based themes, cards, side panel, empty screens, compact metadata and glass surfaces.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.APPEARANCE)
     dependsOn(boostChromeExtensionPatch, boostMaterialYouResourcesPatch, shikifySurfaceResourcesPatch)
     execute {
         val tags="Lapp/morphe/extension/boost/MaterialYouTweaks;->tagColor(Ljava/lang/String;)I"
@@ -1161,6 +1182,7 @@ val shikifyMaterialLoadingPatch = bytecodePatch(
     description = "Wallpaper-coloured Material 3 Expressive shapes for pull-to-refresh and indeterminate loading wheels; retain native refresh actions.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.APPEARANCE)
     dependsOn(boostChromeExtensionPatch)
     execute {
         val extension = "Lapp/morphe/extension/boost/MaterialLoadingTweaks;"
@@ -1205,6 +1227,7 @@ val shikifyHomeAvatarPatch = bytecodePatch(
     description = "Show the account avatar beside Home and in the bottom pill, with subreddit icons beside community titles; retain sorting and navigation.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.APPEARANCE)
     dependsOn(boostChromeExtensionPatch)
     execute {
         val title = Fingerprint(definingClass = "Lcom/rubenmayayo/reddit/ui/submissions/subreddit/MainActivity\$d;",
@@ -1264,6 +1287,7 @@ val shikifyHttp2Patch = bytecodePatch(
     description = "Connect to Reddit over HTTP/2, with HTTP/1.1 as a fallback.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.PERFORMANCE)
     execute { enableModernRedditTransport() }
 }
 
@@ -1273,6 +1297,7 @@ val shikifyParallelLoadingPatch = bytecodePatch(
     description = "Load feeds, comments and posts in parallel instead of one background task at a time.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.PERFORMANCE)
     dependsOn(shikifyTokenLockPatch)
     execute { parallelContentLoaders();enableFeature("parallelLoading") }
 }
@@ -1283,6 +1308,7 @@ val shikifyRequestQueuePatch = bytecodePatch(
     description = "Stop spacing Reddit requests a second apart, and pace them again when Reddit reports a low budget.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.PERFORMANCE)
     dependsOn(shikifyNetworkSettingsPatch)
     execute { removeRequestQueue();enableFeature("requestQueue") }
 }
@@ -1293,6 +1319,7 @@ val shikifyInstantLoginPatch = bytecodePatch(
     description = "Use a saved login that is still valid straight away, and renew it in the background.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.PERFORMANCE)
     dependsOn(shikifyTokenLockPatch)
     execute { reuseSavedLogin();enableFeature("instantLogin") }
 }
@@ -1303,6 +1330,7 @@ val shikifyFirstPagePatch = bytecodePatch(
     description = "Ask for 25 posts on the first page of a feed. Later pages keep their size.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.PERFORMANCE)
     dependsOn(shikifyNetworkSettingsPatch)
     execute { smallerFirstPage();enableFeature("firstPage") }
 }
@@ -1313,6 +1341,7 @@ val shikifyOnlineCheckPatch = bytecodePatch(
     description = "Let requests run when Android reports a restricted app's network as blocked.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.PERFORMANCE)
     dependsOn(shikifyNetworkSettingsPatch)
     execute {
         val online=Fingerprint(definingClass="Lkk3;",name="D",returnType="Z",isStatic=true,parameters=listOf("Landroid/content/Context;")).method
@@ -1329,6 +1358,7 @@ val shikifyNoticesPatch = bytecodePatch(
     description = "Show Boost's toasts as Material 3 notices above the bottom bar.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.APPEARANCE)
     dependsOn(boostChromeExtensionPatch)
     execute { replaceToasts();enableFeature("notices") }
 }
@@ -1339,6 +1369,7 @@ val shikifyDialogsPatch = bytecodePatch(
     description = "Float option menus above the bottom edge like the bottom bar.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.APPEARANCE)
     dependsOn(boostMaterialYouPatch)
     execute {
         val dialog=Fingerprint(definingClass="Ldp1;",name="show",returnType="V",parameters=emptyList(),isStatic=false).method
@@ -1354,6 +1385,7 @@ val shikifyFlairsPatch = bytecodePatch(
     description = "Move post flairs in line with the post details, and keep flair text readable.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.APPEARANCE)
     dependsOn(boostMaterialYouPatch)
     execute {
         val flair=Fingerprint(definingClass="Lcom/rubenmayayo/reddit/models/reddit/RichFlairView;",name="c",returnType="V",isStatic=false,
@@ -1403,6 +1435,7 @@ val shikifySearchPatch = bytecodePatch(
     description = "Fill the empty search page with your feeds and subscriptions in collapsible Material 3 sections.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.APPEARANCE)
     dependsOn(boostMaterialYouPatch, shikifySearchResourcesPatch)
     execute {
         val searchPage="Lcom/rubenmayayo/reddit/ui/search/SearchGenericActivity;"
@@ -1429,6 +1462,7 @@ val shikifyTransitionsPatch = resourcePatch(
     description = "New screens slide over the one below, which drifts back slightly.",
 ) {
     compatibleWith(boostCompatibility)
+    category(ShikifyCategory.APPEARANCE)
     execute {
         fun motion(name:String,body:String){get("res/anim/$name.xml").apply {parentFile.mkdirs();writeText("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n$body\n")}}
         val ns="xmlns:android=\"http://schemas.android.com/apk/res/android\""

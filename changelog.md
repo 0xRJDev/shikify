@@ -1,3 +1,7 @@
+# Version 1.1.2-dev.2
+
+- Patches are now grouped under Appearance, Comments, Media, Navigation and Performance headers in Morphe Manager.
+
 # Version 1.1.2-dev.1
 
 - Fixed the refresh circle sometimes staying stuck near the status bar.
