@@ -4,7 +4,7 @@ Open Boost Settings → Shikify Settings, immediately below Morphe. The classic 
 
 - Glass & appearance: glass toggle, dialog blur, blur strength, glass tint, side panel, empty screens, notices, floating menus, inline flairs and search page.
 - Comments & gestures: dynamic header, remembered thread position, comment and post swipes, haptic feedback and full swipe travel.
-- Media viewers: explains stock black backgrounds, image/gallery pills and native video controls. Dimming preferences saved by older versions have no setting but still apply.
+- Media viewers: explains stock black backgrounds, image/gallery pills and native video controls. Dimming preferences from older versions still apply, though they no longer have a setting.
 - Performance: blur refresh interval. Larger intervals reduce capture work and do not change the display refresh rate.
 - Loading: parallel loading, no startup queue, instant login, smaller first page and improved online check. Restart Boost for these to apply.
 
