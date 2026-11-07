@@ -51,13 +51,13 @@ public final class OverlayBackChecks {
     static void end(Object callback)throws Exception{ValueAnimator animator=(ValueAnimator)field(callback,"animator");if(animator!=null)animator.end();}
     static int pixel(Drawable drawable,int x,int y){Bitmap image=Bitmap.createBitmap(256,256,Bitmap.Config.ARGB_8888);drawable.draw(new Canvas(image));int value=image.getPixel(x,y);image.recycle();return value;}
     static void run(String[] args)throws Exception {
-        loader=RuntimeUiChecks.initialize(args);SyncStyleChecks.loader=loader;SyncStyleChecks.settings();Context base=SyncStyleChecks.candidateContext(RuntimeUiChecks.context,args[0],true);
+        loader=RuntimeUiChecks.initialize(args);StyleChecks.loader=loader;StyleChecks.settings();Context base=StyleChecks.candidateContext(RuntimeUiChecks.context,args[0],true);
         SharedPreferences prefs=(SharedPreferences)Proxy.newProxyInstance(loader,new Class<?>[]{SharedPreferences.class},(p,m,a)->{if(m.getName().equals("getString"))return a[1];if(m.getName().equals("getAll"))return java.util.Collections.emptyMap();if(a!=null && a.length==2)return a[1];return null;});
         context=new ContextWrapper(base){@Override public SharedPreferences getSharedPreferences(String name,int mode){return prefs;}@Override public Object getSystemService(String name){if(name.equals("captioning"))return null;if(name.equals(Context.LAYOUT_INFLATER_SERVICE))return android.view.LayoutInflater.from(getBaseContext()).cloneInContext(this);return super.getSystemService(name);}};
-        SyncStyleChecks.context=context;SyncStyleChecks.omitWebView=true;SyncStyleChecks.omitProgressSpinner=true;
+        StyleChecks.context=context;StyleChecks.omitWebView=true;StyleChecks.omitProgressSpinner=true;
         for(String layout:new String[]{"activity_media_image","activity_media_video","activity_album"}){
             OverlayActivity activity=new OverlayActivity(context);FrameLayout decor=(FrameLayout)activity.getWindow().getDecorView();FrameLayout content=new FrameLayout(context);content.setId(android.R.id.content);decor.addView(content,new FrameLayout.LayoutParams(-1,-1));
-            View root=SyncStyleChecks.inflate(layout);content.addView(root,new FrameLayout.LayoutParams(-1,-1));Object screen=screen(activity);call(screen,"resume");DownloadControlsChecks.context=context;DownloadControlsChecks.measure(decor);
+            View root=StyleChecks.inflate(layout);content.addView(root,new FrameLayout.LayoutParams(-1,-1));Object screen=screen(activity);call(screen,"resume");DownloadControlsChecks.context=context;DownloadControlsChecks.measure(decor);
             Drawable backdrop=(Drawable)field(screen,"backdrop");backdrop.setBounds(0,0,256,256);Paint p=new Paint();
             content.setTranslationX(3);content.setTranslationY(4);content.setScaleX(0.99f);content.setScaleY(0.97f);content.setAlpha(0.8f);
             Object guard=guard(activity);

@@ -32,7 +32,7 @@ public final class DownloadControlsChecks {
     static void measure(View view){view.measure(View.MeasureSpec.makeMeasureSpec(px(380),View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(px(760),View.MeasureSpec.EXACTLY));view.layout(0,0,view.getMeasuredWidth(),view.getMeasuredHeight());}
     static boolean descendant(View view,ViewGroup parent){for(android.view.ViewParent next=view.getParent();next!=null;next=next.getParent())if(next==parent)return true;return false;}
     static void run(String[] args)throws Exception {
-        loader=RuntimeUiChecks.initialize(args);SyncStyleChecks.loader=loader;SyncStyleChecks.settings();context=SyncStyleChecks.candidateContext(RuntimeUiChecks.context,args[0],true);
+        loader=RuntimeUiChecks.initialize(args);StyleChecks.loader=loader;StyleChecks.settings();context=StyleChecks.candidateContext(RuntimeUiChecks.context,args[0],true);
         Class<?> tweaks=Class.forName("app.morphe.extension.boost.GalleryBottomActionsTweaks",true,loader);
         Class<?> toolbarType=Class.forName("androidx.appcompat.widget.Toolbar",true,loader);
         Method find=tweaks.getMethod("findActionAnchor",View.class,int.class);
@@ -75,7 +75,7 @@ public final class DownloadControlsChecks {
                 bubble.getChildAt(0).performClick();check(photo.getScaleType()==android.widget.ImageView.ScaleType.CENTER_CROP,"Non-HD image fit action expands to fill");
                 bubble.getChildAt(0).performClick();check(photo.getScaleType()==android.widget.ImageView.ScaleType.FIT_CENTER,"Non-HD image fit action restores full-image fitting");
                 int childCount=content.getChildCount();tweaks.getMethod("onImageResume",Object.class).invoke(null,activity);check(content.getChildCount()==childCount,"Image resume does not duplicate the bubble");
-                if(args.length>2)SyncStyleChecks.save(content,args[2]+"/download-controls-preview.png");
+                if(args.length>2)StyleChecks.save(content,args[2]+"/download-controls-preview.png");
                 continue;
             }
             LinearLayout controller=new LinearLayout(context);controller.setId(context.getResources().getIdentifier("media_controller","id",context.getPackageName()));bottom.addView(controller,new LinearLayout.LayoutParams(-1,px(48)));
@@ -99,26 +99,26 @@ public final class DownloadControlsChecks {
                 View panel=content.findViewWithTag("app.shiki.boost.gallery.actions");toolbar.setAlpha(0.4f);content.getViewTreeObserver().dispatchOnPreDraw();check(Math.abs(panel.getAlpha()-0.4f)<0.001f,"Gallery panel follows native toolbar fade");
                 toolbar.setVisibility(View.GONE);content.getViewTreeObserver().dispatchOnPreDraw();check(panel.getVisibility()!=View.VISIBLE,"Gallery panel follows native toolbar hiding");toolbar.setVisibility(View.VISIBLE);toolbar.setAlpha(1f);content.getViewTreeObserver().dispatchOnPreDraw();
             }
-            if(args.length>2 && name.equals("MediaImageActivity"))SyncStyleChecks.save(content,args[2]+"/download-controls-preview.png");
+            if(args.length>2 && name.equals("MediaImageActivity"))StyleChecks.save(content,args[2]+"/download-controls-preview.png");
         }
         check(find.invoke(null,new View(context),12345)==null,"An absent action anchor preserves the native null result");
-        SyncStyleChecks.context=new ContextWrapper(context){@Override public Object getSystemService(String name){if(name.equals("captioning") || name.equals("autofill") || name.equals("content_capture"))return null;if(name.equals(Context.LAYOUT_INFLATER_SERVICE))return android.view.LayoutInflater.from(getBaseContext()).cloneInContext(this);return super.getSystemService(name);}};
-        SyncStyleChecks.omitWebView=true;SyncStyleChecks.omitProgressSpinner=true;
-        View video=SyncStyleChecks.inflate("activity_media_video");View player=SyncStyleChecks.find(video,"video_view");
+        StyleChecks.context=new ContextWrapper(context){@Override public Object getSystemService(String name){if(name.equals("captioning") || name.equals("autofill") || name.equals("content_capture"))return null;if(name.equals(Context.LAYOUT_INFLATER_SERVICE))return android.view.LayoutInflater.from(getBaseContext()).cloneInContext(this);return super.getSystemService(name);}};
+        StyleChecks.omitWebView=true;StyleChecks.omitProgressSpinner=true;
+        View video=StyleChecks.inflate("activity_media_video");View player=StyleChecks.find(video,"video_view");
         check(player.getClass().getMethod("getVideoSurfaceView").invoke(player) instanceof android.view.SurfaceView,"Viewer uses Boost’s native SurfaceView rendering for streaming video");
         check((Integer)player.getClass().getMethod("getResizeMode").invoke(player)==0,"Viewer retains Boost’s default aspect-fit mode");
         Activity nativeVideo=(Activity)Class.forName("com.rubenmayayo.reddit.ui.activities.MediaVideoActivity",true,loader).getConstructor().newInstance();
-        Field nativeBase=ContextWrapper.class.getDeclaredField("mBase");nativeBase.setAccessible(true);nativeBase.set(nativeVideo,SyncStyleChecks.context);
-        RuntimeUiChecks.FakeWindow nativeWindow=new RuntimeUiChecks.FakeWindow(SyncStyleChecks.context);set(nativeVideo,"mWindow",nativeWindow);
-        FrameLayout nativeContent=new FrameLayout(SyncStyleChecks.context);nativeContent.setId(android.R.id.content);nativeWindow.decor.addView(nativeContent,new FrameLayout.LayoutParams(-1,-1));nativeContent.addView(video,new FrameLayout.LayoutParams(-1,-1));
-        View nativeToolbar=SyncStyleChecks.find(video,"toolbar"),nativeBottom=SyncStyleChecks.find(video,"bottom_bar"),nativeController=SyncStyleChecks.find(video,"media_controller");set(nativeVideo,"toolbar",nativeToolbar);set(nativeVideo,"bottomBar",nativeBottom);
+        Field nativeBase=ContextWrapper.class.getDeclaredField("mBase");nativeBase.setAccessible(true);nativeBase.set(nativeVideo,StyleChecks.context);
+        RuntimeUiChecks.FakeWindow nativeWindow=new RuntimeUiChecks.FakeWindow(StyleChecks.context);set(nativeVideo,"mWindow",nativeWindow);
+        FrameLayout nativeContent=new FrameLayout(StyleChecks.context);nativeContent.setId(android.R.id.content);nativeWindow.decor.addView(nativeContent,new FrameLayout.LayoutParams(-1,-1));nativeContent.addView(video,new FrameLayout.LayoutParams(-1,-1));
+        View nativeToolbar=StyleChecks.find(video,"toolbar"),nativeBottom=StyleChecks.find(video,"bottom_bar"),nativeController=StyleChecks.find(video,"media_controller");set(nativeVideo,"toolbar",nativeToolbar);set(nativeVideo,"bottomBar",nativeBottom);
         tweaks.getMethod("onVideoResume",Object.class).invoke(null,nativeVideo);nativeContent.getViewTreeObserver().dispatchOnPreDraw();measure(nativeWindow.decor);
         ViewGroup nativePill=(ViewGroup)nativeContent.findViewWithTag("app.shiki.boost.gallery.actions.video");
         check(nativeController.getParent()==nativeBottom,"Real PlayerControlView retains its native parent");
         check(!descendant(nativeController,nativePill) && nativePill.getLayoutParams().width==-2,"Playback remains outside a compact wrap-content action pill");
         check(((android.widget.ImageButton)nativePill.getChildAt(0)).getContentDescription().equals("Share video"),"Video pill exposes sharing without replacing native playback controls");
-        View volume=SyncStyleChecks.find(nativeController,"volume_button");check(volume.getVisibility()==View.GONE,"Native volume visibility is not forced on by the pill");
-        for(String control:new String[]{"exo_play","exo_progress","exo_position","exo_duration","speed_button"}){View target=SyncStyleChecks.find(nativeController,control);check(target!=null && target.getWidth()>0 && target.getHeight()>0,"Native player retains measured "+control);}
+        View volume=StyleChecks.find(nativeController,"volume_button");check(volume.getVisibility()==View.GONE,"Native volume visibility is not forced on by the pill");
+        for(String control:new String[]{"exo_play","exo_progress","exo_position","exo_duration","speed_button"}){View target=StyleChecks.find(nativeController,control);check(target!=null && target.getWidth()>0 && target.getHeight()>0,"Native player retains measured "+control);}
         check(nativeToolbar.getVisibility()==View.GONE && nativeBottom.getVisibility()!=View.GONE,"Real video layout retains native playback and removes top chrome");
         System.out.println("DOWNLOAD CONTROLS CHECKS PASSED: "+checks);System.exit(0);
     }

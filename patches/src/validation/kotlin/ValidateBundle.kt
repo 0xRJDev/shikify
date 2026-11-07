@@ -62,8 +62,8 @@ fun main(args: Array<String>) = runBlocking {
         "Smaller first page",
         "Swipe comment actions",
         "Swipe post actions",
-        "Sync-style Material You",
-        "Sync-style search",
+        "Material You",
+        "Material search",
         "Use system font"
     )
     check(patches.size == 25 && patches.map { it.name }.toSet() == expectedNames) {

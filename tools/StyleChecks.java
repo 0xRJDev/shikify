@@ -24,7 +24,7 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 
 /** Inflate actual candidate resources with actual Boost widgets. No app install/navigation. */
-public final class SyncStyleChecks {
+public final class StyleChecks {
     static int checks;
     static ClassLoader loader;
     static Context context;
@@ -140,7 +140,7 @@ public final class SyncStyleChecks {
             check(h.scoreTv.getParent()==header && h.timeTv.getParent()==header,"Actual author/points/time are grouped together");
             check(h.scoreTv.getLeft()>=h.authorTv.getRight() && h.timeTv.getLeft()>=h.scoreTv.getRight(),"Actual points/time follow username on the left");
             check(h.timeTv.getRight()<header.getWidth(),"Metadata fits inside the actual comment header");
-            check(h.scoreTv.getText().toString().equals("896 points"),"Native score has the Sync-style points label");
+            check(h.scoreTv.getText().toString().equals("896 points"),"Native score has the compact points label");
             if(h.commentTv!=null)check(h.commentTv.getTop()>=((View)header).getBottom(),"Body stays below header and optional flair");
             int[] clicked={0};h.authorTv.setOnClickListener(v->clicked[0]++);h.authorTv.performClick();check(clicked[0]==1,"Username callback remains functional after reparenting");
             h.authorTv.setText("A_very_long_username_that_will_need_ellipsizing");h.scoreTv.setText("12500");listener.onPreDraw();measure(root,Math.round(240*density));listener.onPreDraw();measure(root,Math.round(240*density));
@@ -165,7 +165,7 @@ public final class SyncStyleChecks {
             h.indentView.getClass().getMethod("setIndentLevel",int.class).invoke(h.indentView,3);measure(root,width);
             Field nativeLine=h.indentView.getClass().getDeclaredField("c"),nativeMargin=h.indentView.getClass().getDeclaredField("y");nativeLine.setAccessible(true);nativeMargin.setAccessible(true);
             int expectedLine=Math.round((mode.equals("0") ? 4:2)*density),expectedGap=Math.round((mode.equals("0") ? 0:14)*density);
-            check(nativeLine.getInt(h.indentView)==expectedLine && nativeMargin.getInt(h.indentView)==expectedGap,"Sync-like line spacing retains the native style selection "+mode);
+            check(nativeLine.getInt(h.indentView)==expectedLine && nativeMargin.getInt(h.indentView)==expectedGap,"Wider line spacing retains the native style selection "+mode);
             if(mode.equals("2")) {
                 Bitmap lines=Bitmap.createBitmap(root.getWidth(),root.getHeight(),Bitmap.Config.ARGB_8888);root.draw(new Canvas(lines));
                 int red=0,green=0,blue=0;for(int y=0;y<lines.getHeight();y++)for(int x=0;x<h.indentView.getWidth();x++){
@@ -224,7 +224,7 @@ public final class SyncStyleChecks {
         int light=role("colorSurface"),lightContent=role("colorSurfaceContainer");
         check(Color.red(light)+Color.green(light)+Color.blue(light)>Color.red(surface)+Color.green(surface)+Color.blue(surface),"Light mode keeps the light dynamic palette");
         check(light!=lightContent,"Light mode retains distinct content/background roles");
-        System.out.println("SYNC STYLE CHECKS PASSED: "+checks);System.exit(0);
+        System.out.println("STYLE CHECKS PASSED: "+checks);System.exit(0);
     }
     public static void main(String[] args){try{run(args);}catch(Throwable error){error.printStackTrace(System.out);System.exit(1);}}
 }

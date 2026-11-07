@@ -46,9 +46,9 @@ public final class ThreadCardChecks {
     static ArrayList<Object> holders=new ArrayList<>();static ArrayList<ViewTreeObserver.OnPreDrawListener> layouts=new ArrayList<>();
     static Object nativeHolder(View root,Object model)throws Exception{return nativeHolder(root,model,false);}
     static Object nativeHolder(View root,Object model,boolean collapsed)throws Exception{
-        Object owner=SyncStyleChecks.allocate(Class.forName(collapsed ? "a11":"com.rubenmayayo.reddit.ui.adapters.CommentViewHolder",true,loader));set(owner,"a",root);set(owner,"c0",model);
+        Object owner=StyleChecks.allocate(Class.forName(collapsed ? "a11":"com.rubenmayayo.reddit.ui.adapters.CommentViewHolder",true,loader));set(owner,"a",root);set(owner,"c0",model);
         String[][]fields={{"plusCollapsedTv","item_comment_plus"},{"authorTv","item_comment_author"},{"authorAvatarIv","item_comment_author_avatar"},{"authorTagTv","item_comment_author_tag"},{"authorRichFlairTv","item_comment_author_rich_flair"},{"scoreTv","item_comment_score"},{"timeTv","item_comment_time"},{"commentTv","item_comment_body"},{"commentContainer","item_comment_container"},{"awardsView","awards_view"},{"collapsedTv","item_comment_collapsed"},{"distinguishedTv","item_comment_distinguished"},{"indentView","indent_view"}};
-        for(String[] f:fields)set(owner,f[0],SyncStyleChecks.find(root,f[1]));
+        for(String[] f:fields)set(owner,f[0],StyleChecks.find(root,f[1]));
         ((TextView)get(owner,"authorTv")).setText("Parent_or_reply");((TextView)get(owner,"scoreTv")).setText("?");((TextView)get(owner,"timeTv")).setText("6h");
         Object body=get(owner,"commentTv");if(body!=null)body.getClass().getMethod("setTextHtml",String.class).invoke(body,"<p>A comment inside its parent thread.</p>");
         Object indent=get(owner,"indentView");indent.getClass().getMethod("setIndentLevel",int.class).invoke(indent,get(model,"R"));
@@ -60,33 +60,33 @@ public final class ThreadCardChecks {
     static void settle(Fragment fragment)throws Exception{
         ViewTreeObserver.OnPreDrawListener controller=(ViewTreeObserver.OnPreDrawListener)map(screen,"SCREENS",fragment.mRecyclerView);
         notifyData(fragment);
-        for(int i=0;i<4;i++){for(ViewTreeObserver.OnPreDrawListener row:layouts)row.onPreDraw();controller.onPreDraw();SyncStyleChecks.measure(fragment.mRecyclerView,width);}
+        for(int i=0;i<4;i++){for(ViewTreeObserver.OnPreDrawListener row:layouts)row.onPreDraw();controller.onPreDraw();StyleChecks.measure(fragment.mRecyclerView,width);}
         check(controller.onPreDraw(),"Thread layout settles without repeated invalidation");
     }
     static Object mask(View row)throws Exception{return get(map(screen,"ROWS",row),"mask");}
     static boolean flag(View row,String name)throws Exception{return (Boolean)get(mask(row),name);}
     static int colorAt(View row,int x,int y){Bitmap b=Bitmap.createBitmap(row.getWidth(),row.getHeight(),Bitmap.Config.ARGB_8888);row.draw(new Canvas(b));int color=b.getPixel(x,y);b.recycle();return color;}
     static void run(String[] args)throws Exception{
-        loader=RuntimeUiChecks.initialize(args);SyncStyleChecks.loader=loader;SyncStyleChecks.settings();Context context=SyncStyleChecks.candidateContext(RuntimeUiChecks.context,args[0],true);SyncStyleChecks.context=context;
+        loader=RuntimeUiChecks.initialize(args);StyleChecks.loader=loader;StyleChecks.settings();Context context=StyleChecks.candidateContext(RuntimeUiChecks.context,args[0],true);StyleChecks.context=context;
         // Android 17 rejects provider acquisition by an unregistered shell app_process.
         // The untouched, initially GONE progress spinner is a framework View only in this harness.
         // All other load-more widgets, XML dimensions, native holder and model remain actual Boost types.
-        SyncStyleChecks.omitProgressSpinner=true;
+        StyleChecks.omitProgressSpinner=true;
         density=context.getResources().getDisplayMetrics().density;width=Math.round(360*density);
         chrome=Class.forName("app.morphe.extension.boost.CommentsChromeTweaks",true,loader);screen=Class.forName("app.morphe.extension.boost.CommentsScreenTweaks",true,loader);
         Fragment fragment=new Fragment();fragment.C=nativeAdapter();LinearLayout viewport=new LinearLayout(context);viewport.setOrientation(LinearLayout.VERTICAL);fragment.mRecyclerView=viewport;
         Object postModel=Class.forName("com.rubenmayayo.reddit.models.reddit.SubmissionModel",true,loader).getConstructor().newInstance();set(postModel,"S","Metroid");set(postModel,"a0","Metroid Country");fragment.c=postModel;fragment.B.add(postModel);
         screen.getMethod("attach",Object.class).invoke(null,fragment);
-        View post=SyncStyleChecks.inflate("row_submission_comments");ViewStub stub=(ViewStub)SyncStyleChecks.find(post,"main_layout_stub");stub.inflate();
-        View image=SyncStyleChecks.find(post,"preview_image");image.setVisibility(View.VISIBLE);((ImageView)image).setImageDrawable(new ColorDrawable(Color.GREEN));
-        for(String name:new String[]{"submission_header_thumbnail","poll_view","crosspost_parent","state_submission_view","submission_header_nsfw"}){View v=SyncStyleChecks.find(post,name);if(v!=null)v.setVisibility(View.GONE);}
-        ((TextView)SyncStyleChecks.find(post,"submission_header_info_top")).setText("Dull-Positive-6810 · 7h · reddit");
-        ((TextView)SyncStyleChecks.find(post,"submission_header_score")).setText("43");
-        ((TextView)SyncStyleChecks.find(post,"submission_header_comment_count")).setText("4 comments");
-        View selfPanel=SyncStyleChecks.find(post,"submission_header_selftext_container");selfPanel.setVisibility(View.VISIBLE);selfPanel.setBackgroundColor(Color.BLACK);
-        TextView selfAuthor=(TextView)SyncStyleChecks.find(post,"submission_header_selftext_author");selfAuthor.setText("neodido");
-        View selfBody=SyncStyleChecks.find(post,"submission_header_selftext");selfBody.setVisibility(View.VISIBLE);selfBody.getClass().getMethod("setTextHtml",String.class).invoke(selfBody,"<p>Here is my hand-painted GameCube. Tell me honestly if you like it.</p>");
-        TextView postTitle=(TextView)SyncStyleChecks.find(post,"submission_header_title");postTitle.setText("Metroid Country");
+        View post=StyleChecks.inflate("row_submission_comments");ViewStub stub=(ViewStub)StyleChecks.find(post,"main_layout_stub");stub.inflate();
+        View image=StyleChecks.find(post,"preview_image");image.setVisibility(View.VISIBLE);((ImageView)image).setImageDrawable(new ColorDrawable(Color.GREEN));
+        for(String name:new String[]{"submission_header_thumbnail","poll_view","crosspost_parent","state_submission_view","submission_header_nsfw"}){View v=StyleChecks.find(post,name);if(v!=null)v.setVisibility(View.GONE);}
+        ((TextView)StyleChecks.find(post,"submission_header_info_top")).setText("Dull-Positive-6810 · 7h · reddit");
+        ((TextView)StyleChecks.find(post,"submission_header_score")).setText("43");
+        ((TextView)StyleChecks.find(post,"submission_header_comment_count")).setText("4 comments");
+        View selfPanel=StyleChecks.find(post,"submission_header_selftext_container");selfPanel.setVisibility(View.VISIBLE);selfPanel.setBackgroundColor(Color.BLACK);
+        TextView selfAuthor=(TextView)StyleChecks.find(post,"submission_header_selftext_author");selfAuthor.setText("neodido");
+        View selfBody=StyleChecks.find(post,"submission_header_selftext");selfBody.setVisibility(View.VISIBLE);selfBody.getClass().getMethod("setTextHtml",String.class).invoke(selfBody,"<p>Here is my hand-painted GameCube. Tell me honestly if you like it.</p>");
+        TextView postTitle=(TextView)StyleChecks.find(post,"submission_header_title");postTitle.setText("Metroid Country");
         Post postHolder=new Post();postStrong=postHolder;postHolder.a=post;postHolder.b0=postModel;postHolder.previewImageview=(ImageView)image;postHolder.P=java.lang.Enum.valueOf((Class)Class.forName("jh1",true,loader),"Cards");
         Class.forName("app.morphe.extension.boost.CommentSwipeActions",true,loader).getMethod("bindPost",Object.class).invoke(null,postHolder);
         chrome.getMethod("onRowBound",Object.class).invoke(null,postHolder);
@@ -95,18 +95,18 @@ public final class ThreadCardChecks {
         viewport.addView(post,new LinearLayout.LayoutParams(-1,-2));
         Object[] models={commentModel(0),commentModel(1),commentModel(2),commentModel(0),commentModel(1)};
         View[] rows=new View[models.length];
-        for(int i=0;i<models.length;i++){fragment.B.add(models[i]);rows[i]=SyncStyleChecks.inflate("row_comment_indent_avatar");nativeHolder(rows[i],models[i]);viewport.addView(rows[i],new LinearLayout.LayoutParams(-1,-2));}
+        for(int i=0;i<models.length;i++){fragment.B.add(models[i]);rows[i]=StyleChecks.inflate("row_comment_indent_avatar");nativeHolder(rows[i],models[i]);viewport.addView(rows[i],new LinearLayout.LayoutParams(-1,-2));}
         ViewTreeObserver.OnPreDrawListener initialController=(ViewTreeObserver.OnPreDrawListener)map(screen,"SCREENS",viewport);
         check((Integer)get(mask(rows[0]),"gap")==Math.round(14*density),"Root spacing is already applied by bind completion before the first measure");
-        SyncStyleChecks.measure(viewport,width);
+        StyleChecks.measure(viewport,width);
         boolean permit=true;for(ViewTreeObserver.OnPreDrawListener row:layouts)permit&=row.onPreDraw();permit&=initialController.onPreDraw();
         check(permit && !viewport.isLayoutRequested(),"Newly bound comments draw immediately without cancelling or requesting another initial layout");
         settle(fragment);
-        check(((ViewGroup)post).getChildAt(0)==SyncStyleChecks.find(post,"visibility_container"),"Native cropped image container precedes the post metadata");
-        View metadata=SyncStyleChecks.find(post,"post_metadata"),info=SyncStyleChecks.find(post,"subreddit_info");
-        check(metadata.getTop()>=SyncStyleChecks.find(post,"visibility_container").getBottom(),"Post details are below the large image");
+        check(((ViewGroup)post).getChildAt(0)==StyleChecks.find(post,"visibility_container"),"Native cropped image container precedes the post metadata");
+        View metadata=StyleChecks.find(post,"post_metadata"),info=StyleChecks.find(post,"subreddit_info");
+        check(metadata.getTop()>=StyleChecks.find(post,"visibility_container").getBottom(),"Post details are below the large image");
         check(info.getTop()>=postTitle.getBottom(),"Native author/subreddit metadata is below the post title");
-        TextView postScore=(TextView)SyncStyleChecks.find(post,"submission_header_score"),postComments=(TextView)SyncStyleChecks.find(post,"submission_header_comment_count"),postInfo=(TextView)SyncStyleChecks.find(post,"submission_header_info_top");
+        TextView postScore=(TextView)StyleChecks.find(post,"submission_header_score"),postComments=(TextView)StyleChecks.find(post,"submission_header_comment_count"),postInfo=(TextView)StyleChecks.find(post,"submission_header_info_top");
         check(postScore.getText().toString().equals("43 points") && postScore.getTextSize()==postInfo.getTextSize(),"Post score uses compact author-sized points text");
         postScore.setText("88");settle(fragment);check(postScore.getText().toString().equals("88 points"),"Native post score rebinds retain the points suffix");
         postScore.setText("88 points");settle(fragment);check(postScore.getText().toString().equals("88 points"),"Re-measuring never duplicates the points suffix");
@@ -118,7 +118,7 @@ public final class ThreadCardChecks {
         postInfo.setText("a_long_account_name · a_long_subreddit_name · 12h · reddit");postTitle.setText("Post");settle(fragment);
         check(postScore.getLeft()>=postTitle.getRight() && postScore.getTop()<postTitle.getBottom() && postComments.getTop()<info.getTop(),"Counts use available space after a short title when the author line is full");
         int[] countClicks={0};postComments.setOnClickListener(v->countClicks[0]++);postComments.performClick();check(countClicks[0]==1,"Reflow keeps the original comments-count view and its click handler");
-        postTitle.setTextSize(24);postInfo.setTextSize(24);postScore.setTextSize(24);postComments.setTextSize(24);SyncStyleChecks.measure(viewport,Math.round(260*density));
+        postTitle.setTextSize(24);postInfo.setTextSize(24);postScore.setTextSize(24);postComments.setTextSize(24);StyleChecks.measure(viewport,Math.round(260*density));
         boolean fits=true,overlap=false;
         for(int i=0;i<inline.getChildCount();i++){View a=inline.getChildAt(i);if(a.getVisibility()==View.GONE)continue;fits &= a.getLeft()>=0 && a.getRight()<=inline.getWidth();for(int j=0;j<i;j++){View b=inline.getChildAt(j);if(b.getVisibility()!=View.GONE && a.getLeft()<b.getRight() && a.getRight()>b.getLeft() && a.getTop()<b.getBottom() && a.getBottom()>b.getTop())overlap=true;}}
         check(fits && !overlap,"Narrow large-font headers wrap native labels without clipping or overlap");
@@ -130,9 +130,9 @@ public final class ThreadCardChecks {
         check(flag(rows[3],"first") && !flag(rows[3],"last") && flag(rows[4],"last"),"Following parent and child form another card");
         check((Integer)get(mask(rows[0]),"gap")==Math.round(14*density),"Larger gap separates the post and first parent thread");
         check((Integer)get(mask(rows[3]),"gap")==Math.round(8*density) && rows[1].getPaddingTop()==0,"Only root threads receive inter-card spacing");
-        int page=SyncStyleChecks.role("colorSurfaceContainerLow"),surface=SyncStyleChecks.role("colorSurfaceContainerHigh");
+        int page=StyleChecks.role("colorSurfaceContainerLow"),surface=StyleChecks.role("colorSurfaceContainerHigh");
         check(page!=surface,"Lighter page role remains distinct from thread surfaces");
-        check(SyncStyleChecks.role("ContentBackground")==page && SyncStyleChecks.role("ToolbarColor")==page,"Native page and toolbar reference the lighter dynamic role");
+        check(StyleChecks.role("ContentBackground")==page && StyleChecks.role("ToolbarColor")==page,"Native page and toolbar reference the lighter dynamic role");
         check(colorAt(rows[0],0,0)==page,"First root gap renders the actual wallpaper-based page colour");
         check(colorAt(rows[0],0,rows[0].getPaddingTop())==page,"Top corner is rounded instead of painting a rectangular surface");
         check(colorAt(rows[1],0,rows[1].getHeight()/2)==surface,"Children continue the same surface without horizontal gaps");
@@ -152,7 +152,7 @@ public final class ThreadCardChecks {
         // Also cover actual dataset removal/reinsertion used by other list mutations.
         fragment.B.remove(models[1]);fragment.B.remove(models[2]);viewport.removeView(rows[1]);viewport.removeView(rows[2]);settle(fragment);
         check(flag(rows[0],"first") && flag(rows[0],"last"),"Collapsed parent becomes a complete rounded card");
-        View collapsed=SyncStyleChecks.inflate("row_comment_collapsed_indent");nativeHolder(collapsed,models[0],true);viewport.removeView(rows[0]);viewport.addView(collapsed,1,new LinearLayout.LayoutParams(-1,-2));settle(fragment);
+        View collapsed=StyleChecks.inflate("row_comment_collapsed_indent");nativeHolder(collapsed,models[0],true);viewport.removeView(rows[0]);viewport.addView(collapsed,1,new LinearLayout.LayoutParams(-1,-2));settle(fragment);
         check(flag(collapsed,"first") && flag(collapsed,"last"),"Actual fully-collapsed holder/layout receives the complete rounded card");
         viewport.removeView(collapsed);viewport.addView(rows[0],1,new LinearLayout.LayoutParams(-1,-2));
         fragment.B.add(2,models[1]);fragment.B.add(3,models[2]);viewport.addView(rows[1],2);viewport.addView(rows[2],3);settle(fragment);
@@ -162,17 +162,17 @@ public final class ThreadCardChecks {
         Object replacement=commentModel(0);set(holders.get(1),"c0",replacement);fragment.B.set(2,replacement);chrome.getMethod("onCommentBind",Object.class).invoke(null,holders.get(1));settle(fragment);
         check(flag(rows[0],"last") && flag(rows[1],"first"),"Recycled row and same-size dataset replacement update thread boundaries");
         Object more=Class.forName("com.rubenmayayo.reddit.models.reddit.LoadMoreModel",true,loader).getConstructor().newInstance();set(more,"R",1);set(more,"W",2);fragment.B.add(more);
-        View loadMore=SyncStyleChecks.inflate("row_comment_loadmore_indent");Object moreHolder=SyncStyleChecks.allocate(Class.forName("com.rubenmayayo.reddit.ui.adapters.LoadMoreViewHolder",true,loader));set(moreHolder,"a",loadMore);set(moreHolder,"R",more);holders.add(moreHolder);
-        set(moreHolder,"indentView",SyncStyleChecks.find(loadMore,"indent_view"));loadMore.setOnClickListener(v->{});
+        View loadMore=StyleChecks.inflate("row_comment_loadmore_indent");Object moreHolder=StyleChecks.allocate(Class.forName("com.rubenmayayo.reddit.ui.adapters.LoadMoreViewHolder",true,loader));set(moreHolder,"a",loadMore);set(moreHolder,"R",more);holders.add(moreHolder);
+        set(moreHolder,"indentView",StyleChecks.find(loadMore,"indent_view"));loadMore.setOnClickListener(v->{});
         Class<?> actualFragmentClass=Class.forName("com.rubenmayayo.reddit.ui.comments.CommentsFragment",true,loader);
-        Object actualFragment=SyncStyleChecks.allocate(actualFragmentClass);set(actualFragment,"B",fragment.B);set(actualFragment,"c",postModel);
+        Object actualFragment=StyleChecks.allocate(actualFragmentClass);set(actualFragment,"B",fragment.B);set(actualFragment,"c",postModel);
         Class<?> adapterClass=Class.forName("com.rubenmayayo.reddit.ui.comments.CommentsFragment$m",true,loader);
         Object actualAdapter=adapterClass.getConstructor(actualFragmentClass,Class.forName("r41",true,loader)).newInstance(actualFragment,null);fragment.C=actualAdapter;
         adapterClass.getMethod("onBindViewHolder",Class.forName("androidx.recyclerview.widget.RecyclerView$a0",true,loader),int.class).invoke(actualAdapter,moreHolder,fragment.B.size()-1);
         check(mask(loadMore)!=null && get(moreHolder,"R")==more,"Real native adapter executes the new completion hook with the correct load-more holder");
         check(((Integer)get(get(moreHolder,"indentView"),"A"))==1,"Native indentation continues after the completion hook returns");
-        TextView moreText=(TextView)SyncStyleChecks.find(loadMore,"item_comment_loadmore_text");
-        check(moreText.getText().toString().equals("View more (2)") && moreText.getBackground()==null,"Native more-replies completion uses an unboxed Sync-style count");
+        TextView moreText=(TextView)StyleChecks.find(loadMore,"item_comment_loadmore_text");
+        check(moreText.getText().toString().equals("View more (2)") && moreText.getBackground()==null,"Native more-replies completion uses an unboxed Compact count");
         check(loadMore.hasOnClickListeners(),"Native more-replies row remains the original clickable target");
         set(more,"W",17);adapterClass.getMethod("onBindViewHolder",Class.forName("androidx.recyclerview.widget.RecyclerView$a0",true,loader),int.class).invoke(actualAdapter,moreHolder,fragment.B.size()-1);
         check(moreText.getText().toString().equals("View more (17)"),"Recycled more-replies label updates from the native model rather than stale text");
@@ -186,7 +186,7 @@ public final class ThreadCardChecks {
         ((ViewTreeObserver.OnPreDrawListener)titleController).onPreDraw();
         check(toolbarClass.getMethod("getTitle").invoke(toolbar).toString().equals("r/Metroid") && toolbarClass.getMethod("getSubtitle").invoke(toolbar).toString().equals("Metroid Country"),"Toolbar shows subreddit/title while the original post is visible");
         ViewGroup toolbarView=(ViewGroup)toolbar;
-        SyncStyleChecks.measure(toolbarView,width);
+        StyleChecks.measure(toolbarView,width);
         for(int i=0;i<120;i++)((ViewTreeObserver.OnPreDrawListener)titleController).onPreDraw();
         check(!toolbarView.isLayoutRequested(),"120 steady header frames do not request another toolbar layout");
         TextView subHeader=null,titleHeader=null;
@@ -237,7 +237,7 @@ public final class ThreadCardChecks {
         check(!(Boolean)get(controller,"dirty"),"Replacing the adapter unregisters the old dataset observer");
         notifyData(fragment);check((Boolean)get(controller,"dirty"),"Replacement adapter notifications reach the controller");
         data.subList(originalSize,data.size()).clear();notifyData(fragment);settle(fragment);
-        if(args.length>2)SyncStyleChecks.save(viewport,args[2]+"/thread-cards-preview.png");
+        if(args.length>2)StyleChecks.save(viewport,args[2]+"/thread-cards-preview.png");
         screen.getMethod("detach",Object.class).invoke(null,fragment);screen.getMethod("attach",Object.class).invoke(null,fragment);settle(fragment);check(flag(loadMore,"last"),"Pause/resume retains correct grouping without duplicate spacing");
         System.out.println("THREAD CARD CHECKS PASSED: "+checks);System.exit(0);
     }

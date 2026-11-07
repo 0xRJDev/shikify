@@ -35,7 +35,7 @@ public final class HomeAvatarChecks {
     static Object field(Object object,String name)throws Exception{for(Class<?> t=object.getClass();t!=null;t=t.getSuperclass())try{Field f=t.getDeclaredField(name);f.setAccessible(true);return f.get(object);}catch(NoSuchFieldException ignored){}throw new NoSuchFieldException(name);}
     static Object staticField(Class<?> type,String name)throws Exception{Field f=type.getDeclaredField(name);f.setAccessible(true);return f.get(null);}
     static void setUser(Object reddit,String name)throws Exception {
-        Class<?> user=Class.forName("com.rubenmayayo.reddit.aa.User",true,loader);Object value=name==null ? null:SyncStyleChecks.allocate(user);
+        Class<?> user=Class.forName("com.rubenmayayo.reddit.aa.User",true,loader);Object value=name==null ? null:StyleChecks.allocate(user);
         if(value!=null)user.getField("name").set(value,name);
         Class.forName("ld2",true,loader).getField("a").set(reddit,value);
     }
@@ -45,8 +45,8 @@ public final class HomeAvatarChecks {
         view.measure(View.MeasureSpec.makeMeasureSpec(width,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED));view.layout(0,0,view.getMeasuredWidth(),view.getMeasuredHeight());
     }
     static void run(String[] args)throws Exception {
-        loader=RuntimeUiChecks.initialize(args);SyncStyleChecks.loader=loader;SyncStyleChecks.settings();
-        Context theme=SyncStyleChecks.candidateContext(RuntimeUiChecks.context,args[0],true);
+        loader=RuntimeUiChecks.initialize(args);StyleChecks.loader=loader;StyleChecks.settings();
+        Context theme=StyleChecks.candidateContext(RuntimeUiChecks.context,args[0],true);
         SharedPreferences prefs=(SharedPreferences)Proxy.newProxyInstance(loader,new Class<?>[]{SharedPreferences.class},(p,m,a)->{
             switch(m.getName()) {
                 case "getString":return urls.getOrDefault((String)a[0],(String)a[1]);
@@ -65,19 +65,19 @@ public final class HomeAvatarChecks {
             @Override public java.io.File getCacheDir(){return privateCache;}
         };
         Method attach=ContextWrapper.class.getDeclaredMethod("attachBaseContext",Context.class);attach.setAccessible(true);attach.invoke(application,context);
-        SyncStyleChecks.context=context;
+        StyleChecks.context=context;
         Class<?> patches=Class.forName("app.morphe.extension.boost.HomeAvatarTweaks",true,loader);Method bind=patches.getMethod("onTitleBind",Object.class,Object.class);
         patches.getMethod("install",Object.class).invoke(null,application);patches.getMethod("install",Object.class).invoke(null,application);
         check(application.registrations==1 && application.lifecycle!=null,"Avatar lifecycle observer installs once independently of surface styling");
         Class<?> model=Class.forName("com.rubenmayayo.reddit.models.reddit.SubscriptionViewModel",true,loader);
         Object home=model.getMethod("c").invoke(null),community=model.getConstructor(String.class).newInstance("technology"),namedHome=model.getConstructor(String.class).newInstance("Home");
-        Class<?> redditType=Class.forName("pd2",true,loader);Object reddit=SyncStyleChecks.allocate(redditType);redditType.getField("r").set(null,reddit);
+        Class<?> redditType=Class.forName("pd2",true,loader);Object reddit=StyleChecks.allocate(redditType);redditType.getField("r").set(null,reddit);
         setUser(reddit,"LocalTestAccount");
-        RelativeLayout untouched=(RelativeLayout)SyncStyleChecks.inflate("spinner_subscription_toolbar");
+        RelativeLayout untouched=(RelativeLayout)StyleChecks.inflate("spinner_subscription_toolbar");
         bind.invoke(null,community,untouched);check(avatar(untouched)!=null && avatar(untouched).getVisibility()==View.VISIBLE,"A community title receives its own compact subreddit icon");
         bind.invoke(null,namedHome,untouched);check(avatar(untouched)!=null && field(((Map<?,?>)staticField(patches,"HEADERS")).get(untouched),"home").equals(false),"A subreddit literally named Home uses community identity, not the account avatar");
-        RelativeLayout row=(RelativeLayout)SyncStyleChecks.inflate("spinner_subscription_toolbar"),labels=(RelativeLayout)row.getChildAt(0);
-        TextView title=(TextView)SyncStyleChecks.find(row,"action_bar_title"),sort=(TextView)SyncStyleChecks.find(row,"action_bar_subtitle");
+        RelativeLayout row=(RelativeLayout)StyleChecks.inflate("spinner_subscription_toolbar"),labels=(RelativeLayout)row.getChildAt(0);
+        TextView title=(TextView)StyleChecks.find(row,"action_bar_title"),sort=(TextView)StyleChecks.find(row,"action_bar_subtitle");
         title.setText("Home");sort.setText("Hot");Object tag=new Object();row.setTag(tag);int[] clicks={0};row.setOnClickListener(v->clicks[0]++);
         bind.invoke(null,home,row);ImageView image=avatar(row);
         check(image!=null && image.getVisibility()==View.VISIBLE,"Signed-in Home adds one visible account avatar");
@@ -126,7 +126,7 @@ public final class HomeAvatarChecks {
         setUser(reddit,"LocalTestAccount");bind.invoke(null,home,row);accept(image,new BitmapDrawable(context.getResources(),picture));
         measure(row,Math.round(240*context.getResources().getDisplayMetrics().density));
         Outline outline=new Outline();image.getOutlineProvider().getOutline(image,outline);check(!outline.isEmpty(),"Rounded avatar supplies a valid circular clipping outline");
-        if(args.length>2)SyncStyleChecks.save(row,args[2]+"/home-avatar-preview.png");
+        if(args.length>2)StyleChecks.save(row,args[2]+"/home-avatar-preview.png");
         row.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);measure(row,Math.round(240*context.getResources().getDisplayMetrics().density));
         check(image.getLeft()>=labels.getRight(),"RTL places the avatar at the logical start without overlapping the labels");
         title.setTextSize(26);sort.setTextSize(22);row.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);measure(row,Math.round(240*context.getResources().getDisplayMetrics().density));
@@ -135,8 +135,8 @@ public final class HomeAvatarChecks {
         android.os.Looper.loop();
     }
     static void navigationChecks(Class<?> patches,Object reddit)throws Exception {
-        View root=SyncStyleChecks.inflate("activity_subreddit");View nav=SyncStyleChecks.find(root,"bottom_navigation_view");nav.setVisibility(View.VISIBLE);
-        View item=SyncStyleChecks.find(nav,"item_profile");int[] clicks={0};item.setOnClickListener(v->clicks[0]++);Object tag=new Object();item.setTag(tag);CharSequence description=item.getContentDescription();DownloadControlsChecks.context=context;DownloadControlsChecks.measure(root);
+        View root=StyleChecks.inflate("activity_subreddit");View nav=StyleChecks.find(root,"bottom_navigation_view");nav.setVisibility(View.VISIBLE);
+        View item=StyleChecks.find(nav,"item_profile");int[] clicks={0};item.setOnClickListener(v->clicks[0]++);Object tag=new Object();item.setTag(tag);CharSequence description=item.getContentDescription();DownloadControlsChecks.context=context;DownloadControlsChecks.measure(root);
         int originalWidth=item.getWidth();
         Method bind=patches.getDeclaredMethod("navigation",View.class);bind.setAccessible(true);bind.invoke(null,root);Object controller=((Map<?,?>)staticField(patches,"NAVIGATION")).get(item);check(controller!=null,"Native account menu item gains one avatar controller");
         Object header=field(controller,"header");ImageView image=(ImageView)((java.lang.ref.WeakReference<?>)field(header,"image")).get(),nativeIcon=(ImageView)((java.lang.ref.WeakReference<?>)field(controller,"nativeIcon")).get();
@@ -149,7 +149,7 @@ public final class HomeAvatarChecks {
         int children=((ViewGroup)nativeIcon.getParent()).getChildCount();for(int i=0;i<50;i++)bind.invoke(null,root);check(((ViewGroup)nativeIcon.getParent()).getChildCount()==children && ((Map<?,?>)staticField(patches,"NAVIGATION")).get(item)==controller,"Repeated navigation updates reuse one avatar and controller");
         Class<?> hostType=Class.forName("app.morphe.extension.boost.HomeAvatarTweaks$NavigationHost",true,loader);java.lang.reflect.Constructor<?> make=hostType.getDeclaredConstructor(View.class);make.setAccessible(true);Object host=make.newInstance(root);SurfaceChecks.call(host,"start");
         setUser(reddit,"DifferentNavigationAccount");((android.view.ViewTreeObserver.OnGlobalLayoutListener)host).onGlobalLayout();check(image.getDrawable()!=picture && field(header,"username").equals("DifferentNavigationAccount"),"Layout-only account switch clears the old pill photo without a resume or title rebind");setUser(reddit,null);bind.invoke(null,root);check(image.getVisibility()==View.VISIBLE && image.getDrawable()!=null,"Anonymous pill retains a themed account fallback");setUser(reddit,"FirstLaunchAccount");bind.invoke(null,root);
-        android.view.Menu menu=(android.view.Menu)nav.getClass().getMethod("getMenu").invoke(nav);menu.clear();int menuId=context.getResources().getIdentifier("bottom_navigation_menu","menu",context.getPackageName());new android.view.MenuInflater(context).inflate(menuId,menu);((android.view.ViewTreeObserver.OnGlobalLayoutListener)host).onGlobalLayout();View replacement=SyncStyleChecks.find(nav,"item_profile");check(((Map<?,?>)staticField(patches,"NAVIGATION")).get(replacement)!=null,"Late native menu recreation also receives the cached avatar");
+        android.view.Menu menu=(android.view.Menu)nav.getClass().getMethod("getMenu").invoke(nav);menu.clear();int menuId=context.getResources().getIdentifier("bottom_navigation_menu","menu",context.getPackageName());new android.view.MenuInflater(context).inflate(menuId,menu);((android.view.ViewTreeObserver.OnGlobalLayoutListener)host).onGlobalLayout();View replacement=StyleChecks.find(nav,"item_profile");check(((Map<?,?>)staticField(patches,"NAVIGATION")).get(replacement)!=null,"Late native menu recreation also receives the cached avatar");
         for(Map.Entry<?,?> entry:((Map<?,?>)staticField(patches,"NAVIGATION")).entrySet()){View nativeItem=(View)entry.getKey();if(nativeItem.getRootView()!=root)continue;Object binding=entry.getValue();((android.view.ViewTreeObserver.OnPreDrawListener)binding).onPreDraw();View overlay=(View)((java.lang.ref.WeakReference<?>)field(field(binding,"header"),"row")).get();check((overlay.getVisibility()==View.VISIBLE)==(nativeItem==replacement),"Recycled navigation views show the photo only on the account item");}
         SurfaceChecks.call(host,"stop");check(field(host,"observer")==null,"Stopped navigation host removes its global layout listener");
         View.OnAttachStateChangeListener lifecycle=(View.OnAttachStateChangeListener)controller;lifecycle.onViewDetachedFromWindow(item);check(field(controller,"observer")==null,"Detached account pill releases its pre-draw observer");
@@ -160,7 +160,7 @@ public final class HomeAvatarChecks {
         Class<?> mapper=Class.forName("com.fasterxml.jackson.databind.ObjectMapper",true,loader),node=Class.forName("com.fasterxml.jackson.databind.JsonNode",true,loader);Object json=mapper.getMethod("readTree",String.class).invoke(mapper.getConstructor().newInstance(),"{\"name\":\"FirstLaunchAccount\",\"subreddit\":{\"icon_img\":\""+uri+"\"}}");
         Object profile=Class.forName("net.dean.jraw.models.LoggedInAccount",true,loader).getConstructor(node).newInstance(json);Field profileField=Class.forName("pd2",true,loader).getField("j");profileField.set(reddit,profile);
         Method url=patches.getDeclaredMethod("accountUrl",Context.class,String.class);url.setAccessible(true);check(uri.equals(url.invoke(null,context,"FirstLaunchAccount")),"Cold launch reads the native loaded account profile without an avatar preference or feed refresh");check(url.invoke(null,context,"DifferentAccount").equals(""),"Late profile from another account cannot supply the current avatar");
-        RelativeLayout first=(RelativeLayout)SyncStyleChecks.inflate("spinner_subscription_toolbar");bind.invoke(null,home,first);ImageView image=avatar(first);Object header=((Map<?,?>)staticField(patches,"HEADERS")).get(first);
+        RelativeLayout first=(RelativeLayout)StyleChecks.inflate("spinner_subscription_toolbar");bind.invoke(null,home,first);ImageView image=avatar(first);Object header=((Map<?,?>)staticField(patches,"HEADERS")).get(first);
         check(field(header,"url").equals(uri) && field(header,"pending").equals(true),"First-launch profile starts a real native asynchronous Glide load");
         android.os.Handler handler=new android.os.Handler(android.os.Looper.getMainLooper());long deadline=android.os.SystemClock.uptimeMillis()+8000;
         handler.post(new Runnable(){public void run(){try{
@@ -177,13 +177,13 @@ public final class HomeAvatarChecks {
             Bitmap pixels=Bitmap.createBitmap(image.getWidth(),image.getHeight(),Bitmap.Config.ARGB_8888);image.draw(new Canvas(pixels));check(pixels.getPixel(pixels.getWidth()/2,pixels.getHeight()/2)==Color.CYAN,"Avatar pixels resist ImageView and direct drawable icon tints");pixels.recycle();
             Object manager=Class.forName("app.morphe.extension.boost.HomeAvatarTweaks",true,loader).getDeclaredMethod("manager",Context.class);((Method)manager).setAccessible(true);Object requests=((Method)manager).invoke(null,context);requests.getClass().getMethod("o",View.class).invoke(requests,image);
             check(((BitmapDrawable)image.getDrawable()).getBitmap()==owned && owned.getPixel(owned.getWidth()/2,owned.getHeight()/2)==Color.CYAN,"Native Glide clear releases its resource while the owned avatar stays intact");
-            RelativeLayout replacement=(RelativeLayout)SyncStyleChecks.inflate("spinner_subscription_toolbar");bind.invoke(null,home,replacement);ImageView restored=avatar(replacement);check(((BitmapDrawable)restored.getDrawable()).getBitmap()==owned,"Recreated title row immediately restores the cached owned image after navigating away");
+            RelativeLayout replacement=(RelativeLayout)StyleChecks.inflate("spinner_subscription_toolbar");bind.invoke(null,home,replacement);ImageView restored=avatar(replacement);check(((BitmapDrawable)restored.getDrawable()).getBitmap()==owned,"Recreated title row immediately restores the cached owned image after navigating away");
             Class<?> activityType=Class.forName("com.rubenmayayo.reddit.ui.submissions.subreddit.SubredditActivity",true,loader);android.app.Activity activity=(android.app.Activity)activityType.getConstructor().newInstance();Field base=ContextWrapper.class.getDeclaredField("mBase");base.setAccessible(true);base.set(activity,context);
             RuntimeUiChecks.FakeWindow window=new RuntimeUiChecks.FakeWindow(context);DownloadControlsChecks.set(activity,"mWindow",window);DownloadControlsChecks.set(activity,"O",home);window.decor.addView(replacement,new android.widget.FrameLayout.LayoutParams(-1,-2));
             app.lifecycle.onActivityResumed(activity);check(((BitmapDrawable)restored.getDrawable()).getBitmap()==owned,"Real native Activity resume restores a recreated toolbar without manual refresh");
             View.OnAttachStateChangeListener lifecycle=(View.OnAttachStateChangeListener)header;lifecycle.onViewDetachedFromWindow(first);lifecycle.onViewAttachedToWindow(first);check(((BitmapDrawable)image.getDrawable()).getBitmap()==owned,"Detach/reattach keeps the avatar without a feed refresh");
             Bitmap nativeBitmap=Bitmap.createBitmap(4,4,Bitmap.Config.ARGB_8888);nativeBitmap.eraseColor(Color.MAGENTA);accept(image,new BitmapDrawable(context.getResources(),nativeBitmap));Bitmap protectedCopy=((BitmapDrawable)image.getDrawable()).getBitmap();nativeBitmap.eraseColor(Color.WHITE);nativeBitmap.recycle();check(protectedCopy.getPixel(0,0)==Color.MAGENTA && !protectedCopy.isRecycled(),"Avatar owns a copy: recycled/reused Glide bitmap cannot turn it white");
-            Object community=model.getConstructor(String.class).newInstance("Metroid");model.getField("C").set(community,uri);RelativeLayout communityRow=(RelativeLayout)SyncStyleChecks.inflate("spinner_subscription_toolbar");bind.invoke(null,community,communityRow);Object communityHeader=((Map<?,?>)staticField(patches,"HEADERS")).get(communityRow);check(field(communityHeader,"url").equals(uri) && field(communityHeader,"identity").equals("sub:metroid"),"Compact subreddit title loads the native community icon with a separate cache identity");
+            Object community=model.getConstructor(String.class).newInstance("Metroid");model.getField("C").set(community,uri);RelativeLayout communityRow=(RelativeLayout)StyleChecks.inflate("spinner_subscription_toolbar");bind.invoke(null,community,communityRow);Object communityHeader=((Map<?,?>)staticField(patches,"HEADERS")).get(communityRow);check(field(communityHeader,"url").equals(uri) && field(communityHeader,"identity").equals("sub:metroid"),"Compact subreddit title loads the native community icon with a separate cache identity");
             Bitmap white=Bitmap.createBitmap(2,2,Bitmap.Config.ARGB_8888);white.eraseColor(Color.WHITE);image.setImageDrawable(new BitmapDrawable(context.getResources(),white));check(((BitmapDrawable)image.getDrawable()).getBitmap()==protectedCopy,"A white bitmap loading placeholder is ignored without a successful resource callback");white.recycle();
             String cleaned="https://example.invalid/avatar.png?a=1&b=2";Method clean=patches.getDeclaredMethod("clean",Context.class,String.class);clean.setAccessible(true);check(clean.invoke(null,context,"https://example.invalid/avatar.png?a=1&amp;b=2").equals(cleaned),"Avatar URLs use the native HTML-unescape path");
             navigationChecks(patches,reddit);

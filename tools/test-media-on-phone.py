@@ -15,7 +15,7 @@ ENV['JAVA_HOME']=str(ROOT/'.work/toolchain/jdk-21.0.13+9')
 ENV['PATH']=ENV['JAVA_HOME']+'/bin:'+ENV.get('PATH','')
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--serial')
-parser.add_argument('--check',action='append',choices=['ArtVerify','RuntimeUiChecks','PredictiveBackChecks','MediaPreviewChecks','PolishChecks','SyncStyleChecks','ThreadCardChecks','ScrollingChecks','FeedCardChecks','MaterialLoadingChecks','HomeAvatarChecks','DownloadControlsChecks','SurfaceChecks','OverlayBackChecks'])
+parser.add_argument('--check',action='append',choices=['ArtVerify','RuntimeUiChecks','PredictiveBackChecks','MediaPreviewChecks','PolishChecks','StyleChecks','ThreadCardChecks','ScrollingChecks','FeedCardChecks','MaterialLoadingChecks','HomeAvatarChecks','DownloadControlsChecks','SurfaceChecks','OverlayBackChecks'])
 parser.add_argument('--version',default='1.0.0')
 parser.add_argument('--fixture',action='append',default=[],type=Path)
 args=parser.parse_args()
@@ -60,7 +60,7 @@ try:
     work=ROOT/'.work'/('media-phone-'+args.version)
     classes=work/'classes'; classes.mkdir(parents=True,exist_ok=True)
     run([java,'--release','17','-cp',sdk/'platforms/android-36/android.jar','-d',classes]+
-        [ROOT/'tools'/name for name in ['RuntimeUiChecks.java','PredictiveBackChecks.java','MediaPreviewChecks.java','PolishChecks.java','SyncStyleChecks.java','ThreadCardChecks.java','ScrollingChecks.java','FeedCardChecks.java','MaterialLoadingChecks.java','HomeAvatarChecks.java','DownloadControlsChecks.java','SurfaceChecks.java','OverlayBackChecks.java','ArtVerify.java']])
+        [ROOT/'tools'/name for name in ['RuntimeUiChecks.java','PredictiveBackChecks.java','MediaPreviewChecks.java','PolishChecks.java','StyleChecks.java','ThreadCardChecks.java','ScrollingChecks.java','FeedCardChecks.java','MaterialLoadingChecks.java','HomeAvatarChecks.java','DownloadControlsChecks.java','SurfaceChecks.java','OverlayBackChecks.java','ArtVerify.java']])
     checks=work/'checks.jar'
     run([sdk/'build-tools/36.0.0/d8','--min-api','24','--lib',sdk/'platforms/android-36/android.jar',
          '--output',checks]+list(classes.glob('*.class')))
@@ -77,16 +77,16 @@ try:
     for index,apk in enumerate(apks):
         target=remote+'/candidate-'+str(index)+'.apk'
         run(adb+['push',apk,target]); shell(['chmod','444',target])
-        for name in (args.check or ['ArtVerify','RuntimeUiChecks','PredictiveBackChecks','MediaPreviewChecks','PolishChecks','SyncStyleChecks','ThreadCardChecks','ScrollingChecks','FeedCardChecks','MaterialLoadingChecks','HomeAvatarChecks','DownloadControlsChecks','SurfaceChecks','OverlayBackChecks']):
+        for name in (args.check or ['ArtVerify','RuntimeUiChecks','PredictiveBackChecks','MediaPreviewChecks','PolishChecks','StyleChecks','ThreadCardChecks','ScrollingChecks','FeedCardChecks','MaterialLoadingChecks','HomeAvatarChecks','DownloadControlsChecks','SurfaceChecks','OverlayBackChecks']):
             names=original_names+runtime_classes(apk) if name=='ArtVerify' else []
-            cmd='CLASSPATH='+remote+'/checks.jar '+shlex.join(['app_process','-Xmx192m','/system/bin',name,target,remote+'/cache']+([remote] if name in ['SyncStyleChecks','ThreadCardChecks','ScrollingChecks','FeedCardChecks','MaterialLoadingChecks','HomeAvatarChecks','DownloadControlsChecks','SurfaceChecks','OverlayBackChecks'] else [])+names)
+            cmd='CLASSPATH='+remote+'/checks.jar '+shlex.join(['app_process','-Xmx192m','/system/bin',name,target,remote+'/cache']+([remote] if name in ['StyleChecks','ThreadCardChecks','ScrollingChecks','FeedCardChecks','MaterialLoadingChecks','HomeAvatarChecks','DownloadControlsChecks','SurfaceChecks','OverlayBackChecks'] else [])+names)
             result=subprocess.run(adb+['shell',cmd],capture_output=True,text=True,timeout=60)
             log=result.stdout+result.stderr
             (ROOT/'output'/f'{name}-{args.version}-fixture-{index}.log').write_text(log)
             if result.returncode or (name=='ArtVerify' and log.count('ART PASS:')!=len(names)) or (name!='ArtVerify' and 'CHECKS PASSED:' not in log):
                 raise RuntimeError(f"{name}, fixture {index}, exit {result.returncode}:\n"+log)
             print(f'PASS {name}: fixture {index} ({apk.name})',flush=True)
-            previews={'SyncStyleChecks':['comment-preview.png','card-preview.png'],
+            previews={'StyleChecks':['comment-preview.png','card-preview.png'],
                       'ThreadCardChecks':['thread-cards-preview.png'],
                       'FeedCardChecks':['feed-card-preview.png','feed-narrow-preview.png'],
                       'MaterialLoadingChecks':['material-loading-preview.png'],

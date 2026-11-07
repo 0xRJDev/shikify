@@ -272,7 +272,7 @@ public final class MaterialYouTweaks {
             return true;
         }
     }
-    /** Sync-style footer: points above comments at the logical start of every card. */
+    /** Compact footer: points above comments at the logical start of every card. */
     public static final class CountsRow extends ViewGroup {
         final int stackGap;
         boolean stacked=true;

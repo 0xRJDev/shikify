@@ -1,6 +1,6 @@
 {
   "NOTE": "Generated from the compiled bundle by generatePatchesList; do not edit by hand.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "patches": [
     {
       "name": "Bottom gallery action buttons",
@@ -246,6 +246,33 @@
       "options": []
     },
     {
+      "name": "Material You",
+      "description": "Wallpaper-based themes, cards, side panel, empty screens, compact metadata and glass surfaces.",
+      "default": true,
+      "category": null,
+      "compatiblePackages": [
+        {
+          "packageName": "com.rubenmayayo.reddit",
+          "name": "Boost for Reddit",
+          "description": null,
+          "apkFileType": null,
+          "appIconColor": null,
+          "signatures": null,
+          "formFactor": "MOBILE",
+          "targets": [
+            {
+              "version": "1.14.3",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Material dialogs",
       "description": "Float option menus above the bottom edge like the bottom bar.",
       "default": true,
@@ -302,6 +329,33 @@
     {
       "name": "Material notices",
       "description": "Show Boost's toasts as Material 3 notices above the bottom bar.",
+      "default": true,
+      "category": null,
+      "compatiblePackages": [
+        {
+          "packageName": "com.rubenmayayo.reddit",
+          "name": "Boost for Reddit",
+          "description": null,
+          "apkFileType": null,
+          "appIconColor": null,
+          "signatures": null,
+          "formFactor": "MOBILE",
+          "targets": [
+            {
+              "version": "1.14.3",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Material search",
+      "description": "Fill the empty search page with your feeds and subscriptions in collapsible Material 3 sections.",
       "default": true,
       "category": null,
       "compatiblePackages": [
@@ -572,60 +626,6 @@
     {
       "name": "Swipe post actions",
       "description": "Swipe posts left through upvote, downvote, save and hide; rows follow your finger.",
-      "default": true,
-      "category": null,
-      "compatiblePackages": [
-        {
-          "packageName": "com.rubenmayayo.reddit",
-          "name": "Boost for Reddit",
-          "description": null,
-          "apkFileType": null,
-          "appIconColor": null,
-          "signatures": null,
-          "formFactor": "MOBILE",
-          "targets": [
-            {
-              "version": "1.14.3",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Sync-style Material You",
-      "description": "Wallpaper-based themes, cards, side panel, empty screens, compact metadata and glass surfaces.",
-      "default": true,
-      "category": null,
-      "compatiblePackages": [
-        {
-          "packageName": "com.rubenmayayo.reddit",
-          "name": "Boost for Reddit",
-          "description": null,
-          "apkFileType": null,
-          "appIconColor": null,
-          "signatures": null,
-          "formFactor": "MOBILE",
-          "targets": [
-            {
-              "version": "1.14.3",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            }
-          ]
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Sync-style search",
-      "description": "Fill the empty search page with your feeds and subscriptions in collapsible Material 3 sections.",
       "default": true,
       "category": null,
       "compatiblePackages": [

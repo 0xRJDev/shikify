@@ -12,7 +12,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.WeakHashMap;
 
-/** Keep native bound views/listeners; arrange their metadata together like Sync. */
+/** Keep native bound views/listeners; arrange their metadata together. */
 public final class CommentLayoutTweaks {
     private static final WeakHashMap<View, Layout> ROWS=new WeakHashMap<>();
     private CommentLayoutTweaks() { }

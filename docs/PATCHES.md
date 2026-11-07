@@ -4,10 +4,10 @@ All 25 patches target Boost for Reddit 1.14.3 (`com.rubenmayayo.reddit`). Pick a
 
 ## Look
 
-- Sync-style Material You: themes, glass surfaces, side panel, empty screens and compact metadata
-- Material dialogs (needs Sync-style Material You)
-- Inline flairs (needs Sync-style Material You)
-- Sync-style search (needs Sync-style Material You)
+- Material You: themes, glass surfaces, side panel, empty screens and compact metadata
+- Material dialogs (needs Material You)
+- Inline flairs (needs Material You)
+- Material search (needs Material You)
 - Material notices
 - Material loading animation
 - Sliding screen transitions

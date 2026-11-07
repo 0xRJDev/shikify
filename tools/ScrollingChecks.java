@@ -24,8 +24,8 @@ public class ScrollingChecks {
     static void check(boolean ok,String label){if(!ok)throw new AssertionError(label);checks++;System.out.println("PASS: "+label);}
     static Object get(Object target,String name)throws Exception{Field f=target.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(target);}
     static void run(String[] args)throws Exception{
-        ClassLoader loader=RuntimeUiChecks.initialize(args);SyncStyleChecks.loader=loader;SyncStyleChecks.settings();
-        Context context=SyncStyleChecks.candidateContext(RuntimeUiChecks.context,args[0],true);
+        ClassLoader loader=RuntimeUiChecks.initialize(args);StyleChecks.loader=loader;StyleChecks.settings();
+        Context context=StyleChecks.candidateContext(RuntimeUiChecks.context,args[0],true);
         Class<?> pillClass=Class.forName("app.morphe.extension.boost.MaterialYouTweaks$Pill",true,loader);
         Constructor<?> constructor=pillClass.getDeclaredConstructor(int.class,int.class,int.class);constructor.setAccessible(true);
         ReplacementSpan pill=(ReplacementSpan)constructor.newInstance(Color.DKGRAY,Color.WHITE,6);
@@ -77,16 +77,16 @@ public class ScrollingChecks {
             cached=get(pill,"cachedLayout");edited.replace(0,3,"DEF");pill.getSize(paint,edited,0,3,null);
             check(get(pill,"cachedLayout")!=cached,"In-place text edits invalidate the cache even when length stays unchanged");
         }else System.out.println("BASELINE: no flair layout cache in this APK");
-        SyncStyleChecks.context=context;
-        android.view.View root=SyncStyleChecks.inflate("row_comment_indent_avatar");SyncStyleChecks.Holder holder=SyncStyleChecks.comment(root);
+        StyleChecks.context=context;
+        android.view.View root=StyleChecks.inflate("row_comment_indent_avatar");StyleChecks.Holder holder=StyleChecks.comment(root);
         Class<?> layouts=Class.forName("app.morphe.extension.boost.CommentLayoutTweaks",true,loader);
         layouts.getMethod("bind",Object.class).invoke(null,holder);
         Field rowsField=layouts.getDeclaredField("ROWS");rowsField.setAccessible(true);
         android.view.ViewTreeObserver.OnPreDrawListener controller=(android.view.ViewTreeObserver.OnPreDrawListener)((java.util.Map<?,?>)rowsField.get(null)).get(root);
-        controller.onPreDraw();SyncStyleChecks.measure(root,900);controller.onPreDraw();SyncStyleChecks.measure(root,900);
+        controller.onPreDraw();StyleChecks.measure(root,900);controller.onPreDraw();StyleChecks.measure(root,900);
         android.view.ViewGroup header=(android.view.ViewGroup)holder.authorTv.getParent();
         Object positions=get(header,"positions");Object firstPosition=((java.util.List<?>)positions).get(0);
-        for(int i=0;i<120;i++){header.requestLayout();SyncStyleChecks.measure(root,900-(i%2));controller.onPreDraw();}
+        for(int i=0;i<120;i++){header.requestLayout();StyleChecks.measure(root,900-(i%2));controller.onPreDraw();}
         if(caching)check(((java.util.List<?>)get(header,"positions")).get(0)==firstPosition,"Header measurement reuses its position buffers across 120 different-width layouts");
         holder.scoreTv.setText("123");controller.onPreDraw();
         check(holder.scoreTv.getText().toString().equals("123 points"),"Cached row-view lookup still follows native score updates");

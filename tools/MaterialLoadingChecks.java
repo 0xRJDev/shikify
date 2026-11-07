@@ -37,8 +37,8 @@ public final class MaterialLoadingChecks {
     static Object staticField(Class<?> type,String name)throws Exception{Field f=type.getDeclaredField(name);f.setAccessible(true);return f.get(null);}
     static void runAll(String[] args)throws Exception {
         // Initialize and instantiate actual native refresh layout.
-        loader=RuntimeUiChecks.initialize(args);SyncStyleChecks.loader=loader;SyncStyleChecks.settings();
-        context=SyncStyleChecks.candidateContext(RuntimeUiChecks.context,args[0],true);
+        loader=RuntimeUiChecks.initialize(args);StyleChecks.loader=loader;StyleChecks.settings();
+        context=StyleChecks.candidateContext(RuntimeUiChecks.context,args[0],true);
         Class<?> tweaks=Class.forName("app.morphe.extension.boost.MaterialLoadingTweaks",true,loader);
         Class<?> type=Class.forName("androidx.swiperefreshlayout.widget.SwipeRefreshLayout",true,loader);
         ViewGroup refresh=(ViewGroup)type.getConstructor(Context.class,android.util.AttributeSet.class).newInstance(context,null);

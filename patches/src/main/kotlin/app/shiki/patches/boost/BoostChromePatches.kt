@@ -1109,7 +1109,7 @@ private fun app.morphe.patcher.patch.BytecodePatchContext.replaceToasts() {
 
 @Suppress("unused")
 val boostMaterialYouPatch = bytecodePatch(
-    name = "Sync-style Material You",
+    name = "Material You",
     description = "Wallpaper-based themes, cards, side panel, empty screens, compact metadata and glass surfaces.",
 ) {
     compatibleWith(boostCompatibility)
@@ -1394,7 +1394,7 @@ private val shikifySearchResourcesPatch = resourcePatch {
 
 @Suppress("unused")
 val shikifySearchPatch = bytecodePatch(
-    name = "Sync-style search",
+    name = "Material search",
     description = "Fill the empty search page with your feeds and subscriptions in collapsible Material 3 sections.",
 ) {
     compatibleWith(boostCompatibility)

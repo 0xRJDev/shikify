@@ -60,7 +60,7 @@ public final class PolishChecks {
         android.content.SharedPreferences preferences=(android.content.SharedPreferences)java.lang.reflect.Proxy.newProxyInstance(loader,new Class<?>[]{android.content.SharedPreferences.class},(proxy,method,args)->{if(method.getName().equals("getString"))return saved[0];if(method.getName().equals("edit"))return editor;return null;});
         android.content.Context context=new android.content.ContextWrapper(base){@Override public android.content.SharedPreferences getSharedPreferences(String name,int mode){return preferences;}};
         Class<?> feature=Class.forName("app.morphe.extension.boost.ThreadPositionTweaks",true,loader);
-        Object first=SyncStyleChecks.allocate(Class.forName("com.rubenmayayo.reddit.models.reddit.CommentViewModel",true,loader)),second=SyncStyleChecks.allocate(first.getClass());
+        Object first=StyleChecks.allocate(Class.forName("com.rubenmayayo.reddit.models.reddit.CommentViewModel",true,loader)),second=StyleChecks.allocate(first.getClass());
         DownloadControlsChecks.set(first,"b","t1_first");DownloadControlsChecks.set(first,"S",true);DownloadControlsChecks.set(second,"b","t1_second");DownloadControlsChecks.set(second,"S",true);
         PositionFragment original=new PositionFragment();original.mRecyclerView=new PositionList(context);original.mRecyclerView.layout(0,0,400,800);original.B.add(first);original.B.add(second);
         View child=new View(context);child.setTag(1);original.mRecyclerView.addView(child);child.layout(0,-24,400,180);

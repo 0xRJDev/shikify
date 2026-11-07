@@ -10,7 +10,7 @@ Optional isolated Android checks:
 
 ```bash
 python3 tools/test-media-on-phone.py --version 1.0.0 \
-  --check ArtVerify --check SurfaceChecks --check SyncStyleChecks \
+  --check ArtVerify --check SurfaceChecks --check StyleChecks \
   --check ThreadCardChecks --check RuntimeUiChecks --check OverlayBackChecks
 ```
 
