@@ -1,32 +1,36 @@
 # Version 1.1.2-dev.4
 
-## Boost for Reddit
-
-- **Inline flairs:** Flair text now sits in the middle of its pill instead of near the bottom.
-- **Shikify Settings:** Settings use Material 3 switches.
-- **Performance:** Changing a Loading setting offers to restart Boost so it applies straight away.
+Boost for Reddit:
+- Flair text now sits in the middle of its pill instead of near the bottom.
+- Shikify Settings uses Material 3 switches.
+- Changing a Loading setting offers to restart Boost so it applies straight away.
 
 # Version 1.1.2-dev.3
 
+Boost for Reddit:
 - Videos stop playing as soon as you leave the video viewer, by Back or by swiping.
 - Glass sliders dim when glass effects are off.
 - The bottom navigation bar no longer flickers between tabs.
 
 # Version 1.1.2-dev.2
 
+Boost for Reddit:
 - Patches are now grouped under Appearance, Comments, Media, Navigation and Performance headers in Morphe Manager.
 
 # Version 1.1.2-dev.1
 
+Boost for Reddit:
 - Fixed the refresh circle sometimes staying stuck near the status bar.
 - Fixed a gallery going black when reopened straight after closing it.
 
 # Version 1.1.1
 
+Boost for Reddit:
 - Renamed two patches to Material You and Material search. If they show as unselected in Morphe Manager, select them again.
 
 # Version 1.1.0
 
+Boost for Reddit:
 - Split "Material You" into smaller patches, for 25 in total. Pick only what you want in Morphe Manager.
 - New patches: HTTP/2 Reddit connection, Parallel content loading, Remove startup request queue, Instant saved login, Smaller first page, Improved online check, Material notices, Material dialogs, Inline flairs, Material search and Sliding screen transitions.
 - New Loading page in Shikify Settings, and more switches under Glass & appearance. Switches only appear for patches you selected.
@@ -35,6 +39,7 @@
 
 First public release, for Boost for Reddit 1.14.3.
 
+Boost for Reddit:
 - Material You colours across surfaces, the side panel, settings, dialogs and empty screens.
 - Material search page, comments header, compact metadata and rounded thread groups.
 - Swipe actions, hold to peek at media, predictive back and glass floating pills.
