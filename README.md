@@ -36,7 +36,7 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 
 ### <a name="features"></a><img src=".github/assets/ep-features.png" alt="Episode 2: Current Features! It can do all of this?!" width="100%">
 
-<p align="center"><img src=".github/assets/marquee-boost.gif" alt="Boost for Reddit" width="720"></p>
+<p align="center"><img src=".github/assets/marquee-boost-smooth.gif" alt="Boost for Reddit" width="720"></p>
 
 <h3 align="center">⭐ Boost for Reddit ⭐</h3>
 
