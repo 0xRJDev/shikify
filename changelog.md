@@ -1,3 +1,7 @@
+# Version 1.1.2-dev.4
+
+- Flair text now sits in the middle of its pill instead of near the bottom.
+
 # Version 1.1.2-dev.3
 
 - Videos stop playing as soon as you leave the video viewer, by Back or by swiping.
