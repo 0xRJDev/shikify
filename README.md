@@ -6,12 +6,12 @@
 
 <sub>For use with [Morphe](https://github.com/MorpheApp) • Now supporting Boost for Reddit, with more apps to come</sub>
 
-<a href="#install"><img src=".github/assets/btn-install.png" alt="Install" width="132"></a>
-<a href="#features"><img src=".github/assets/btn-features.png" alt="Features" width="132"></a>
-<a href="#build"><img src=".github/assets/btn-build.png" alt="Build" width="132"></a>
-<a href="changelog.md"><img src=".github/assets/btn-news.png" alt="What's new" width="132"></a>
-<a href="#disclaimer"><img src=".github/assets/btn-disclaimer.png" alt="Disclaimer" width="132"></a>
-<a href="#credits"><img src=".github/assets/btn-credits.png" alt="Credits" width="132"></a>
+<a href="#install"><img src=".github/assets/button-install.png" alt="Install" width="150"></a>
+<a href="#features"><img src=".github/assets/button-features.png" alt="Features" width="150"></a>
+<a href="#build"><img src=".github/assets/button-build.png" alt="Build" width="150"></a>
+<a href="changelog.md"><img src=".github/assets/button-news.png" alt="What's new" width="150"></a>
+<a href="#disclaimer"><img src=".github/assets/button-disclaimer.png" alt="Disclaimer" width="150"></a>
+<a href="#credits"><img src=".github/assets/button-credits.png" alt="Credits" width="150"></a>
 
 </div>
 
@@ -20,7 +20,7 @@
 
 ### <a name="install"></a><img src=".github/assets/ep-install.png" alt="Episode 1: Install! Let's get you patched!" width="100%">
 
-<a href="https://morphe.software/add-source?github=0xRJDev/shikify"><img src=".github/assets/btn-add.png" alt="Add to Morphe" width="132"></a>
+<a href="https://morphe.software/add-source?github=0xRJDev/shikify"><img src=".github/assets/button-add.png" alt="Add to Morphe" width="150"></a>
 
 Open this button on your phone, then patch your own copy of a supported app in Morphe Manager. Morphe Manager will offer new Shikify versions as they are released.
 
@@ -118,8 +118,8 @@ Built with the official [Morphe patches template](https://github.com/MorpheApp/m
 
 <div align="center">
 
-<img src=".github/assets/btn-browser.png" alt="Best viewed in any browser" width="132">
-<a href="LICENSE"><img src=".github/assets/btn-gpl.png" alt="GPL-3.0" width="132"></a>
-<a href="https://github.com/0xRJDev/shikify/issues"><img src=".github/assets/btn-guestbook.png" alt="Sign my guestbook" width="132"></a>
+<img src=".github/assets/button-browser.png" alt="Best viewed in any browser" width="150">
+<a href="LICENSE"><img src=".github/assets/button-gpl.png" alt="GPL-3.0" width="150"></a>
+<a href="https://github.com/0xRJDev/shikify/issues"><img src=".github/assets/button-guestbook.png" alt="Sign my guestbook" width="150"></a>
 
 </div>
