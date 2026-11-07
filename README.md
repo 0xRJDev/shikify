@@ -20,7 +20,7 @@
 </div>
 
 > [!WARNING]
-> **Boost patches are only tested with Patcheddit.** They are developed and used alongside Patcheddit 2.1.0-dev.4. Other patch sources, or Boost without Patcheddit, are untested.
+> **Boost patches are only tested with [Patcheddit](https://github.com/wchill/patcheddit).** They are developed and used alongside Patcheddit 2.1.0-dev.4. Other patch sources, or Boost without Patcheddit, are untested.
 >
 > **Mostly vibe coded.** Use at your own risk. See the [disclaimer](#disclaimer).
 
@@ -38,7 +38,7 @@ Open this button on your phone, then patch your own copy of a supported app in M
 2. Import it as a local source in Morphe Manager.
 3. Patch your own copy of a supported app and pick the patches you want. Each one has a short description. For Boost, most can also be switched off later in **Settings → Shikify Settings**.
 
-No app APKs, account credentials or OAuth client IDs are included. Keep any patches you already rely on, such as Patcheddit for Boost, selected when you patch.
+No app APKs, account credentials or OAuth client IDs are included. Keep any patches you already rely on, such as [Patcheddit](https://github.com/wchill/patcheddit) for Boost, selected when you patch.
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
