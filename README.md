@@ -2,61 +2,37 @@
 
 <img src=".github/assets/header.png" alt="Shikify" width="720">
 
-<br>
+<img src=".github/assets/title-welcome.png" alt="Welcome to my homepage" height="44">
 
-```
-~*~*~*~*~*~  W E L C O M E   T O   M Y   H O M E P A G E  ~*~*~*~*~*~
-```
-
-**★彡 Material 3 and Material You patches for Boost for Reddit 1.14.3 彡★**
+**Material 3 and Material You patches for Boost for Reddit 1.14.3**
 
 <sub>`com.rubenmayayo.reddit` • for use with [Morphe](https://github.com/MorpheApp) • inspired by Sync for Reddit</sub>
 
-<br>
+<a href="#install"><img src=".github/assets/btn-install.png" alt="Install" width="132"></a>
+<a href="#features"><img src=".github/assets/btn-features.png" alt="Features" width="132"></a>
+<a href="#build"><img src=".github/assets/btn-build.png" alt="Build" width="132"></a>
+<a href="changelog.md"><img src=".github/assets/btn-news.png" alt="What's new" width="132"></a>
+<a href="#disclaimer"><img src=".github/assets/btn-disclaimer.png" alt="Disclaimer" width="132"></a>
+<a href="#credits"><img src=".github/assets/btn-credits.png" alt="Credits" width="132"></a>
 
-<table>
-<tr>
-<td align="center">🏠<br><a href="#-install-"><b>INSTALL</b></a></td>
-<td align="center">⭐<br><a href="#-cool-features-"><b>FEATURES</b></a></td>
-<td align="center">🔨<br><a href="#-build-it-yourself-"><b>BUILD</b></a></td>
-<td align="center">📜<br><a href="#-credits--licence-"><b>CREDITS</b></a></td>
-<td align="center">📰<br><a href="changelog.md"><b>WHAT'S NEW</b></a></td>
-</tr>
-</table>
-
-<br>
-
-🚧 🚧 🚧 **THIS SITE IS ALWAYS UNDER CONSTRUCTION** 🚧 🚧 🚧
+<img src=".github/assets/construction.gif" alt="Under construction" width="396">
 
 </div>
 
-<br>
+> [!WARNING]
+> **Only tested with Patcheddit.** Shikify is developed and used alongside Patcheddit 2.1.0-dev.4. Other patch sources, or Boost without Patcheddit, are untested.
+>
+> **Mostly vibe coded.** Use at your own risk. See the [disclaimer](#disclaimer).
 
-<table>
-<tr><td>
+<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-⚠️ **ATTENTION WEB SURFERS!** ⚠️
+### <a name="install"></a><img src=".github/assets/title-install.png" alt="Install" height="44">
 
-**Only tested with Patcheddit.** Shikify is developed and used alongside Patcheddit 2.1.0-dev.4. Other patch sources, or Boost without Patcheddit, are untested.
+<a href="https://morphe.software/add-source?github=0xRJDev/shikify"><img src=".github/assets/btn-add.png" alt="Add to Morphe" width="132"></a>
 
-</td></tr>
-</table>
+Open this button on your phone, then patch your own Boost 1.14.3 APK in Morphe Manager. Morphe Manager will offer new Shikify versions as they are released.
 
-<div align="center">
-
-```
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-```
-
-</div>
-
-## 💾 INSTALL 💾
-
-### >>> [CLICK HERE to add Shikify to Morphe!!!](https://morphe.software/add-source?github=0xRJDev/shikify) <<<
-
-Open that link on your phone, then patch your own Boost 1.14.3 APK in Morphe Manager. Morphe Manager will offer new Shikify versions as they are released.
-
-**Prefer to do it by hand? No problem, webmaster:**
+**Prefer to do it by hand?**
 
 1. Download `shikify-1.1.0.mpp` from this repository's releases.
 2. Import it as a local source in Morphe Manager.
@@ -64,18 +40,12 @@ Open that link on your phone, then patch your own Boost 1.14.3 APK in Morphe Man
 
 No Boost APK, Reddit credentials or OAuth client IDs are included. Keep any account or API patches you already use, such as Patcheddit, selected when you patch.
 
-<div align="center">
+<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-```
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-```
-
-</div>
-
-## ⭐ COOL FEATURES ⭐
+### <a name="features"></a><img src=".github/assets/title-features.png" alt="Cool features" height="44">
 
 <table>
-<tr><th>WHAT</th><th>WOW!</th></tr>
+<tr><th>Feature</th><th>What you get</th></tr>
 <tr><td>🎨 <b>Material You throughout</b></td><td>Wallpaper colours for surfaces, side panel, settings, dialogs and empty screens. Upvotes and downvotes keep their Reddit colours.</td></tr>
 <tr><td>🔍 <b>Sync-style search</b></td><td>A rebuilt search page with Material 3 styling.</td></tr>
 <tr><td>💬 <b>Comments</b></td><td>Header with the subreddit and post title, compact metadata, rounded thread groups and remembered thread position.</td></tr>
@@ -86,19 +56,13 @@ No Boost APK, Reddit credentials or OAuth client IDs are included. Keep any acco
 <tr><td>⚡ <b>Faster loading</b></td><td>No one-second request queue at launch, valid saved logins reused, feeds and comments loaded in parallel, and HTTP/2.</td></tr>
 </table>
 
-**MORE PAGES:** [All 25 patches](docs/PATCHES.md) • [Settings](docs/SETTINGS.md) • [Changelog](changelog.md)
+**More pages:** [All 25 patches](docs/PATCHES.md) • [Settings](docs/SETTINGS.md) • [Changelog](changelog.md)
 
-**SYSTEM REQUIREMENTS:** Android 7.0 or later. Wallpaper colours and blur need Android 12 or later.
+**System requirements:** Android 7.0 or later. Wallpaper colours and blur need Android 12 or later.
 
-<div align="center">
+<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-```
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-```
-
-</div>
-
-## 🔨 BUILD IT YOURSELF 🔨
+### <a name="build"></a><img src=".github/assets/title-build.png" alt="Build it yourself" height="44">
 
 On x86_64 Linux, install Bash, Git, Python 3.12+ and a Java launcher, then run:
 
@@ -116,34 +80,23 @@ BOOST_APK=/absolute/path/to/boost-1.14.3.apk ./build.sh
 
 The bundle is written to `output/shikify-1.1.0.mpp`. See [validation](docs/VALIDATION.md) and [releasing](docs/RELEASING.md).
 
-<div align="center">
+<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-```
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-```
-
-</div>
-
-## ⚖️ DISCLAIMER ⚖️
+### <a name="disclaimer"></a><img src=".github/assets/title-disclaimer.png" alt="Disclaimer" height="44">
 
 These patches are provided as is, without warranty of any kind, for **educational and personal use only**.
 
 - **Use them only on apps you legally own.** They are for studying, accessibility tweaks and personal customization of software you already own or that is free. They are not a piracy tool: do not use them to obtain paid apps, subscriptions or content you have not licensed, and do not redistribute patched copies of anyone's apps.
 - **No apps are distributed here.** This repository holds patch source code and the scripts that build it. It hosts no APKs.
 - **Non-commercial project.** There are no paid tiers, no ads and nothing for sale. Do not sell these patches or patched apps, and be wary of anyone who does.
+- **Mostly vibe coded.** Much of this project was written with AI assistance, so expect rough edges and use it at your own risk.
 - **Use at your own risk.** Modifying apps can violate their terms of service and may lead to account restrictions, bans, data loss or apps that no longer work. The authors accept no liability for any consequence of using these patches and give no guarantee that they work on any particular app or version.
 - **No affiliation.** This project is not affiliated with, endorsed by or connected to Reddit, Boost for Reddit, Sync for Reddit, Patcheddit, Morphe, Google or any app developer. All trademarks belong to their respective owners.
 - **Takedown requests.** If you are a rights holder and believe something here infringes your rights, open an issue naming the exact file or patch and describing the concern. It will be reviewed promptly and in good faith.
 
-<div align="center">
+<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-```
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-```
-
-</div>
-
-## 📜 CREDITS & LICENCE 📜
+### <a name="credits"></a><img src=".github/assets/title-credits.png" alt="Credits and licence" height="44">
 
 GPL-3.0; see [LICENSE](LICENSE). The adapted Material loading renderer keeps its Apache-2.0 notices; see [NOTICE](NOTICE) and the [third-party licence](third-party/licenses/Apache-2.0.txt).
 
@@ -163,5 +116,16 @@ Built with the official [Morphe patches template](https://github.com/MorpheApp/m
 📬 **[SIGN THE GUESTBOOK](https://github.com/0xRJDev/shikify/issues)** 📬
 
 <sub>© 1997 2026 Shikify Web Productions. All rights reserved, except the ones GPL-3.0 gives you.</sub>
+
+</div>
+
+<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
+
+<div align="center">
+
+<img src=".github/assets/btn-browser.png" alt="Best viewed in any browser" width="132">
+<img src=".github/assets/btn-patcheddit.png" alt="Tested with Patcheddit" width="132">
+<a href="LICENSE"><img src=".github/assets/btn-gpl.png" alt="GPL-3.0" width="132"></a>
+<a href="https://github.com/0xRJDev/shikify/issues"><img src=".github/assets/btn-guestbook.png" alt="Sign my guestbook" width="132"></a>
 
 </div>
