@@ -7,7 +7,7 @@ shikifyRepository?.let { require(it.matches(Regex("[A-Za-z0-9_.-]+/[A-Za-z0-9_.-
 patches {
     about {
         name = "Shikify"
-        description = "Sync-inspired comments, gestures, Material You styling and media controls for Boost 1.14.3"
+        description = "Material 3 and Material You patches for Android apps"
         source = shikifyRepository?.let { "https://github.com/$it" } ?: "local:shikify"
         author = "Shiki"
         contact = shikifyRepository?.let { "https://github.com/$it/issues" } ?: "na"

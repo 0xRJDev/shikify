@@ -4,9 +4,9 @@
 
 <img src=".github/assets/title-welcome.png" alt="Welcome to my homepage" height="44">
 
-**Material 3 and Material You patches for Boost for Reddit 1.14.3**
+**Material 3 and Material You patches for Android apps**
 
-<sub>`com.rubenmayayo.reddit` • for use with [Morphe](https://github.com/MorpheApp) • inspired by Sync for Reddit</sub>
+<sub>For use with [Morphe](https://github.com/MorpheApp) • Now supporting Boost for Reddit, with more apps to come</sub>
 
 <a href="#install"><img src=".github/assets/btn-install.png" alt="Install" width="132"></a>
 <a href="#features"><img src=".github/assets/btn-features.png" alt="Features" width="132"></a>
@@ -20,9 +20,18 @@
 </div>
 
 > [!WARNING]
-> **Only tested with Patcheddit.** Shikify is developed and used alongside Patcheddit 2.1.0-dev.4. Other patch sources, or Boost without Patcheddit, are untested.
+> **Boost patches are only tested with Patcheddit.** They are developed and used alongside Patcheddit 2.1.0-dev.4. Other patch sources, or Boost without Patcheddit, are untested.
 >
 > **Mostly vibe coded.** Use at your own risk. See the [disclaimer](#disclaimer).
+
+<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
+
+### <a name="apps"></a><img src=".github/assets/title-apps.png" alt="Supported apps" height="44">
+
+<table>
+<tr><th>App</th><th>Package</th><th>Version</th><th>Patches</th></tr>
+<tr><td>Boost for Reddit</td><td><code>com.rubenmayayo.reddit</code></td><td>1.14.3</td><td><a href="docs/PATCHES.md">25</a></td></tr>
+</table>
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
@@ -30,19 +39,19 @@
 
 <a href="https://morphe.software/add-source?github=0xRJDev/shikify"><img src=".github/assets/btn-add.png" alt="Add to Morphe" width="132"></a>
 
-Open this button on your phone, then patch your own Boost 1.14.3 APK in Morphe Manager. Morphe Manager will offer new Shikify versions as they are released.
+Open this button on your phone, then patch your own copy of a supported app in Morphe Manager. Morphe Manager will offer new Shikify versions as they are released.
 
 **Prefer to do it by hand?**
 
 1. Download `shikify-1.1.0.mpp` from this repository's releases.
 2. Import it as a local source in Morphe Manager.
-3. Patch your own Boost 1.14.3 APK and pick the patches you want. Each one has a short description, and most can also be switched off later in **Settings → Shikify Settings**.
+3. Patch your own copy of a supported app and pick the patches you want. Each one has a short description. For Boost, most can also be switched off later in **Settings → Shikify Settings**.
 
-No Boost APK, Reddit credentials or OAuth client IDs are included. Keep any account or API patches you already use, such as Patcheddit, selected when you patch.
+No app APKs, account credentials or OAuth client IDs are included. Keep any patches you already rely on, such as Patcheddit for Boost, selected when you patch.
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-### <a name="features"></a><img src=".github/assets/title-features.png" alt="Cool features" height="44">
+### <a name="features"></a><img src=".github/assets/title-features.png" alt="Boost for Reddit features" height="44">
 
 <table>
 <tr><th>Feature</th><th>What you get</th></tr>
@@ -72,7 +81,7 @@ On x86_64 Linux, install Bash, Git, Python 3.12+ and a Java launcher, then run:
 
 The script downloads a pinned JDK 21, the Android SDK and official Morphe 2.1.0 sources into the ignored `.work/` folder, so no GitHub Packages credentials are needed. This may take a while on a 56k modem.
 
-To also apply every patch and validate the result, supply your own original APK:
+To also apply every Boost patch and validate the result, supply your own original Boost 1.14.3 APK:
 
 ```bash
 BOOST_APK=/absolute/path/to/boost-1.14.3.apk ./build.sh
@@ -124,7 +133,6 @@ Built with the official [Morphe patches template](https://github.com/MorpheApp/m
 <div align="center">
 
 <img src=".github/assets/btn-browser.png" alt="Best viewed in any browser" width="132">
-<img src=".github/assets/btn-patcheddit.png" alt="Tested with Patcheddit" width="132">
 <a href="LICENSE"><img src=".github/assets/btn-gpl.png" alt="GPL-3.0" width="132"></a>
 <a href="https://github.com/0xRJDev/shikify/issues"><img src=".github/assets/btn-guestbook.png" alt="Sign my guestbook" width="132"></a>
 
