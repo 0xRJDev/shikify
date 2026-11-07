@@ -163,7 +163,7 @@ public final class SurfaceSettingsActivity extends Activity {
             .setTitle("Restart Boost?")
             .setMessage("Restart Boost to apply loading changes.")
             .setNegativeButton("Later",null)
-            .setPositiveButton("Restart",(dialog,which)->{
+            .setPositiveButton("Restart now",(dialog,which)->{
                 Intent launch=getPackageManager().getLaunchIntentForPackage(getPackageName());
                 if(launch==null || !prefs(this).edit().commit()){
                     Toast.makeText(this,"Could not restart Boost. Close and reopen the app.",Toast.LENGTH_LONG).show();
