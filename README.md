@@ -1,8 +1,6 @@
 <div align="center">
 
-<img src=".github/assets/header.png" alt="Shikify" width="720">
-
-<img src=".github/assets/title-welcome.png" alt="Welcome to my homepage" height="44">
+<img src=".github/assets/title-card.png" alt="Shikify, シキファイ. Patching your apps, one episode at a time!" width="100%">
 
 **Material 3 and Material You patches for Android apps**
 
@@ -15,8 +13,6 @@
 <a href="#disclaimer"><img src=".github/assets/btn-disclaimer.png" alt="Disclaimer" width="132"></a>
 <a href="#credits"><img src=".github/assets/btn-credits.png" alt="Credits" width="132"></a>
 
-<img src=".github/assets/construction.gif" alt="Under construction" width="396">
-
 </div>
 
 > [!WARNING]
@@ -26,7 +22,9 @@
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-### <a name="install"></a><img src=".github/assets/title-install.png" alt="Install" height="44">
+### <a name="install"></a><img src=".github/assets/title-install.png" alt="Episode 1: Install!" height="44">
+
+<img src=".github/assets/sub-install.png" alt="Let's get you patched!" height="30">
 
 <a href="https://morphe.software/add-source?github=0xRJDev/shikify"><img src=".github/assets/btn-add.png" alt="Add to Morphe" width="132"></a>
 
@@ -42,7 +40,9 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-### <a name="features"></a><img src=".github/assets/title-features.png" alt="Current features" height="44">
+### <a name="features"></a><img src=".github/assets/title-features.png" alt="Episode 2: Current features!" height="44">
+
+<img src=".github/assets/sub-features.png" alt="Whoa... it can do all of this?!" height="30">
 
 <p align="center"><img src=".github/assets/marquee-boost.gif" alt="Boost for Reddit" width="720"></p>
 
@@ -66,11 +66,11 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 
 **System requirements:** Android 7.0 or later. Wallpaper colours and blur need Android 12 or later.
 
-<p align="center"><b>More apps coming soon!</b></p>
-
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-### <a name="build"></a><img src=".github/assets/title-build.png" alt="Build it yourself" height="44">
+### <a name="build"></a><img src=".github/assets/title-build.png" alt="Episode 3: Build it yourself!" height="44">
+
+<img src=".github/assets/sub-build.png" alt="For those who like doing things the hard way." height="30">
 
 On x86_64 Linux, install Bash, Git, Python 3.12+ and a Java launcher, then run:
 
@@ -128,6 +128,8 @@ Built with the official [Morphe patches template](https://github.com/MorpheApp/m
 </div>
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
+
+<p align="center"><img src=".github/assets/end-card.png" alt="Next time on Shikify! More apps are on the way!" width="100%"></p>
 
 <div align="center">
 
