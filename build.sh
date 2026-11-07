@@ -8,6 +8,7 @@ for tool in python3 git java; do
   command -v "$tool" >/dev/null || { echo "Missing prerequisite: $tool" >&2; exit 1; }
 done
 [[ -f "$PROJECT/gradlew" ]] || { echo "Missing Gradle project: $PROJECT" >&2; exit 1; }
+[[ -z "${BOOST_APK:-}" || -f "$BOOST_APK" ]] || { echo "BOOST_APK not found: $BOOST_APK" >&2; exit 1; }
 python3 "$HERE/tools/bootstrap.py"
 export JAVA_HOME="$HERE/.work/toolchain/jdk-21.0.13+9"
 export PATH="$JAVA_HOME/bin:$PATH"
