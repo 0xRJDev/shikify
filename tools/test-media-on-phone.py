@@ -41,8 +41,7 @@ def runtime_classes(apk):
                 offset+=1
                 end=dex.index(b'\0',offset)
                 name=dex[offset:end].decode('utf-8',errors='replace')
-                if any(name.startswith('Lapp/morphe/extension/boost/'+family) for family in
-                       ['CommentsChromeTweaks','GalleryBottomActionsTweaks','CommentSwipeActions','PredictiveBackTweaks','MediaPreviewTweaks','CommentLayoutTweaks','ViewerPolishTweaks','MaterialYouTweaks','CommentsScreenTweaks','ThreadPositionTweaks','FeedPillBlur','GlassRefraction','HeaderGradient','UnifiedChromeTweaks','MaterialLoading','HomeAvatarTweaks','Surface']):
+                if name.startswith('Lapp/morphe/extension/boost/'):
                     names.add(name[1:-1].replace('/','.'))
     return sorted(names)
 
