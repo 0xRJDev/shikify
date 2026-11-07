@@ -20,10 +20,10 @@ if not re.fullmatch(r'\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.-]+)?', version):
     raise SystemExit('Invalid release version')
 bundle = ROOT/'output'/f'shikify-{version}.mpp'
 metadata = json.loads((ROOT/'patches-list.json').read_text())
-if metadata['version'] != version or len(metadata['patches']) != 14:
+if metadata['version'] != version or len(metadata['patches']) != 25:
     raise SystemExit('Rebuild first: patch list version/count does not match the release')
 names = [patch['name'] for patch in metadata['patches']]
-if len(set(names)) != 14 or any(name.startswith('Shikify:') for name in names):
+if len(set(names)) != 25 or any(name.startswith('Shikify:') for name in names):
     raise SystemExit('Unexpected public patch names')
 with zipfile.ZipFile(bundle) as archive:
     if not {'classes.dex', 'extensions/extension.mpe'}.issubset(archive.namelist()):

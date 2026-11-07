@@ -536,25 +536,6 @@ private val boostMaterialYouResourcesPatch = resourcePatch {
                 if(text.getAttributeNS(android,"id") in setOf("@id/material_drawer_name","@id/material_drawer_description"))
                     for(side in listOf("Left","Start"))text.setAttributeNS(android,"android:layout_margin$side","12dp")}
         }
-        // Search: section labels and flat rows instead of a stack of filled cards.
-        document("res/layout/item_search_header.xml").use { doc ->
-            doc.documentElement.removeAttributeNS(android,"background")
-            doc.documentElement.setAttributeNS(android,"android:layout_height","48dp")
-            val views=doc.getElementsByTagName("*")
-            for(i in 0 until views.length){val view=views.item(i) as org.w3c.dom.Element
-                if(view.getAttributeNS(android,"id")=="@id/item_search_text")view.setAttributeNS(android,"android:textColor","?attr/colorPrimary")}
-        }
-        for(path in listOf("res/layout/item_search_option.xml","res/layout/item_search_option_subreddit.xml"))document(path).use { doc ->
-            doc.documentElement.setAttributeNS(android,"android:layout_height","56dp")
-        }
-        document("res/layout/item_subreddit_subscribe.xml").use { doc ->
-            doc.documentElement.removeAttributeNS(android,"background")
-            val views=doc.getElementsByTagName("*")
-            for(i in 0 until views.length){val view=views.item(i) as org.w3c.dom.Element
-                if(view.getAttributeNS(android,"id")=="@id/item_subreddit_description"){
-                    view.setAttributeNS(android,"android:maxLines","2");view.setAttributeNS(android,"android:ellipsize","end")
-                    view.setAttributeNS(android,"android:textColor","?attr/colorOnSurfaceVariant")}}
-        }
         document("res/layout/row_comments_search_field.xml").use { doc ->
             val box=doc.getElementsByTagName("com.google.android.material.textfield.TextInputLayout").item(0) as org.w3c.dom.Element
             val field=doc.getElementsByTagName("com.google.android.material.textfield.TextInputEditText").item(0) as org.w3c.dom.Element
@@ -594,17 +575,7 @@ private val boostMaterialYouResourcesPatch = resourcePatch {
             parentFile.mkdirs()
             writeText("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<pathInterpolator $ns android:controlX1=\"0.2\" android:controlY1=\"0\" android:controlX2=\"0\" android:controlY2=\"1\" />\n")
         }
-        get("res/interpolator/shikify_slide.xml").apply {
-            parentFile.mkdirs()
-            writeText("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<pathInterpolator $ns android:controlX1=\"0.35\" android:controlY1=\"0\" android:controlX2=\"0.1\" android:controlY2=\"1\" />\n")
-        }
         val eased="android:interpolator=\"@interpolator/shikify_emphasized\" android:shareInterpolator=\"true\""
-        val slide="android:interpolator=\"@interpolator/shikify_slide\" android:shareInterpolator=\"true\""
-        // A new screen visibly slides over the one below, which drifts back slightly.
-        motion("shikify_open_enter","<set $ns $slide android:zAdjustment=\"top\"><translate android:duration=\"450\" android:fromXDelta=\"100%p\" android:toXDelta=\"0\" /></set>")
-        motion("shikify_open_exit","<set $ns $slide><translate android:duration=\"450\" android:fromXDelta=\"0\" android:toXDelta=\"-12%p\" /></set>")
-        motion("shikify_close_enter","<set $ns $slide><translate android:duration=\"320\" android:fromXDelta=\"-12%p\" android:toXDelta=\"0\" /></set>")
-        motion("shikify_close_exit","<set $ns $slide android:zAdjustment=\"top\"><translate android:duration=\"320\" android:fromXDelta=\"0\" android:toXDelta=\"100%p\" /></set>")
         // Media only fades: moving or scaling these windows reads as jitter while the image settles.
         motion("activity_fade_in","<alpha $ns $eased android:duration=\"150\" android:fromAlpha=\"0\" android:toAlpha=\"1\" />")
         motion("activity_fade_out","<alpha $ns $eased android:duration=\"120\" android:fromAlpha=\"1\" android:toAlpha=\"0\" />")
@@ -728,13 +699,6 @@ private val boostMaterialYouResourcesPatch = resourcePatch {
             val all = (0 until styles.getElementsByTagName("style").length).map {
                 styles.getElementsByTagName("style").item(it) as org.w3c.dom.Element
             }
-            all.filter { it.getAttribute("name") == "Shikify.Animation.Activity" }.forEach { it.parentNode.removeChild(it) }
-            styles.createElement("style").apply {
-                setAttribute("name", "Shikify.Animation.Activity");setAttribute("parent", "@android:style/Animation.Activity")
-                for ((key, value) in listOf("OpenEnter" to "shikify_open_enter", "OpenExit" to "shikify_open_exit", "CloseEnter" to "shikify_close_enter", "CloseExit" to "shikify_close_exit"))
-                    put(styles, "android:activity${key}Animation", "@anim/$value")
-                styles.documentElement.appendChild(this)
-            }
             for (style in all.filter { it.getAttribute("name") in names }) {
                 // Separate background and content roles, retaining the active theme on older Android.
                 for ((key, value) in mapOf("LightContentBackground" to "?attr/colorSurfaceContainerHigh",
@@ -746,8 +710,7 @@ private val boostMaterialYouResourcesPatch = resourcePatch {
                     "ShapeStrokeColor" to "?attr/colorOutlineVariant", "colorPrimaryVariant" to "?attr/colorPrimary",
                     "textInputOutlinedStyle" to "@style/Shikify.TextInput", "textInputOutlinedDenseStyle" to "@style/Shikify.TextInput.Dense",
                     "material_drawer_selected" to "?attr/colorSecondaryContainer", "material_drawer_selected_text" to "?attr/colorOnSecondaryContainer",
-                    "md_background_color" to "?attr/colorSurfaceContainerHigh",
-                    "android:windowAnimationStyle" to "@style/Shikify.Animation.Activity"))
+                    "md_background_color" to "?attr/colorSurfaceContainerHigh"))
                     style.put(styles, key, value)
             }
             // Toolbar popups inflate through Boost's PopupTheme overlays; give them the same container.
@@ -1032,13 +995,12 @@ private fun app.morphe.patcher.patch.BytecodePatchContext.enableModernRedditTran
 }
 
 /** Every task start goes through one decision, so content loaders can leave the serial queue. */
-private fun app.morphe.patcher.patch.BytecodePatchContext.fasterRedditStartup() {
+private fun app.morphe.patcher.patch.BytecodePatchContext.removeRequestQueue() {
     val tweaks="Lapp/morphe/extension/boost/NetworkTweaks;"
-    val client="Lnet/dean/jraw/RedditClient;"
     val rate=Fingerprint(definingClass="Lnet/dean/jraw/http/RestClient;",name="setRatelimit",returnType="V",parameters=listOf("I"),isStatic=false).method
     rate.addInstruction(0,"move-result p1")
     rate.addInstruction(0,"invoke-static {p1}, $tweaks->rate(I)I")
-    val adjust=Fingerprint(definingClass=client,name="adjustRatelimit",returnType="V",parameters=listOf("Lnet/dean/jraw/http/RestResponse;"),isStatic=false).method
+    val adjust=Fingerprint(definingClass="Lnet/dean/jraw/RedditClient;",name="adjustRatelimit",returnType="V",parameters=listOf("Lnet/dean/jraw/http/RestResponse;"),isStatic=false).method
     adjust.addInstructionsWithLabels(0,"""
         invoke-virtual {p1}, Lnet/dean/jraw/http/RestResponse;->getHeaders()Lokhttp3/Headers;
         move-result-object v0
@@ -1047,6 +1009,10 @@ private fun app.morphe.patcher.patch.BytecodePatchContext.fasterRedditStartup() 
         move-result-object v0
         invoke-static {v0}, $tweaks->remaining(Ljava/lang/String;)V
     """.trimIndent())
+}
+private fun app.morphe.patcher.patch.BytecodePatchContext.reuseSavedLogin() {
+    val tweaks="Lapp/morphe/extension/boost/NetworkTweaks;"
+    val client="Lnet/dean/jraw/RedditClient;"
     fun reads(instruction: com.android.tools.smali.dexlib2.iface.instruction.Instruction) =
         instruction.methodReference()?.let { it.definingClass==client && it.name=="me" && it.parameterTypes.isEmpty() }==true
     val authenticate=Fingerprint(definingClass=client,name="authenticate",returnType="V",parameters=listOf("Lnet/dean/jraw/http/oauth/OAuthData;"),isStatic=false).method
@@ -1072,7 +1038,7 @@ private fun app.morphe.patcher.patch.BytecodePatchContext.fasterRedditStartup() 
         if-nez v$account, :boost_account_ready
     """.trimIndent(),ExternalLabel("boost_account_ready",body[read+2]))
 }
-/** A feed's first page asks for 25 posts, so it arrives sooner. Larger requests made on purpose are left alone. */
+/** A feed's first page can ask for fewer posts. NetworkTweaks.pageLimit decides. */
 private fun app.morphe.patcher.patch.BytecodePatchContext.smallerFirstPage() {
     val owner="Lnet/dean/jraw/paginators/Paginator;"
     val next=Fingerprint(definingClass=owner,name="next",returnType="Lnet/dean/jraw/models/Listing;",parameters=listOf("Z"),isStatic=false).method
@@ -1084,15 +1050,9 @@ private fun app.morphe.patcher.patch.BytecodePatchContext.smallerFirstPage() {
     val limit=(body[read] as com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction).registerA
     val scratch=(body[read+3] as com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction).registerA
     check(body[read+3].opcode==Opcode.CONST_STRING && scratch!=limit) { "Paginator limit code changed" }
-    next.addInstructionsWithLabels(read+1,"""
-        iget-boolean v$scratch, p0, $owner->started:Z
-        if-nez v$scratch, :boost_limit_ready
-        const/16 v$scratch, 0x32
-        if-gt v$limit, v$scratch, :boost_limit_ready
-        const/16 v$scratch, 0x19
-        if-le v$limit, v$scratch, :boost_limit_ready
-        move v$limit, v$scratch
-    """.trimIndent(),ExternalLabel("boost_limit_ready",body[read+1]))
+    next.addInstruction(read+1,"move-result v$limit")
+    next.addInstruction(read+1,"invoke-static {v$limit, v$scratch}, Lapp/morphe/extension/boost/NetworkTweaks;->pageLimit(IZ)I")
+    next.addInstruction(read+1,"iget-boolean v$scratch, p0, $owner->started:Z")
 }
 private fun app.morphe.patcher.patch.BytecodePatchContext.parallelContentLoaders() {
     fun start(instruction: com.android.tools.smali.dexlib2.iface.instruction.Instruction) = instruction.methodReference()?.let { ref ->
@@ -1114,15 +1074,6 @@ private fun app.morphe.patcher.patch.BytecodePatchContext.parallelContentLoaders
             method.replaceInstruction(index,"invoke-static$registers, Lapp/morphe/extension/boost/NetworkTweaks;->execute(Landroid/os/AsyncTask;[Ljava/lang/Object;)Landroid/os/AsyncTask;")
         }
     }
-    // Parallel loaders can reach an expired token together; only one should refresh it.
-    // Dex has no runtime synchronized flag for ordinary methods, so the lock lives in the extension.
-    val token=Fingerprint(definingClass="Lpd2;",name="b",returnType="V",parameters=emptyList(),isStatic=false).method
-    token.addInstructionsWithLabels(0,"""
-        invoke-static {p0}, Lapp/morphe/extension/boost/NetworkTweaks;->token(Ljava/lang/Object;)Z
-        move-result v0
-        if-eqz v0, :boost_token_check
-        return-void
-    """.trimIndent(),ExternalLabel("boost_token_check",token.implementation!!.instructions.first()))
 }
 
 /** Toasts are created across the app, so every caller is found rather than listed. */
@@ -1159,22 +1110,11 @@ private fun app.morphe.patcher.patch.BytecodePatchContext.replaceToasts() {
 @Suppress("unused")
 val boostMaterialYouPatch = bytecodePatch(
     name = "Sync-style Material You",
-    description = "Wallpaper-based cards and gestures, compact metadata, glass surfaces and modern Reddit HTTP/2 transport with HTTP/1.1 fallback.",
+    description = "Wallpaper-based themes, cards, side panel, empty screens, compact metadata and glass surfaces.",
 ) {
     compatibleWith(boostCompatibility)
     dependsOn(boostChromeExtensionPatch, boostMaterialYouResourcesPatch, shikifySurfaceResourcesPatch)
     execute {
-        enableModernRedditTransport()
-        val online=Fingerprint(definingClass="Lkk3;",name="D",returnType="Z",isStatic=true,parameters=listOf("Landroid/content/Context;")).method
-        if(!online.hasHook("Lapp/morphe/extension/boost/NetworkTweaks;","online")){
-            online.addInstruction(0,"return p0")
-            online.addInstruction(0,"move-result p0")
-            online.addInstruction(0,"invoke-static/range {p0 .. p0}, Lapp/morphe/extension/boost/NetworkTweaks;->online(Landroid/content/Context;)Z")
-        }
-        replaceToasts()
-        parallelContentLoaders()
-        fasterRedditStartup()
-        smallerFirstPage()
         val tags="Lapp/morphe/extension/boost/MaterialYouTweaks;->tagColor(Ljava/lang/String;)I"
         for(owner in listOf(COMMENT_HOLDER,"Lcom/rubenmayayo/reddit/ui/adapters/SubmissionViewHolder;"))for(method in mutableClassDefBy(owner).methods){
             val body=method.implementation?.instructions?.toList() ?: continue
@@ -1184,35 +1124,6 @@ val boostMaterialYouPatch = bytecodePatch(
                 val call=instruction as com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction
                 method.replaceInstruction(index,"invoke-static {v${call.registerC}}, $tags")
             }
-        }
-        val searchPage="Lcom/rubenmayayo/reddit/ui/search/SearchGenericActivity;"
-        val searchTweaks="Lapp/morphe/extension/boost/SearchTweaks;"
-        val searchList=Fingerprint(definingClass=searchPage,name="s1",returnType="V",parameters=emptyList(),isStatic=false).method
-        if(!searchList.hasHook(searchTweaks,"onList"))searchList.addInstruction(0,"invoke-static/range {p0 .. p0}, $searchTweaks->onList(Ljava/lang/Object;)V")
-        val searchHeader=Fingerprint(definingClass=searchPage,name="e0",returnType="V",parameters=listOf("Lbn2;"),isStatic=false).method
-        if(!searchHeader.hasHook(searchTweaks,"onHeader")){
-            check(searchHeader.implementation!!.registerCount>=3) { "No free register in search header" }
-            searchHeader.addInstructionsWithLabels(0,"""
-                invoke-static/range {p0 .. p1}, $searchTweaks->onHeader(Ljava/lang/Object;Ljava/lang/Object;)Z
-                move-result v0
-                if-eqz v0, :native_header
-                return-void
-            """.trimIndent(),ExternalLabel("native_header",searchHeader.implementation!!.instructions.first()))
-        }
-        val dialog=Fingerprint(definingClass="Ldp1;",name="show",returnType="V",parameters=emptyList(),isStatic=false).method
-        if(!dialog.hasHook("Lapp/morphe/extension/boost/DialogTweaks;","onShow"))dialog.addInstruction(0,
-            "invoke-static/range {p0 .. p0}, Lapp/morphe/extension/boost/DialogTweaks;->onShow(Ljava/lang/Object;)V")
-        val flair=Fingerprint(definingClass="Lcom/rubenmayayo/reddit/models/reddit/RichFlairView;",name="c",returnType="V",isStatic=false,
-            parameters=listOf("Lcom/rubenmayayo/reddit/models/reddit/FlairModel;","Z")).method
-        if(!flair.hasHook("Lapp/morphe/extension/boost/MaterialYouTweaks;","flairText")){
-            val body=flair.implementation!!.instructions.toList()
-            val fill=body.indexOfLast { it.methodReference()?.let { ref->ref.definingClass=="Landroid/graphics/drawable/GradientDrawable;" && ref.name=="setColor" }==true }
-            val text=body.indexOfLast { it.methodReference()?.let { ref->ref.definingClass=="Lcom/rubenmayayo/reddit/models/reddit/RichFlairView;" && ref.name=="setTextColor" }==true }
-            check(fill>=0 && text>fill) { "Unrecognized flair colour binding" }
-            val background=(body[fill] as com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction).registerD
-            val foreground=(body[text] as com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction).registerD
-            flair.addInstruction(text,"move-result v$foreground")
-            flair.addInstruction(text,"invoke-static {p0, v$foreground, v$background}, Lapp/morphe/extension/boost/MaterialYouTweaks;->flairText(Ljava/lang/Object;II)I")
         }
         val profile=Fingerprint(definingClass="Lcom/rubenmayayo/reddit/ui/profile/UserContributionListFragment\$f;",name="onBindViewHolder",returnType="V",isStatic=false,parameters=listOf("Landroidx/recyclerview/widget/RecyclerView\$a0;","I")).method
         val chrome="Lapp/morphe/extension/boost/UnifiedChromeTweaks;"
@@ -1309,5 +1220,242 @@ val shikifyHomeAvatarPatch = bytecodePatch(
         // At this exact point p1 is the selected SubscriptionViewModel and p2 is
         // the selected spinner row. p0 has already been reused for the Activity.
         title.addInstruction(index,"invoke-static/range {p1 .. p2}, Lapp/morphe/extension/boost/HomeAvatarTweaks;->onTitleBind(Ljava/lang/Object;Ljava/lang/Object;)V")
+    }
+}
+
+private fun app.morphe.patcher.patch.BytecodePatchContext.enableFeature(name: String) {
+    Fingerprint(definingClass = "Lapp/morphe/extension/boost/Features;", name = name, returnType = "Z",
+        parameters = emptyList(), isStatic = true).method.replaceInstruction(0, "const/4 v0, 0x1")
+}
+
+/** Loading settings are read once at launch, because some are needed before any screen exists. */
+private val shikifyNetworkSettingsPatch = bytecodePatch {
+    dependsOn(boostChromeExtensionPatch)
+    execute {
+        val application=Fingerprint(definingClass="Lcom/rubenmayayo/reddit/MyApplication;",name="onCreate",returnType="V",parameters=emptyList(),isStatic=false).method
+        if(!application.hasHook("Lapp/morphe/extension/boost/NetworkTweaks;","init"))application.addInstruction(0,
+            "invoke-static/range {p0 .. p0}, Lapp/morphe/extension/boost/NetworkTweaks;->init(Landroid/content/Context;)V")
+    }
+}
+
+/** Parallel loaders can reach an expired token together; only one should refresh it. */
+private val shikifyTokenLockPatch = bytecodePatch {
+    dependsOn(shikifyNetworkSettingsPatch)
+    execute {
+        // Dex has no runtime synchronized flag for ordinary methods, so the lock lives in the extension.
+        val token=Fingerprint(definingClass="Lpd2;",name="b",returnType="V",parameters=emptyList(),isStatic=false).method
+        token.addInstructionsWithLabels(0,"""
+            invoke-static {p0}, Lapp/morphe/extension/boost/NetworkTweaks;->token(Ljava/lang/Object;)Z
+            move-result v0
+            if-eqz v0, :boost_token_check
+            return-void
+        """.trimIndent(),ExternalLabel("boost_token_check",token.implementation!!.instructions.first()))
+    }
+}
+
+@Suppress("unused")
+val shikifyHttp2Patch = bytecodePatch(
+    name = "HTTP/2 Reddit connection",
+    description = "Connect to Reddit over HTTP/2, with HTTP/1.1 as a fallback.",
+) {
+    compatibleWith(boostCompatibility)
+    execute { enableModernRedditTransport() }
+}
+
+@Suppress("unused")
+val shikifyParallelLoadingPatch = bytecodePatch(
+    name = "Parallel content loading",
+    description = "Load feeds, comments and posts in parallel instead of one background task at a time.",
+) {
+    compatibleWith(boostCompatibility)
+    dependsOn(shikifyTokenLockPatch)
+    execute { parallelContentLoaders();enableFeature("parallelLoading") }
+}
+
+@Suppress("unused")
+val shikifyRequestQueuePatch = bytecodePatch(
+    name = "Remove startup request queue",
+    description = "Stop spacing Reddit requests a second apart, and pace them again when Reddit reports a low budget.",
+) {
+    compatibleWith(boostCompatibility)
+    dependsOn(shikifyNetworkSettingsPatch)
+    execute { removeRequestQueue();enableFeature("requestQueue") }
+}
+
+@Suppress("unused")
+val shikifyInstantLoginPatch = bytecodePatch(
+    name = "Instant saved login",
+    description = "Use a saved login that is still valid straight away, and renew it in the background.",
+) {
+    compatibleWith(boostCompatibility)
+    dependsOn(shikifyTokenLockPatch)
+    execute { reuseSavedLogin();enableFeature("instantLogin") }
+}
+
+@Suppress("unused")
+val shikifyFirstPagePatch = bytecodePatch(
+    name = "Smaller first page",
+    description = "Ask for 25 posts on the first page of a feed. Later pages keep their size.",
+) {
+    compatibleWith(boostCompatibility)
+    dependsOn(shikifyNetworkSettingsPatch)
+    execute { smallerFirstPage();enableFeature("firstPage") }
+}
+
+@Suppress("unused")
+val shikifyOnlineCheckPatch = bytecodePatch(
+    name = "Improved online check",
+    description = "Let requests run when Android reports a restricted app's network as blocked.",
+) {
+    compatibleWith(boostCompatibility)
+    dependsOn(shikifyNetworkSettingsPatch)
+    execute {
+        val online=Fingerprint(definingClass="Lkk3;",name="D",returnType="Z",isStatic=true,parameters=listOf("Landroid/content/Context;")).method
+        online.addInstruction(0,"return p0")
+        online.addInstruction(0,"move-result p0")
+        online.addInstruction(0,"invoke-static/range {p0 .. p0}, Lapp/morphe/extension/boost/NetworkTweaks;->online(Landroid/content/Context;)Z")
+        enableFeature("onlineCheck")
+    }
+}
+
+@Suppress("unused")
+val shikifyNoticesPatch = bytecodePatch(
+    name = "Material notices",
+    description = "Show Boost's toasts as Material 3 notices above the bottom bar.",
+) {
+    compatibleWith(boostCompatibility)
+    dependsOn(boostChromeExtensionPatch)
+    execute { replaceToasts();enableFeature("notices") }
+}
+
+@Suppress("unused")
+val shikifyDialogsPatch = bytecodePatch(
+    name = "Material dialogs",
+    description = "Float option menus above the bottom edge like the bottom bar.",
+) {
+    compatibleWith(boostCompatibility)
+    dependsOn(boostMaterialYouPatch)
+    execute {
+        val dialog=Fingerprint(definingClass="Ldp1;",name="show",returnType="V",parameters=emptyList(),isStatic=false).method
+        if(!dialog.hasHook("Lapp/morphe/extension/boost/DialogTweaks;","onShow"))dialog.addInstruction(0,
+            "invoke-static/range {p0 .. p0}, Lapp/morphe/extension/boost/DialogTweaks;->onShow(Ljava/lang/Object;)V")
+        enableFeature("dialogs")
+    }
+}
+
+@Suppress("unused")
+val shikifyFlairsPatch = bytecodePatch(
+    name = "Inline flairs",
+    description = "Move post flairs in line with the post details, and keep flair text readable.",
+) {
+    compatibleWith(boostCompatibility)
+    dependsOn(boostMaterialYouPatch)
+    execute {
+        val flair=Fingerprint(definingClass="Lcom/rubenmayayo/reddit/models/reddit/RichFlairView;",name="c",returnType="V",isStatic=false,
+            parameters=listOf("Lcom/rubenmayayo/reddit/models/reddit/FlairModel;","Z")).method
+        if(!flair.hasHook("Lapp/morphe/extension/boost/MaterialYouTweaks;","flairText")){
+            val body=flair.implementation!!.instructions.toList()
+            val fill=body.indexOfLast { it.methodReference()?.let { ref->ref.definingClass=="Landroid/graphics/drawable/GradientDrawable;" && ref.name=="setColor" }==true }
+            val text=body.indexOfLast { it.methodReference()?.let { ref->ref.definingClass=="Lcom/rubenmayayo/reddit/models/reddit/RichFlairView;" && ref.name=="setTextColor" }==true }
+            check(fill>=0 && text>fill) { "Unrecognized flair colour binding" }
+            val background=(body[fill] as com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction).registerD
+            val foreground=(body[text] as com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction).registerD
+            flair.addInstruction(text,"move-result v$foreground")
+            flair.addInstruction(text,"invoke-static {p0, v$foreground, v$background}, Lapp/morphe/extension/boost/MaterialYouTweaks;->flairText(Ljava/lang/Object;II)I")
+        }
+        enableFeature("flairs")
+    }
+}
+
+private val shikifySearchResourcesPatch = resourcePatch {
+    execute {
+        val android="http://schemas.android.com/apk/res/android"
+        // Search: section labels and flat rows instead of a stack of filled cards.
+        document("res/layout/item_search_header.xml").use { doc ->
+            doc.documentElement.removeAttributeNS(android,"background")
+            doc.documentElement.setAttributeNS(android,"android:layout_height","48dp")
+            val views=doc.getElementsByTagName("*")
+            for(i in 0 until views.length){val view=views.item(i) as org.w3c.dom.Element
+                if(view.getAttributeNS(android,"id")=="@id/item_search_text")view.setAttributeNS(android,"android:textColor","?attr/colorPrimary")}
+        }
+        for(path in listOf("res/layout/item_search_option.xml","res/layout/item_search_option_subreddit.xml"))document(path).use { doc ->
+            doc.documentElement.setAttributeNS(android,"android:layout_height","56dp")
+        }
+        document("res/layout/item_subreddit_subscribe.xml").use { doc ->
+            doc.documentElement.removeAttributeNS(android,"background")
+            val views=doc.getElementsByTagName("*")
+            for(i in 0 until views.length){val view=views.item(i) as org.w3c.dom.Element
+                if(view.getAttributeNS(android,"id")=="@id/item_subreddit_description"){
+                    view.setAttributeNS(android,"android:maxLines","2");view.setAttributeNS(android,"android:ellipsize","end")
+                    view.setAttributeNS(android,"android:textColor","?attr/colorOnSurfaceVariant")}}
+        }
+    }
+}
+
+@Suppress("unused")
+val shikifySearchPatch = bytecodePatch(
+    name = "Sync-style search",
+    description = "Fill the empty search page with your feeds and subscriptions in collapsible Material 3 sections.",
+) {
+    compatibleWith(boostCompatibility)
+    dependsOn(boostMaterialYouPatch, shikifySearchResourcesPatch)
+    execute {
+        val searchPage="Lcom/rubenmayayo/reddit/ui/search/SearchGenericActivity;"
+        val searchTweaks="Lapp/morphe/extension/boost/SearchTweaks;"
+        val searchList=Fingerprint(definingClass=searchPage,name="s1",returnType="V",parameters=emptyList(),isStatic=false).method
+        if(!searchList.hasHook(searchTweaks,"onList"))searchList.addInstruction(0,"invoke-static/range {p0 .. p0}, $searchTweaks->onList(Ljava/lang/Object;)V")
+        val searchHeader=Fingerprint(definingClass=searchPage,name="e0",returnType="V",parameters=listOf("Lbn2;"),isStatic=false).method
+        if(!searchHeader.hasHook(searchTweaks,"onHeader")){
+            check(searchHeader.implementation!!.registerCount>=3) { "No free register in search header" }
+            searchHeader.addInstructionsWithLabels(0,"""
+                invoke-static/range {p0 .. p1}, $searchTweaks->onHeader(Ljava/lang/Object;Ljava/lang/Object;)Z
+                move-result v0
+                if-eqz v0, :native_header
+                return-void
+            """.trimIndent(),ExternalLabel("native_header",searchHeader.implementation!!.instructions.first()))
+        }
+        enableFeature("search")
+    }
+}
+
+@Suppress("unused")
+val shikifyTransitionsPatch = resourcePatch(
+    name = "Sliding screen transitions",
+    description = "New screens slide over the one below, which drifts back slightly.",
+) {
+    compatibleWith(boostCompatibility)
+    execute {
+        fun motion(name:String,body:String){get("res/anim/$name.xml").apply {parentFile.mkdirs();writeText("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n$body\n")}}
+        val ns="xmlns:android=\"http://schemas.android.com/apk/res/android\""
+        get("res/interpolator/shikify_slide.xml").apply {
+            parentFile.mkdirs()
+            writeText("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<pathInterpolator $ns android:controlX1=\"0.35\" android:controlY1=\"0\" android:controlX2=\"0.1\" android:controlY2=\"1\" />\n")
+        }
+        val slide="android:interpolator=\"@interpolator/shikify_slide\" android:shareInterpolator=\"true\""
+        // A new screen visibly slides over the one below, which drifts back slightly.
+        motion("shikify_open_enter","<set $ns $slide android:zAdjustment=\"top\"><translate android:duration=\"450\" android:fromXDelta=\"100%p\" android:toXDelta=\"0\" /></set>")
+        motion("shikify_open_exit","<set $ns $slide><translate android:duration=\"450\" android:fromXDelta=\"0\" android:toXDelta=\"-12%p\" /></set>")
+        motion("shikify_close_enter","<set $ns $slide><translate android:duration=\"320\" android:fromXDelta=\"-12%p\" android:toXDelta=\"0\" /></set>")
+        motion("shikify_close_exit","<set $ns $slide android:zAdjustment=\"top\"><translate android:duration=\"320\" android:fromXDelta=\"0\" android:toXDelta=\"100%p\" /></set>")
+        fun org.w3c.dom.Element.put(doc: org.w3c.dom.Document, name: String, value: String) {
+            val item = (0 until childNodes.length).map { childNodes.item(it) }
+                .filterIsInstance<org.w3c.dom.Element>().firstOrNull { it.tagName == "item" && it.getAttribute("name") == name }
+                ?: doc.createElement("item").also { appendChild(it) }
+            item.setAttribute("name", name); item.textContent = value
+        }
+        val names = listOf("MaterialDarkTheme", "MaterialDarkTheme.Amoled", "MaterialDarkTheme.Dynamic", "MaterialLightTheme", "MaterialLightTheme.Dynamic")
+        document("res/values/styles.xml").use { styles ->
+            val all = (0 until styles.getElementsByTagName("style").length).map {
+                styles.getElementsByTagName("style").item(it) as org.w3c.dom.Element
+            }
+            all.filter { it.getAttribute("name") == "Shikify.Animation.Activity" }.forEach { it.parentNode.removeChild(it) }
+            styles.createElement("style").apply {
+                setAttribute("name", "Shikify.Animation.Activity");setAttribute("parent", "@android:style/Animation.Activity")
+                for ((key, value) in listOf("OpenEnter" to "shikify_open_enter", "OpenExit" to "shikify_open_exit", "CloseEnter" to "shikify_close_enter", "CloseExit" to "shikify_close_exit"))
+                    put(styles, "android:activity${key}Animation", "@anim/$value")
+                styles.documentElement.appendChild(this)
+            }
+            for (style in all.filter { it.getAttribute("name") in names }) style.put(styles, "android:windowAnimationStyle", "@style/Shikify.Animation.Activity")
+        }
     }
 }

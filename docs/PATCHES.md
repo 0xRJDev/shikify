@@ -1,18 +1,43 @@
 # Patches
 
-All 14 patches target Boost for Reddit 1.14.3 (`com.rubenmayayo.reddit`).
+All 25 patches target Boost for Reddit 1.14.3 (`com.rubenmayayo.reddit`). Pick any combination in Morphe Manager.
 
-- Bottom gallery action buttons
-- Expand inline comment media
-- Hide horizontal comment dividers
-- Hold to peek at media
-- Home account avatar
+## Look
+
+- Sync-style Material You: themes, glass surfaces, side panel, empty screens and compact metadata
+- Material dialogs (needs Sync-style Material You)
+- Inline flairs (needs Sync-style Material You)
+- Sync-style search (needs Sync-style Material You)
+- Material notices
 - Material loading animation
-- Polish comment layout
-- Polish media viewer
-- Predictive back navigation
-- Show post in comments header
-- Swipe comment actions
-- Swipe post actions
-- Sync-style Material You
+- Sliding screen transitions
+- Home account avatar
 - Use system font
+
+## Comments
+
+- Show post in comments header
+- Polish comment layout
+- Hide horizontal comment dividers
+- Expand inline comment media
+- Swipe comment actions
+
+## Posts and media
+
+- Swipe post actions
+- Hold to peek at media
+- Bottom gallery action buttons
+- Polish media viewer
+
+## Navigation
+
+- Predictive back navigation
+
+## Loading
+
+- HTTP/2 Reddit connection
+- Parallel content loading
+- Remove startup request queue
+- Instant saved login
+- Smaller first page
+- Improved online check

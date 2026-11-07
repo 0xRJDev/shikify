@@ -71,6 +71,7 @@ public final class MaterialYouTweaks {
     public static int flairText(Object flair,int text,int background) {
         if(!CommentsChromeTweaks.materialYouEnabled() || !(flair instanceof View))return text;
         Context context=((View)flair).getContext();
+        if(!SurfaceSettingsActivity.enabled(context,"flair_style"))return text;
         boolean clear=android.graphics.Color.alpha(background)<0xF0;
         int behind=clear ? color(context,"colorSurfaceContainerHigh",android.R.attr.colorBackground):background;
         if(contrast(text,behind)>=3)return text;
@@ -163,7 +164,7 @@ public final class MaterialYouTweaks {
             if(!installed){if(!install(owner,row))return;installed=true;}
             TextView info=infoView==null ? null:infoView.get();
             if(info!=null && (lastInfo==null || lastInfo.get()!=info.getText())) {
-                splitFlair(info,flair==null ? null:flair.get());
+                if(Features.flairs() && SurfaceSettingsActivity.enabled(info.getContext(),"flair_style"))splitFlair(info,flair==null ? null:flair.get());
                 lastInfo=new WeakReference<>(info.getText());
             }
             TextView score=scoreView==null ? null:scoreView.get();

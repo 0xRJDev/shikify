@@ -19,13 +19,27 @@ public final class NetworkTweaks {
     /** A token this close to expiry is refreshed the usual way. */
     private static final long RESTORE_MARGIN=5*60*1000;
     private static boolean restoreTried;
+    private static final int FIRST_PAGE=25,DEFAULT_PAGE=50;
     private static volatile java.lang.reflect.Method tokenCheck;
     /** Requests per minute while Reddit reports enough budget: one every 100 ms. */
     private static final int BURST_RATE=600;
     /** Below this many requests left in Reddit's window, the paced rate applies again. */
     private static final double LOW_BUDGET=20;
     private static volatile double remaining=-1;
+    private static volatile boolean parallel=true,burst=true,instantLogin=true,smallPage=true,reachable=true;
     private NetworkTweaks() { }
+    /** Read once at launch. Requests can start before any screen exists. */
+    public static void init(Context context) {
+        parallel=SurfaceSettingsActivity.enabled(context,"parallel_loading");
+        burst=SurfaceSettingsActivity.enabled(context,"request_queue");
+        instantLogin=SurfaceSettingsActivity.enabled(context,"instant_login");
+        smallPage=SurfaceSettingsActivity.enabled(context,"first_page");
+        reachable=SurfaceSettingsActivity.enabled(context,"online_check");
+    }
+    /** Larger requests made on purpose, such as Patcheddit's popular list, are left alone. */
+    public static int pageLimit(int limit,boolean started) {
+        return smallPage && !started && limit>FIRST_PAGE && limit<=DEFAULT_PAGE ? FIRST_PAGE:limit;
+    }
     /** Reddit sends what is left of the current window with each response. */
     public static void remaining(String header) {
         if(header==null)return;
@@ -37,7 +51,7 @@ public final class NetworkTweaks {
      * when it runs low.
      */
     public static int rate(int requestsPerMinute) {
-        return requestsPerMinute<1 || remaining>=0 && remaining<LOW_BUDGET ? requestsPerMinute:BURST_RATE;
+        return !burst || requestsPerMinute<1 || remaining>=0 && remaining<LOW_BUDGET ? requestsPerMinute:BURST_RATE;
     }
     /**
      * Runs Boost's token check under a lock so parallel loaders share one login. It returns true
@@ -48,7 +62,7 @@ public final class NetworkTweaks {
         synchronized(api) {
             IN_TOKEN.set(true);
             try {
-                boolean restored=!restoreTried && restore(api);
+                boolean restored=Features.instantLogin() && instantLogin && !restoreTried && restore(api);
                 restoreTried=true;
                 if(tokenCheck==null)tokenCheck=api.getClass().getMethod("b");
                 tokenCheck.invoke(api);
@@ -122,13 +136,14 @@ public final class NetworkTweaks {
      */
     @SuppressWarnings({"rawtypes","unchecked"})
     public static android.os.AsyncTask execute(android.os.AsyncTask task,Object[] parameters) {
-        for(Class<?> type=task.getClass();type!=null && type!=android.os.AsyncTask.class;type=type.getSuperclass())
+        if(parallel)for(Class<?> type=task.getClass();type!=null && type!=android.os.AsyncTask.class;type=type.getSuperclass())
             if(CONTENT.contains(type.getName()))return task.executeOnExecutor(android.os.AsyncTask.THREAD_POOL_EXECUTOR,parameters);
         return task.execute(parameters);
     }
     public static boolean online(Context context) {
         try {
             ConnectivityManager manager=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if(!reachable){android.net.NetworkInfo active=manager.getActiveNetworkInfo();return active!=null && active.isConnected();}
             for(Network network:manager.getAllNetworks()){
                 NetworkCapabilities capabilities=manager.getNetworkCapabilities(network);
                 if(capabilities!=null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))return true;

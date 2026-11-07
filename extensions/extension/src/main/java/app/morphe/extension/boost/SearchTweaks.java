@@ -26,6 +26,7 @@ public final class SearchTweaks {
     public static void onList(Object activity) {
         if(!(activity instanceof Context))return;
         Context context=(Context)activity;
+        if(!SurfaceSettingsActivity.enabled(context,"search_page"))return;
         try {
             Object rows=CommentsChromeTweaks.field(activity,"a");
             if(!(rows instanceof List))return;

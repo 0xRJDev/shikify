@@ -42,21 +42,32 @@ fun main(args: Array<String>) = runBlocking {
     val expectedNames = setOf(
         "Bottom gallery action buttons",
         "Expand inline comment media",
+        "HTTP/2 Reddit connection",
         "Hide horizontal comment dividers",
         "Hold to peek at media",
         "Home account avatar",
+        "Improved online check",
+        "Inline flairs",
+        "Instant saved login",
+        "Material dialogs",
         "Material loading animation",
+        "Material notices",
+        "Parallel content loading",
         "Polish comment layout",
         "Polish media viewer",
         "Predictive back navigation",
+        "Remove startup request queue",
         "Show post in comments header",
+        "Sliding screen transitions",
+        "Smaller first page",
         "Swipe comment actions",
         "Swipe post actions",
         "Sync-style Material You",
+        "Sync-style search",
         "Use system font"
     )
-    check(patches.size == 14 && patches.map { it.name }.toSet() == expectedNames) {
-        "Expected fourteen unprefixed public patches, got ${patches.map { it.name }}"
+    check(patches.size == 25 && patches.map { it.name }.toSet() == expectedNames) {
+        "Expected 25 unprefixed public patches, got ${patches.map { it.name }}"
     }
     for (patch in patches) {
         check(patch.compatibility!!.single().packageName == "com.rubenmayayo.reddit")
@@ -254,6 +265,7 @@ fun main(args: Array<String>) = runBlocking {
     var dialogHooks = 0
     var networkHooks = 0
     var startupHooks = 0
+    var initHooks = 0
     var tokenHooks = 0
     var taskHooks = 0
     var searchHooks = 0
@@ -276,16 +288,22 @@ fun main(args: Array<String>) = runBlocking {
                 searchHooks++
                 continue
             }
+            if(target.definingClass=="${EXT}NetworkTweaks;" && target.name=="init") {
+                check(type.type=="Lcom/rubenmayayo/reddit/MyApplication;" && method.name=="onCreate" && instruction.opcode==Opcode.INVOKE_STATIC_RANGE)
+                initHooks++
+                continue
+            }
             if(target.definingClass=="${EXT}NetworkTweaks;" && target.name=="execute") {
                 check(instruction.opcode==Opcode.INVOKE_STATIC || instruction.opcode==Opcode.INVOKE_STATIC_RANGE)
                 taskHooks++
                 continue
             }
-            if(target.definingClass=="${EXT}NetworkTweaks;" && target.name in setOf("rate","remaining","clearAccount","keepAccount","takeAccount","accountCheck")) {
+            if(target.definingClass=="${EXT}NetworkTweaks;" && target.name in setOf("rate","remaining","clearAccount","keepAccount","takeAccount","accountCheck","pageLimit")) {
                 val expected=when(target.name) {
                     "rate" -> "Lnet/dean/jraw/http/RestClient;" to "setRatelimit"
                     "remaining" -> "Lnet/dean/jraw/RedditClient;" to "adjustRatelimit"
                     "takeAccount" -> "Lpd2;" to "M"
+                    "pageLimit" -> "Lnet/dean/jraw/paginators/Paginator;" to "next"
                     else -> "Lnet/dean/jraw/RedditClient;" to "authenticate"
                 }
                 check(type.type==expected.first && method.name==expected.second && instruction.opcode==Opcode.INVOKE_STATIC) { "Startup hook ${target.name} moved" }
@@ -475,9 +493,8 @@ fun main(args: Array<String>) = runBlocking {
     check(tagHooks >= 2) { "Expected SPOILER and NSFW colour hooks, got $tagHooks" }
     check(dialogHooks == 1) { "Expected one dialog hook, got $dialogHooks" }
     check(networkHooks == 1) { "Expected one network hook, got $networkHooks" }
-    check(startupHooks == 6) { "Expected six startup hooks, got $startupHooks" }
-    val pageRead=patched["Lnet/dean/jraw/paginators/Paginator;"]!!.methods.single { it.name=="next" && it.parameterTypes.size==1 }.implementation!!.instructions.toList()
-    check(pageRead.count { it.opcode==Opcode.IF_LE }>=1 && pageRead.any { ((it as? ReferenceInstruction)?.reference as? com.android.tools.smali.dexlib2.iface.reference.FieldReference)?.name=="started" }) { "First page limit missing" }
+    check(startupHooks == 7) { "Expected seven startup hooks, got $startupHooks" }
+    check(initHooks == 1) { "Expected one network settings hook, got $initHooks" }
     for(name in listOf("a","e"))check(patched["Lpd2;"]!!.fields.plus(patched["Lld2;"]!!.fields).any { it.name==name && (it.accessFlags and com.android.tools.smali.dexlib2.AccessFlags.PUBLIC.value)!=0 }) { "Login field $name changed" }
     check(patched["Lpd2;"]!!.methods.any { it.name=="M" && it.parameterTypes.isEmpty() && (it.accessFlags and com.android.tools.smali.dexlib2.AccessFlags.PUBLIC.value)!=0 }) { "Login method changed" }
     check(patched["Lnet/dean/jraw/RedditClient;"]!!.fields.any { it.name=="authenticatedUser" } && patched["Lnet/dean/jraw/http/oauth/OAuthHelper;"]!!.fields.any { it.name=="authStatus" }) { "Login fields changed" }
@@ -500,6 +517,6 @@ fun main(args: Array<String>) = runBlocking {
                 check(resolves(ref)) { "Unresolved runtime method: $ref" }
         }
     }
-    println("PASS: all 14 patches applied, 41 register-safe hooks, runtime references resolved")
+    println("PASS: all 25 patches applied, 41 register-safe hooks, runtime references resolved")
     println("APK: ${output.absolutePath} (unsigned; Android UI testing still required)")
 }

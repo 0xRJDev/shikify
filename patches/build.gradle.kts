@@ -118,3 +118,16 @@ tasks.register<JavaExec>("validateCombined") {
         rootProject.file(".work/combined").absolutePath,
     )
 }
+
+// Run on demand: applies each patch alone and each left out, which takes several minutes.
+tasks.register<JavaExec>("validateSubsets") {
+    dependsOn("buildAndroid", validation.classesTaskName)
+    classpath = validation.runtimeClasspath
+    mainClass.set("ValidateSubsetsKt")
+    maxHeapSize = "3g"
+    args(
+        layout.buildDirectory.file("libs/patches-${project.version}.mpp").get().asFile.absolutePath,
+        providers.gradleProperty("boostApk").getOrElse(rootProject.file("inputs/boost-for-reddit-1.14.3.apk").absolutePath),
+        rootProject.file(".work/subsets").absolutePath,
+    )
+}

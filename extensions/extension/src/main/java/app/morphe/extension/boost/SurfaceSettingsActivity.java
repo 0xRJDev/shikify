@@ -85,10 +85,10 @@ public final class SurfaceSettingsActivity extends Activity {
     @Override public void onBackPressed(){goBack();}
     private void goBack(){if(page!=0)show(0);else finish();}
     private void show(int value){
-        page=Math.max(0,Math.min(4,value));
+        page=Math.max(0,Math.min(5,value));
         if(body.getParent() instanceof ScrollView)((ScrollView)body.getParent()).scrollTo(0,0);
         body.removeAllViews();group=null;
-        String[] titles={"Shikify Settings","Glass & appearance","Comments & gestures","Media viewers","Performance"};
+        String[] titles={"Shikify Settings","Glass & appearance","Comments & gestures","Media viewers","Performance","Loading"};
         title.setText(titles[page]);
         setTitle(titles[page]);
         if(page==0){
@@ -96,6 +96,8 @@ public final class SurfaceSettingsActivity extends Activity {
             destination("Comments & gestures","Headers, thread position and swipe actions","ic_comment_24dp",2);
             destination("Media viewers","Stock playback and image controls","ic_photo_24dp",3);
             destination("Performance","Blur update interval","ic_settings_24dp",4);
+            if(Features.parallelLoading() || Features.requestQueue() || Features.instantLogin() || Features.firstPage() || Features.onlineCheck())
+                destination("Loading","Requests, login and first page","ic_refresh_24dp",5);
             note("Changes apply when you return to the relevant screen.");
         }
         if(page==1){
@@ -105,6 +107,13 @@ public final class SurfaceSettingsActivity extends Activity {
             slider("Blur strength","blur_amount",7,0,25," dp",false);
             slider("Glass tint","glass_tint",40,0,80,"%",false);
             note("Lower tint makes glass clearer. Colours follow Boost’s Material You theme.");
+            section("Material 3");
+            toggle("Side panel","Rounded boxes and wallpaper colours","side_panel");
+            toggle("Empty screens","Tonal icon and button","empty_screens");
+            if(Features.notices())toggle("Notices","Show toasts above the bottom bar","material_notices");
+            if(Features.dialogs())toggle("Floating menus","Option menus float above the bottom edge","material_dialogs");
+            if(Features.flairs())toggle("Inline flairs","Show flairs with the post details","flair_style");
+            if(Features.search())toggle("Search page","Show feeds and subscriptions","search_page");
         }
         if(page==2){
             section("Comments");
@@ -127,6 +136,17 @@ public final class SurfaceSettingsActivity extends Activity {
             slider("Blur refresh interval","blur_interval",16,8,100," ms",false);
             note("16 ms balances smoothness and GPU work. 8 ms matches a 120 Hz screen exactly but costs twice as much. Larger values reduce work, but the glass trails the content.");
         }
+        if(page==5)loading();
+    }
+    private void loading(){
+        if(Features.parallelLoading() || Features.requestQueue() || Features.instantLogin() || Features.firstPage())section("Faster loading");
+        if(Features.parallelLoading())toggle("Parallel loading","Load feeds and comments at the same time","parallel_loading");
+        if(Features.requestQueue())toggle("No startup queue","Stop spacing requests a second apart","request_queue");
+        if(Features.instantLogin())toggle("Instant login","Use a saved login that is still valid","instant_login");
+        if(Features.firstPage())toggle("Smaller first page","Ask for 25 posts on the first page","first_page");
+        if(Features.onlineCheck())section("Connection");
+        if(Features.onlineCheck())toggle("Improved online check","Try requests when Android reports a block","online_check");
+        note("Restart Boost for these to apply. HTTP/2 is chosen when you patch.");
     }
     private TextView label(String text,int size,int color){TextView view=new TextView(this);view.setText(text);view.setTextSize(size);view.setTextColor(color);return view;}
     private void ripple(View view){

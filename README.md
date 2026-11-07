@@ -6,9 +6,13 @@ Shikify is an independent project. It is not affiliated with Morphe, Boost for R
 
 ## Install
 
-1. Download `shikify-1.0.0.mpp` from this repository's releases.
+**[Add Shikify to Morphe](https://morphe.software/add-source?github=0xRJDev/shikify)** on your phone, then patch your own Boost 1.14.3 APK in Morphe Manager. Morphe Manager will offer new Shikify versions as they are released.
+
+To install manually instead:
+
+1. Download `shikify-1.1.0.mpp` from this repository's releases.
 2. Import it as a local source in Morphe Manager.
-3. Patch your own Boost 1.14.3 APK and pick the features you want.
+3. Patch your own Boost 1.14.3 APK and pick the patches you want. Each one has a short description, and most can also be switched off later in **Settings → Shikify Settings**.
 
 No Boost APK, Reddit credentials or OAuth client IDs are included. Keep any account or API patches you already use, such as Patcheddit, selected when you patch.
 
@@ -23,7 +27,7 @@ No Boost APK, Reddit credentials or OAuth client IDs are included. Keep any acco
 - **System font:** an optional separate patch that follows your phone's font for posts, comments and names.
 - **Faster loading:** no one-second request queue at launch, valid saved logins reused, feeds and comments loaded in parallel, and HTTP/2.
 
-See [all 14 patches](docs/PATCHES.md), [settings](docs/SETTINGS.md) and the [changelog](changelog.md). Android 7.0 is the minimum. Wallpaper colours and blur need Android 12 or later.
+See [all 25 patches](docs/PATCHES.md), [settings](docs/SETTINGS.md) and the [changelog](changelog.md). Android 7.0 is the minimum. Wallpaper colours and blur need Android 12 or later.
 
 ## Build
 
@@ -41,7 +45,7 @@ To also apply every patch and validate the result, supply your own original APK:
 BOOST_APK=/absolute/path/to/boost-1.14.3.apk ./build.sh
 ```
 
-The bundle is written to `output/shikify-1.0.0.mpp`. See [validation](docs/VALIDATION.md) and [releasing](docs/RELEASING.md).
+The bundle is written to `output/shikify-1.1.0.mpp`. See [validation](docs/VALIDATION.md) and [releasing](docs/RELEASING.md).
 
 ## Credits and licence
 

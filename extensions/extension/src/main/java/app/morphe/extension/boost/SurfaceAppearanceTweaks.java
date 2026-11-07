@@ -524,7 +524,7 @@ public final class SurfaceAppearanceTweaks {
                     int slider=Ids.view(root,"material_drawer_slider_layout"),list=Ids.view(root,"material_drawer_recycler_view");
                     for(int index=0;index<panels.getChildCount();index++){
                         View panel=panels.getChildAt(index);
-                        if(panel.getId()==slider && panel.findViewById(list)!=null){drawer=new UnifiedChromeTweaks.Drawer(panel);break;}
+                        if(panel.getId()==slider && panel.findViewById(list)!=null && SurfaceSettingsActivity.enabled(panel.getContext(),"side_panel")){drawer=new UnifiedChromeTweaks.Drawer(panel);break;}
                     }
                 }
             }

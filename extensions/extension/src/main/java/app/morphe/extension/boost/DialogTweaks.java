@@ -18,7 +18,7 @@ public final class DialogTweaks {
             Dialog dialog=(Dialog)instance;Window window=dialog.getWindow();if(window==null)return;
             Context context=dialog.getContext();
             if(Build.VERSION.SDK_INT>=31 && !SurfaceSettingsActivity.enabled(context,"dialog_blur"))window.clearFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-            if(!menu(window.getDecorView()))return;
+            if(!SurfaceSettingsActivity.enabled(context,"material_dialogs") || !menu(window.getDecorView()))return;
             float density=context.getResources().getDisplayMetrics().density;int margin=Math.round(12*density);
             WindowManager.LayoutParams params=window.getAttributes();
             params.width=Math.min(context.getResources().getDisplayMetrics().widthPixels-margin*2,Math.round(640*density));

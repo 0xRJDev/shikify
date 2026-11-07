@@ -1,3 +1,9 @@
+# Version 1.1.0
+
+- Split "Sync-style Material You" into smaller patches, for 25 in total. Pick only what you want in Morphe Manager.
+- New patches: HTTP/2 Reddit connection, Parallel content loading, Remove startup request queue, Instant saved login, Smaller first page, Improved online check, Material notices, Material dialogs, Inline flairs, Sync-style search and Sliding screen transitions.
+- New Loading page in Shikify Settings, and more switches under Glass & appearance. Switches only appear for patches you selected.
+
 # Version 1.0.0
 
 First public release, for Boost for Reddit 1.14.3.

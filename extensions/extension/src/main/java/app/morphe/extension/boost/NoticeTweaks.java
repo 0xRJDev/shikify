@@ -31,7 +31,7 @@ public final class NoticeTweaks {
         CharSequence text;
         synchronized(TEXT){text=TEXT.remove(toast);}
         Activity activity=SurfaceAppearanceTweaks.current();
-        if(TextUtils.isEmpty(text) || activity==null || activity.isFinishing()){toast.show();return;}
+        if(TextUtils.isEmpty(text) || activity==null || activity.isFinishing() || !SurfaceSettingsActivity.enabled(activity,"material_notices")){toast.show();return;}
         CharSequence message=text;boolean extended=toast.getDuration()==Toast.LENGTH_LONG;
         Runnable notice=()->{if(!post(activity,message,extended))toast.show();};
         if(Looper.myLooper()==Looper.getMainLooper())notice.run();else activity.runOnUiThread(notice);

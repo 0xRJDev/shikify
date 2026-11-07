@@ -29,7 +29,7 @@ public final class UnifiedChromeTweaks {
     /** Material 3 empty screen: the icon in a tonal circle, and a tonal action button. */
     static void emptyState(ViewGroup view){
         Context context=view.getContext();
-        if(view.getTag(EMPTY_TAG)!=null)return;
+        if(view.getTag(EMPTY_TAG)!=null || !SurfaceSettingsActivity.enabled(context,"empty_screens"))return;
         view.setTag(EMPTY_TAG,Boolean.TRUE);
         int container=MaterialYouTweaks.color(context,"colorSecondaryContainer",android.R.attr.colorBackground);
         int content=MaterialYouTweaks.color(context,"colorOnSecondaryContainer",android.R.attr.textColorPrimary);
@@ -199,7 +199,8 @@ public final class UnifiedChromeTweaks {
         }
         /** Settings categories sit on rounded surfaces; a category title has no widget frame. */
         void frame(){
-            if(search)searchHeaders();
+            View host=root.get();
+            if(search && host!=null && Features.search() && SurfaceSettingsActivity.enabled(host.getContext(),"search_page"))searchHeaders();
             if(!settings)return;
             View decor=root.get(),list=decor==null ? null:SurfaceAppearanceTweaks.find(decor,"recycler_view");if(!(list instanceof ViewGroup))return;
             if(settingsList==null || settingsList.get()!=list){settingsList=new WeakReference<>(list);settingsGroups=new Groups(list);}
