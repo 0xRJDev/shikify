@@ -1,0 +1,10 @@
+# Version 1.0.0
+
+First public release, for Boost for Reddit 1.14.3.
+
+- Material You colours across surfaces, the side panel, settings, dialogs and empty screens.
+- Sync-style search page, comments header, compact metadata and rounded thread groups.
+- Swipe actions, hold to peek at media, predictive back and glass floating pills.
+- Optional "Use system font" patch.
+- Faster loading: no one-second request queue at launch, saved logins reused, parallel feeds and comments, and HTTP/2.
+- Applies alongside Patcheddit 2.1.0-dev.4 in either order.
