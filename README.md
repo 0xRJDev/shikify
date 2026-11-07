@@ -16,7 +16,7 @@
 </div>
 
 > [!WARNING]
-> **Boost patches are only tested with [Patcheddit](https://github.com/wchill/patcheddit).** They are developed and used alongside Patcheddit 2.1.0-dev.4. Other patch sources, or Boost without Patcheddit, are untested.
+> **Boost patches are only tested with [Patcheddit](https://github.com/wchill/patcheddit).** They are developed and used alongside Patcheddit. Other patch sources, or Boost without Patcheddit, are untested.
 
 ### <a name="install"></a><img src=".github/assets/card-install.png" alt="Episode 1: Install! Let's get you patched!" width="100%">
 
