@@ -43,7 +43,7 @@ digest = hashlib.sha256(asset.read_bytes()).hexdigest()
 shutil.copy2(ROOT/'patches-list.json', release/'patches-list.json')
 # Keep the simple project changelog as the source of release notes.
 notes = changelog.split(heading, 1)[1].split('\n# Version ', 1)[0].strip()
-notes += '\n\nImport the `.mpp` into Morphe Manager and patch Boost for Reddit 1.14.3 (`com.rubenmayayo.reddit`). No Boost APK is included.\n'
+notes += '\n\nImport the `.mpp` into Morphe Manager and patch your own copy of Boost for Reddit 1.14.3 (`com.rubenmayayo.reddit`). No Boost APK is included.\n'
 (release/'release-notes.md').write_text(notes)
 if args.repository:
     descriptor = {
