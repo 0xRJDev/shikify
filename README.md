@@ -47,7 +47,7 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 <table>
 <tr><th></th><th>Feature</th><th>What you get</th></tr>
 <tr><td align="center"><img src=".github/assets/chibi-color.png" alt="" width="64"></td><td><b>Material You throughout</b></td><td>Wallpaper colours for surfaces, side panel, settings, dialogs and empty screens. Upvotes and downvotes keep their Reddit colours.</td></tr>
-<tr><td align="center">🔍</td><td><b>Sync-style search</b></td><td>A rebuilt search page with Material 3 styling.</td></tr>
+<tr><td align="center"><img src=".github/assets/chibi-search.png" alt="" width="64"></td><td><b>Sync-style search</b></td><td>A rebuilt search page with Material 3 styling.</td></tr>
 <tr><td align="center"><img src=".github/assets/chibi-comments.png" alt="" width="64"></td><td><b>Comments</b></td><td>Header with the subreddit and post title, compact metadata, rounded thread groups and remembered thread position.</td></tr>
 <tr><td align="center"><img src=".github/assets/chibi-gestures.png" alt="" width="64"></td><td><b>Gestures</b></td><td>Distance-based swipe actions on comments and posts, hold to peek at media and predictive back.</td></tr>
 <tr><td align="center"><img src=".github/assets/chibi-media.png" alt="" width="64"></td><td><b>Media</b></td><td>Image and gallery action pills at the bottom, and a quicker swipe to close.</td></tr>
