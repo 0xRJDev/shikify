@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src=".github/assets/title-card-burst.png" alt="Shikify" width="100%">
+<img src=".github/assets/title-card-slim.png" alt="Shikify" width="100%">
 
 **Material 3 and Material You patches for Android apps**
 
