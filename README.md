@@ -17,8 +17,6 @@
 
 > [!WARNING]
 > **Boost patches are only tested with [Patcheddit](https://github.com/wchill/patcheddit).** They are developed and used alongside Patcheddit 2.1.0-dev.4. Other patch sources, or Boost without Patcheddit, are untested.
->
-> **Mostly vibe coded.** Use at your own risk. See the [disclaimer](#disclaimer).
 
 ### <a name="install"></a><img src=".github/assets/card-install.png" alt="Episode 1: Install! Let's get you patched!" width="100%">
 
@@ -87,7 +85,6 @@ These patches are provided as is, without warranty of any kind, for **educationa
 - **Use them only on apps you legally own.** They are for studying, accessibility tweaks and personal customization of software you already own or that is free. They are not a piracy tool: do not use them to obtain paid apps, subscriptions or content you have not licensed, and do not redistribute patched copies of anyone's apps.
 - **No apps are distributed here.** This repository holds patch source code and the scripts that build it. It hosts no APKs.
 - **Non-commercial project.** There are no paid tiers, no ads and nothing for sale. Do not sell these patches or patched apps, and be wary of anyone who does.
-- **Mostly vibe coded.** Much of this project was written with AI assistance, so expect rough edges and use it at your own risk.
 - **Use at your own risk.** Modifying apps can violate their terms of service and may lead to account restrictions, bans, data loss or apps that no longer work. The authors accept no liability for any consequence of using these patches and give no guarantee that they work on any particular app or version.
 - **No affiliation.** This project is not affiliated with, endorsed by or connected to Reddit, Boost for Reddit, Patcheddit, Morphe, Google or any app developer. All trademarks belong to their respective owners.
 - **Takedown requests.** If you are a rights holder and believe something here infringes your rights, open an issue naming the exact file or patch and describing the concern. It will be reviewed promptly and in good faith.
