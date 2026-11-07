@@ -6,12 +6,12 @@
 
 <sub>For use with [Morphe](https://github.com/MorpheApp) • Now supporting Boost for Reddit, with more apps to come</sub>
 
-<a href="#install"><img src=".github/assets/button-install.png" alt="Install" width="150"></a>
-<a href="#features"><img src=".github/assets/button-features.png" alt="Features" width="150"></a>
-<a href="#build"><img src=".github/assets/button-build.png" alt="Build" width="150"></a>
-<a href="changelog.md"><img src=".github/assets/button-news.png" alt="What's new" width="150"></a>
-<a href="#disclaimer"><img src=".github/assets/button-disclaimer.png" alt="Disclaimer" width="150"></a>
-<a href="#credits"><img src=".github/assets/button-credits.png" alt="Credits" width="150"></a>
+<a href="#install"><img src=".github/assets/button-install.png" alt="Install" width="128"></a>
+<a href="#features"><img src=".github/assets/button-features.png" alt="Features" width="128"></a>
+<a href="#build"><img src=".github/assets/button-build.png" alt="Build" width="128"></a>
+<a href="changelog.md"><img src=".github/assets/button-news.png" alt="What's new" width="128"></a>
+<a href="#disclaimer"><img src=".github/assets/button-disclaimer.png" alt="Disclaimer" width="128"></a>
+<a href="#credits"><img src=".github/assets/button-credits.png" alt="Credits" width="128"></a>
 
 </div>
 
@@ -118,8 +118,8 @@ Built with the official [Morphe patches template](https://github.com/MorpheApp/m
 
 <div align="center">
 
-<img src=".github/assets/button-browser.png" alt="Best viewed in any browser" width="150">
-<a href="LICENSE"><img src=".github/assets/button-gpl.png" alt="GPL-3.0" width="150"></a>
-<a href="https://github.com/0xRJDev/shikify/issues"><img src=".github/assets/button-guestbook.png" alt="Sign my guestbook" width="150"></a>
+<img src=".github/assets/button-browser.png" alt="Best viewed in any browser" width="128">
+<a href="LICENSE"><img src=".github/assets/button-gpl.png" alt="GPL-3.0" width="128"></a>
+<a href="https://github.com/0xRJDev/shikify/issues"><img src=".github/assets/button-guestbook.png" alt="Sign my guestbook" width="128"></a>
 
 </div>
