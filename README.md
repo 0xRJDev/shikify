@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src=".github/assets/title-card.gif" alt="Shikify, シキファイ. Patching your apps, one episode at a time!" width="100%">
+<img src=".github/assets/title-card.png" alt="Shikify, シキファイ. Patching your apps, one episode at a time!" width="100%">
 
 **Material 3 and Material You patches for Android apps**
 
@@ -20,11 +20,7 @@
 >
 > **Mostly vibe coded.** Use at your own risk. See the [disclaimer](#disclaimer).
 
-<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
-
 <p align="center"><img src=".github/assets/profile.png" alt="Character profile: Shikify-chan, シキファイちゃん. Job: app mechanic. Weapon: trusty wrench. Likes Material You and HTTP/2. Hates queues, jitter and ugly menus. Special move: Instant Saved Login!" width="100%"></p>
-
-<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
 ### <a name="install"></a><img src=".github/assets/card-install.png" alt="Episode 1: Install! Let's get you patched!" width="100%">
 
@@ -39,8 +35,6 @@ Open this button on your phone, then patch your own copy of a supported app in M
 3. Patch your own copy of a supported app and pick the patches you want. Each one has a short description. For Boost, most can also be switched off later in **Settings → Shikify Settings**.
 
 No app APKs, account credentials or OAuth client IDs are included. Keep any patches you already rely on, such as [Patcheddit](https://github.com/wchill/patcheddit) for Boost, selected when you patch.
-
-<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
 ### <a name="features"></a><img src=".github/assets/card-features.png" alt="Episode 2: Current Features! It can do all of this?!" width="100%">
 
@@ -59,14 +53,12 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 <tr><td>🖼️ <b>Media</b></td><td>Image and gallery action pills at the bottom, and a quicker swipe to close.</td></tr>
 <tr><td>🔮 <b>Glass</b></td><td>Blurred floating pills that stay subtle and pause their extra effects during motion.</td></tr>
 <tr><td>🔤 <b>System font</b></td><td>An optional separate patch that follows your phone's font for posts, comments and names.</td></tr>
-<tr><td>⚡ <b>Faster loading</b> <img src=".github/assets/new.gif" alt="New" height="22" align="absmiddle"></td><td>No one-second request queue at launch, valid saved logins reused, feeds and comments loaded in parallel, and HTTP/2.</td></tr>
+<tr><td>⚡ <b>Faster loading</b></td><td>No one-second request queue at launch, valid saved logins reused, feeds and comments loaded in parallel, and HTTP/2.</td></tr>
 </table>
 
 **More Boost pages:** [All 25 patches](docs/PATCHES.md) • [Settings](docs/SETTINGS.md) • [Changelog](changelog.md)
 
 **System requirements:** Android 7.0 or later. Wallpaper colours and blur need Android 12 or later.
-
-<p align="center"><img src=".github/assets/eyecatch.gif" alt="Shikify! Back after these messages!" width="100%"></p>
 
 ### <a name="build"></a><img src=".github/assets/card-build.png" alt="Episode 3: Build It Yourself! For those who like the hard way." width="100%">
 
@@ -86,8 +78,6 @@ BOOST_APK=/absolute/path/to/boost-1.14.3.apk ./build.sh
 
 The bundle is written to `output/shikify-1.1.0.mpp`. See [validation](docs/VALIDATION.md) and [releasing](docs/RELEASING.md).
 
-<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
-
 ### <a name="disclaimer"></a><img src=".github/assets/card-disclaimer.png" alt="Important notice: Disclaimer. Please read this bit!" width="100%">
 
 These patches are provided as is, without warranty of any kind, for **educational and personal use only**.
@@ -99,8 +89,6 @@ These patches are provided as is, without warranty of any kind, for **educationa
 - **Use at your own risk.** Modifying apps can violate their terms of service and may lead to account restrictions, bans, data loss or apps that no longer work. The authors accept no liability for any consequence of using these patches and give no guarantee that they work on any particular app or version.
 - **No affiliation.** This project is not affiliated with, endorsed by or connected to Reddit, Boost for Reddit, Sync for Reddit, Patcheddit, Morphe, Google or any app developer. All trademarks belong to their respective owners.
 - **Takedown requests.** If you are a rights holder and believe something here infringes your rights, open an issue naming the exact file or patch and describing the concern. It will be reviewed promptly and in good faith.
-
-<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
 ### <a name="credits"></a><img src=".github/assets/card-credits.png" alt="Roll credits: Credits and Licence. See you next episode!" width="100%">
 
@@ -124,8 +112,6 @@ Built with the official [Morphe patches template](https://github.com/MorpheApp/m
 <sub>© 1997 2026 Shikify Web Productions. All rights reserved, except the ones GPL-3.0 gives you.</sub>
 
 </div>
-
-<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
 <p align="center"><img src=".github/assets/next-time.png" alt="Next time on Shikify! More apps are on the way!" width="100%"></p>
 
