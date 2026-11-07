@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-07T21:26:37",
-  "description": "- Videos stop playing as soon as you leave the video viewer, by Back or by swiping.\n- Glass sliders dim when glass effects are off.\n- The bottom navigation bar no longer flickers between tabs.\n\nImport the `.mpp` into Morphe Manager and patch your own copy of Boost for Reddit 1.14.3 (`com.rubenmayayo.reddit`). No Boost APK is included.",
-  "download_url": "https://github.com/0xRJDev/shikify/releases/download/v1.1.2-dev.3/shikify-1.1.2-dev.3.mpp",
+  "created_at": "2026-11-07T21:54:51",
+  "description": "- Flair text now sits in the middle of its pill instead of near the bottom.\n- Shikify Settings uses Material 3 switches.\n- Changing a Loading setting offers to restart Boost so it applies straight away.\n\nImport the `.mpp` into Morphe Manager and patch your own copy of Boost for Reddit 1.14.3 (`com.rubenmayayo.reddit`). No Boost APK is included.",
+  "download_url": "https://github.com/0xRJDev/shikify/releases/download/v1.1.2-dev.4/shikify-1.1.2-dev.4.mpp",
   "signature_download_url": "",
-  "version": "1.1.2-dev.3"
+  "version": "1.1.2-dev.4"
 }
