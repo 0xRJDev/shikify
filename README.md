@@ -26,15 +26,6 @@
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-### <a name="apps"></a><img src=".github/assets/title-apps.png" alt="Supported apps" height="44">
-
-<table>
-<tr><th>App</th><th>Package</th><th>Version</th><th>Patches</th></tr>
-<tr><td>Boost for Reddit</td><td><code>com.rubenmayayo.reddit</code></td><td>1.14.3</td><td><a href="docs/PATCHES.md">25</a></td></tr>
-</table>
-
-<p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
-
 ### <a name="install"></a><img src=".github/assets/title-install.png" alt="Install" height="44">
 
 <a href="https://morphe.software/add-source?github=0xRJDev/shikify"><img src=".github/assets/btn-add.png" alt="Add to Morphe" width="132"></a>
@@ -51,7 +42,13 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
-### <a name="features"></a><img src=".github/assets/title-features.png" alt="Boost for Reddit features" height="44">
+### <a name="features"></a><img src=".github/assets/title-features.png" alt="Current features" height="44">
+
+<p align="center"><img src=".github/assets/marquee-boost.gif" alt="Boost for Reddit" width="720"></p>
+
+<h3 align="center">⭐ Boost for Reddit ⭐</h3>
+
+<p align="center"><sub><code>com.rubenmayayo.reddit</code> • Version 1.14.3 • <a href="docs/PATCHES.md">25 patches</a></sub></p>
 
 <table>
 <tr><th>Feature</th><th>What you get</th></tr>
@@ -62,12 +59,14 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 <tr><td>🖼️ <b>Media</b></td><td>Image and gallery action pills at the bottom, and a quicker swipe to close.</td></tr>
 <tr><td>🔮 <b>Glass</b></td><td>Blurred floating pills that stay subtle and pause their extra effects during motion.</td></tr>
 <tr><td>🔤 <b>System font</b></td><td>An optional separate patch that follows your phone's font for posts, comments and names.</td></tr>
-<tr><td>⚡ <b>Faster loading</b></td><td>No one-second request queue at launch, valid saved logins reused, feeds and comments loaded in parallel, and HTTP/2.</td></tr>
+<tr><td>⚡ <b>Faster loading</b> <img src=".github/assets/new.gif" alt="New" height="22" align="absmiddle"></td><td>No one-second request queue at launch, valid saved logins reused, feeds and comments loaded in parallel, and HTTP/2.</td></tr>
 </table>
 
-**More pages:** [All 25 patches](docs/PATCHES.md) • [Settings](docs/SETTINGS.md) • [Changelog](changelog.md)
+**More Boost pages:** [All 25 patches](docs/PATCHES.md) • [Settings](docs/SETTINGS.md) • [Changelog](changelog.md)
 
 **System requirements:** Android 7.0 or later. Wallpaper colours and blur need Android 12 or later.
+
+<p align="center"><b>More apps coming soon!</b></p>
 
 <p align="center"><img src=".github/assets/divider.gif" width="100%" alt=""></p>
 
