@@ -332,6 +332,7 @@ public final class MaterialYouTweaks {
         Pill(int bg,int fg,int padding){background=bg;foreground=fg;pad=padding;}
         android.text.StaticLayout cachedLayout;
         final Paint cachedPaint=new Paint();
+        final android.graphics.Rect capital=new android.graphics.Rect();
         WeakReference<CharSequence> cachedText;
         int cachedStart,cachedEnd;
         android.text.style.CharacterStyle[] cachedSpans;
@@ -401,7 +402,12 @@ public final class MaterialYouTweaks {
         @Override public void draw(Canvas canvas,CharSequence text,int start,int end,float x,int top,int y,int bottom,Paint paint){
             android.text.StaticLayout layout=label(paint,text,start,end);
             int old=paint.getColor();paint.setColor(background);
-            canvas.drawRoundRect(x,top,x+layout.getWidth()+pad*2,bottom,pad*2,pad*2,paint);paint.setColor(old);
+            // The line box has more room above the text than below, which leaves the label low.
+            // Keep the bottom and bring the top down, so the gap above the capitals matches the gap
+            // below the baseline.
+            layout.getPaint().getTextBounds("H",0,1,capital);
+            float pillTop=Math.max(top,y+capital.top-(bottom-y));
+            canvas.drawRoundRect(x,pillTop,x+layout.getWidth()+pad*2,bottom,pad*2,pad*2,paint);paint.setColor(old);
             canvas.save();canvas.translate(x+pad,y-layout.getLineBaseline(0));layout.draw(canvas);canvas.restore();
         }
     }
