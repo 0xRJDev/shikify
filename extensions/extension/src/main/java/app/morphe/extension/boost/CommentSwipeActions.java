@@ -40,7 +40,7 @@ public final class CommentSwipeActions {
     /** Bind entry is safe even if another source wraps Boost's original binder. */
     public static boolean postSwipesEnabled() { return false; }
     /** Images at least this size in both directions are post media rather than icons. */
-    private static final int MEDIA_SIZE_DP = 72;
+    private static final int MEDIA_SIZE_DP = 48;
     public static void bindPost(Object holder) {
         MediaPreviewTweaks.bindPost(holder);
         MaterialYouTweaks.bindPost(holder);
