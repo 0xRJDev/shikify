@@ -3,6 +3,7 @@
 Boost for Reddit:
 - The floating bottom navigation bar keeps to its own height instead of adding extra space for the system bar.
 - Page loading and the remaining circular loaders (subreddit search, albums, video buffering and progress dialogs) use the expressive Material shape animation.
+- Glass header buttons stay round on every screen, and the three-dot menu icon sits in the middle of its circle.
 
 # Version 1.1.2-dev.5
 

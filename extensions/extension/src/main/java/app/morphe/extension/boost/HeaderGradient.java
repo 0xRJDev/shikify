@@ -67,15 +67,28 @@ final class HeaderGradient {
         if(icon.getMinimumWidth()<Math.round(48*density)){icon.setMinimumWidth(Math.round(48*density));icon.requestLayout();return;}
         if(icon.getWidth()<size || icon.getHeight()<size)return;
         icon.setTag(CIRCLE_TAG,Boolean.TRUE);
-        int horizontal=(icon.getWidth()-size)/2,vertical=(icon.getHeight()-size)/2;
+        // The overflow button has uneven side padding, which pushes its dots off the circle's centre.
+        if(icon.getPaddingLeft()!=icon.getPaddingRight()){int side=Math.min(icon.getPaddingLeft(),icon.getPaddingRight());icon.setPadding(side,icon.getPaddingTop(),side,icon.getPaddingBottom());}
         FeedPillBlur glass=new FeedPillBlur(source,icon,SurfaceAppearanceTweaks.role(context,false),false,CIRCLE_DP/2f,true,0,1);
-        Drawable frame=new android.graphics.drawable.InsetDrawable(glass,horizontal,vertical,horizontal,vertical);
+        Drawable frame=new Centred(glass,size);
         int ripple=MaterialYouTweaks.color(context,"colorControlHighlight",android.R.attr.colorControlHighlight);
         icon.setBackground(new android.graphics.drawable.RippleDrawable(android.content.res.ColorStateList.valueOf(ripple),frame,new Dot(0xffffffff,size/2f)));
         glass.start();
     }
     /** Circle size in dp, leaving a clear gap between neighbouring icons. */
     private static final int CIRCLE_DP=40;
+    /** Keeps the glass a centred square whenever its button is resized, so it never stretches into an oval. */
+    @android.annotation.TargetApi(31)
+    private static final class Centred extends android.graphics.drawable.DrawableWrapper {
+        final int size;
+        Centred(Drawable glass,int size){super(glass);this.size=size;}
+        @Override protected void onBoundsChange(android.graphics.Rect b){
+            Drawable glass=getDrawable();if(glass==null)return;
+            int side=Math.min(size,Math.min(b.width(),b.height()));
+            int left=b.left+(b.width()-side)/2,top=b.top+(b.height()-side)/2;
+            glass.setBounds(left,top,left+side,top+side);
+        }
+    }
     /** A fixed-size circle, centred, never larger than the view. */
     private static final class Dot extends Drawable {
         final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);final float radius;
