@@ -2,6 +2,12 @@
 
 Boost for Reddit:
 - Swiping a post to vote or reply now also works when you start on its image.
+- New Blurred header option in Shikify Settings blurs what scrolls under the top bar, easing off towards its bottom edge.
+- New Glass header buttons option puts each top bar icon in a frosted glass circle.
+- Glass surfaces use a lighter frost, so they look like clear glass over dark posts.
+- The top bar shade now stops at the side menu's edge and dims with the rest of the screen, instead of disappearing.
+- Posts and comments behind an open side menu can no longer be swiped.
+- New Subreddit colours option turns off the community colour tint on the top bar. The tint is always off with Blurred header.
 
 # Version 1.1.2-dev.4
 

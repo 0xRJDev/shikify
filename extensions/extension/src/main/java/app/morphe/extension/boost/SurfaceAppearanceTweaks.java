@@ -579,7 +579,7 @@ public final class SurfaceAppearanceTweaks {
             }
             if(active && headerGradient!=null && headerGradient.enabled)headerGradient.position(statusHeight);
             if(active && mediaTop!=null)mediaTop.update();
-            if(active && unifiedChrome!=null)unifiedChrome.frame();if(active && drawer!=null){drawer.update();if(headerGradient!=null)headerGradient.statusAlpha(1-drawer.open());}
+            if(active && unifiedChrome!=null)unifiedChrome.frame();if(active && drawer!=null){drawer.update();if(headerGradient!=null)headerGradient.statusEdge(drawer.edge(),drawer.open());}
             if(active && !tinted && compactFlag!=null && headerGradient!=null)tintHeader();
             View nav=media || bottom==null ? null:bottom.get();
             boolean ready=!navigationLayoutChanged || nav==null || !nav.isShown() || !nav.isLayoutRequested();
