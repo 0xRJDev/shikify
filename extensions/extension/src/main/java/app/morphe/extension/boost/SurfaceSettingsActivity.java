@@ -42,6 +42,7 @@ public final class SurfaceSettingsActivity extends Activity {
     private int page,background,foreground,secondary,accent,outline;
     static SharedPreferences prefs(Context context){return PreferenceManager.getDefaultSharedPreferences(context);}
     static boolean enabled(Context context,String key){return prefs(context).getBoolean("shikify_"+key,true);}
+    static boolean enabled(Context context,String key,boolean fallback){return prefs(context).getBoolean("shikify_"+key,fallback);}
     static int number(Context context,String key,int fallback,int min,int max){
         try{
             return Math.max(min,Math.min(max,prefs(context).getInt("shikify_"+key,fallback)));
@@ -117,6 +118,9 @@ public final class SurfaceSettingsActivity extends Activity {
             section("Glass surfaces");
             toggle("Glass effects","Use frosted surfaces for floating controls","feed_pill_blur");
             toggle("Dialog blur","Blur the screen behind dialogs and menus","dialog_blur");
+            if(Build.VERSION.SDK_INT>=31)toggle("Blurred header","Blur what scrolls under the top bar instead of a gradient","header_blur",false);
+            if(Build.VERSION.SDK_INT>=31)toggle("Glass header buttons","Frosted glass circles behind the top bar's icons","header_glass_buttons",false);
+            toggle("Subreddit colours","Tint the top bar with each community's colour. Off when the header is blurred","subreddit_colours");
             blurStrength=slider("Blur strength","blur_amount",7,0,25," dp",false);
             glassTint=slider("Glass tint","glass_tint",40,0,80,"%",false);
             updateGlassControls();
@@ -162,11 +166,11 @@ public final class SurfaceSettingsActivity extends Activity {
         if(Features.onlineCheck())toggle("Improved online check","Try requests when Android reports a block","online_check");
         note("HTTP/2 is chosen when you patch.");
     }
-    private void confirmRestart(){
+    private void confirmRestart(String message){
         int theme=getResources().getIdentifier("ThemeOverlay.Material3.MaterialAlertDialog","style",getPackageName());
         AlertDialog confirmation=new AlertDialog.Builder(this,theme)
             .setTitle("Restart Boost?")
-            .setMessage("Restart Boost to apply loading changes.")
+            .setMessage(message)
             .setNegativeButton("Later",null)
             .setPositiveButton("Restart now",(dialog,which)->{
                 Intent launch=getPackageManager().getLaunchIntentForPackage(getPackageName());
@@ -270,7 +274,8 @@ public final class SurfaceSettingsActivity extends Activity {
         drawable.setTintList(getColorStateList(getResources().getIdentifier(name+"_tint","color",getPackageName())));
         return drawable;
     }
-    private void toggle(String name,String summary,String key){
+    private void toggle(String name,String summary,String key){toggle(name,summary,key,true);}
+    private void toggle(String name,String summary,String key,boolean fallback){
         LinearLayout row=row(name,summary);
         int layout=getResources().getIdentifier("preference_widget_switch_compat","layout",getPackageName());
         SwitchCompat toggle=(SwitchCompat)getLayoutInflater().inflate(layout,row,false);
@@ -285,13 +290,14 @@ public final class SurfaceSettingsActivity extends Activity {
         toggle.setClickable(true);
         toggle.setFocusable(true);
         toggle.setContentDescription(name);
-        toggle.setChecked(enabled(this,key));
+        toggle.setChecked(enabled(this,key,fallback));
         toggle.refreshDrawableState();
         row.addView(toggle);
         toggle.setOnCheckedChangeListener((button,value)->{
             prefs(this).edit().putBoolean("shikify_"+key,value).apply();
             if("feed_pill_blur".equals(key))updateGlassControls();
-            if(page==5)confirmRestart();
+            if(page==5)confirmRestart("Restart Boost to apply loading changes.");
+            else if("header_blur".equals(key) || "header_glass_buttons".equals(key))confirmRestart("Restart Boost to apply the new header style.");
         });
         row.setOnClickListener(v->toggle.performClick());
     }

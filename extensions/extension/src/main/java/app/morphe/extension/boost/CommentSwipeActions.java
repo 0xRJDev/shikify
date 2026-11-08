@@ -181,7 +181,27 @@ public final class CommentSwipeActions {
         float x = event.getRawX() - origin[0];
         return x > left && x < decor.getWidth() - right;
     }
+    /**
+     * An open side menu owns touches; posts behind it must not start a swipe. Boost has a menu on
+     * each side, so every drawer panel is checked. A DrawerLayout's first child is its content.
+     */
+    private static boolean drawerOpen(Activity activity) {
+        return drawerOpen(activity.getWindow().getDecorView());
+    }
+    private static boolean drawerOpen(View view) {
+        if (!(view instanceof ViewGroup)) return false;
+        ViewGroup group = (ViewGroup) view;
+        if (group.getClass().getName().endsWith("DrawerLayout")) {
+            for (int index = 1; index < group.getChildCount(); index++) {
+                View panel = group.getChildAt(index);
+                if (panel.getVisibility() == View.VISIBLE && panel.getRight() > 0 && panel.getLeft() < group.getWidth()) return true;
+            }
+        }
+        for (int index = 0; index < group.getChildCount(); index++) if (drawerOpen(group.getChildAt(index))) return true;
+        return false;
+    }
     private static Session findSession(Activity activity, MotionEvent event) {
+        if (drawerOpen(activity)) return null;
         Rect hit = new Rect();
         for (Map.Entry<View, WeakReference<Object>> entry : HOLDERS.entrySet()) {
             View row = entry.getKey();
