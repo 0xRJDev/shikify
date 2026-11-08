@@ -1,4 +1,4 @@
-# Unreleased
+# Version 1.1.2-dev.6
 
 Boost for Reddit:
 - The floating bottom navigation bar keeps to its own height instead of adding extra space for the system bar.
