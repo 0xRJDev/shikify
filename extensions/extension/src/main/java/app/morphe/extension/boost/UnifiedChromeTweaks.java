@@ -402,6 +402,8 @@ public final class UnifiedChromeTweaks {
             }catch(ReflectiveOperationException | RuntimeException error){}
         }
         /** 0 when closed, 1 when fully open. */
+        /** Where the drawer's visible edge is, in pixels from the left; zero while it is closed. */
+        int edge(){View view=slider.get();return view==null || !view.isShown() ? 0:Math.max(0,view.getRight());}
         float open(){View view=slider.get();return view==null || view.getWidth()==0 ? 0:Math.max(0,Math.min(1,view.getRight()/(float)view.getWidth()));}
     }
     /** Draw behind the native Material FAB: its listeners, icon and menu animation remain native. */
