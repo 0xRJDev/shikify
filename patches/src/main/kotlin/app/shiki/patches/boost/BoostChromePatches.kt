@@ -1183,6 +1183,43 @@ val boostMaterialYouPatch = bytecodePatch(
     }
 }
 
+private val shikifyMaterialLoadingResourcesPatch = resourcePatch {
+    execute {
+        val android = "http://schemas.android.com/apk/res/android"
+        get("res/drawable/shikify_loading_indicator.xml").apply {
+            parentFile.mkdirs()
+            writeText("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                "<drawable xmlns:android=\"$android\" " +
+                "class=\"app.morphe.extension.boost.MaterialLoadingDrawable\" />\n")
+        }
+        for (layout in listOf("activity_search_subreddit", "activity_album", "exo_player_view")) {
+            document("res/layout/$layout.xml").use { doc ->
+                val bars = doc.getElementsByTagName("ProgressBar")
+                check(bars.length == 1) { "Expected one circular loading indicator in $layout" }
+                (bars.item(0) as org.w3c.dom.Element).setAttributeNS(android,
+                    "android:indeterminateDrawable", "@drawable/shikify_loading_indicator")
+            }
+        }
+        document("res/layout/progressbar.xml").use { doc ->
+            val view = doc.documentElement
+            view.setAttributeNS(android, "android:layout_height", "48dp")
+            view.setAttributeNS(android, "android:layout_gravity", "center")
+            view.setAttributeNS(android, "android:layout_centerInParent", "true")
+            view.setAttributeNS(android, "android:visibility", "gone")
+        }
+        for (layout in listOf("activity_drafts", "activity_thread", "fragment_feed")) {
+            document("res/layout/$layout.xml").use { doc ->
+                val includes = doc.getElementsByTagName("include")
+                val progress = (0 until includes.length).map { includes.item(it) as org.w3c.dom.Element }
+                    .single { it.getAttribute("layout") == "@layout/progressbar" }
+                val parent = progress.parentNode
+                check(parent.nodeName == "com.google.android.material.appbar.AppBarLayout")
+                parent.parentNode.appendChild(progress)
+            }
+        }
+    }
+}
+
 @Suppress("unused")
 val shikifyMaterialLoadingPatch = bytecodePatch(
     name = "Material loading animation",
@@ -1190,9 +1227,30 @@ val shikifyMaterialLoadingPatch = bytecodePatch(
 ) {
     compatibleWith(boostCompatibility)
     category(ShikifyCategory.APPEARANCE)
-    dependsOn(boostChromeExtensionPatch)
+    dependsOn(boostChromeExtensionPatch, shikifyMaterialLoadingResourcesPatch)
     execute {
         val extension = "Lapp/morphe/extension/boost/MaterialLoadingTweaks;"
+        val progress = "Lcom/rubenmayayo/reddit/ui/customviews/progress/ProgressView;"
+        val progressCreate = Fingerprint(definingClass = progress, name = "<init>", returnType = "V",
+            parameters = listOf("Landroid/content/Context;", "Landroid/util/AttributeSet;"), isStatic = false).method
+        val progressEnd = progressCreate.implementation!!.instructions.indexOfLast { it.opcode == Opcode.RETURN_VOID }
+        progressCreate.replaceInstruction(progressEnd,
+            "invoke-static/range {p0 .. p0}, $extension->onProgressCreated(Ljava/lang/Object;)V")
+        progressCreate.addInstruction(progressEnd + 1, "return-void")
+        for ((method, hook) in listOf("a" to "startProgress", "b" to "stopProgress")) {
+            Fingerprint(definingClass = progress, name = method, returnType = "V",
+                parameters = emptyList(), isStatic = false).method.addInstructionsWithLabels(0, """
+                invoke-static/range {p0 .. p0}, $extension->$hook(Ljava/lang/Object;)V
+                return-void
+            """.trimIndent())
+        }
+        val dialog = Fingerprint(definingClass = "Ldp1;", name = "show", returnType = "V",
+            parameters = emptyList(), isStatic = false).method
+        if (!dialog.hasHook(extension, "onDialogShown")) {
+            val end = dialog.implementation!!.instructions.indexOfLast { it.opcode == Opcode.RETURN_VOID }
+            dialog.addInstruction(end,
+                "invoke-static/range {p0 .. p0}, $extension->onDialogShown(Ljava/lang/Object;)V")
+        }
         val refresh = "Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;"
         val create = Fingerprint(definingClass = refresh, name = "<init>", returnType = "V", isStatic = false,
             parameters = listOf("Landroid/content/Context;", "Landroid/util/AttributeSet;")).method

@@ -420,7 +420,7 @@ final class HeaderGradient {
             child.getLocationInWindow(parentLocation);
             contentTop=Math.max(contentTop,parentLocation[1]);
         }
-        if(strip!=null && child!=null){
+        if(strip!=null && child!=null && !(strip.getBackground() instanceof MaterialLoadingDrawable)){
             child.getLocationInWindow(parentLocation);
             float top=relativeTop(strip,child);
             if(!Float.isNaN(top)){
