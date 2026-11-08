@@ -39,6 +39,8 @@ public final class CommentSwipeActions {
 
     /** Bind entry is safe even if another source wraps Boost's original binder. */
     public static boolean postSwipesEnabled() { return false; }
+    /** Images at least this size in both directions are post media rather than icons. */
+    private static final int MEDIA_SIZE_DP = 48;
     public static void bindPost(Object holder) {
         MediaPreviewTweaks.bindPost(holder);
         MaterialYouTweaks.bindPost(holder);
@@ -202,9 +204,16 @@ public final class CommentSwipeActions {
     private static boolean protectedChild(View view, float x, float y, Rect hit) {
         if (view.getVisibility() != View.VISIBLE || !view.getGlobalVisibleRect(hit) ||
                 !hit.contains((int) x, (int) y)) return false;
-        if (view instanceof Button || view instanceof EditText || view instanceof ImageView ||
-                view instanceof SeekBar || view instanceof WebView || view instanceof HorizontalScrollView)
+        if (view instanceof Button || view instanceof EditText || view instanceof SeekBar ||
+                view instanceof WebView || view instanceof HorizontalScrollView ||
+                view.canScrollHorizontally(1) || view.canScrollHorizontally(-1))
             return true;
+        // Buttons and icons keep their own touch. Post images and thumbnails allow a swipe, and a
+        // tap still opens them because a swipe only takes over once the finger moves sideways.
+        if (view instanceof ImageView) {
+            float minimum = MEDIA_SIZE_DP * view.getResources().getDisplayMetrics().density;
+            return view instanceof android.widget.ImageButton || view.getWidth() < minimum || view.getHeight() < minimum;
+        }
         if (view instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) view;
             for (int i = group.getChildCount() - 1; i >= 0; i--)
