@@ -506,8 +506,8 @@ public final class SurfaceAppearanceTweaks {
                         if(nav.getBackground()!=feedPill)nav.setBackground(feedPill);
                     }
                     nav.setClipToOutline(true);
-                    if(nav.getPaddingBottom()!=bottom){
-                        nav.setPaddingRelative(nav.getPaddingStart(),nav.getPaddingTop(),nav.getPaddingEnd(),bottom);
+                    if(nav.getPaddingBottom()!=0){
+                        nav.setPaddingRelative(nav.getPaddingStart(),nav.getPaddingTop(),nav.getPaddingEnd(),0);
                         navigationLayoutChanged=true;
                     }
                     pressNavigation(nav);
