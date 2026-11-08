@@ -1,6 +1,7 @@
 package app.morphe.extension.boost;
 
 import android.animation.ValueAnimator;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -9,7 +10,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.provider.Settings;
 import android.view.View;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.WeakHashMap;
@@ -19,6 +22,59 @@ public final class MaterialLoadingTweaks {
     private static final WeakHashMap<Object,Refresh> REFRESH=new WeakHashMap<>();
     private static final WeakHashMap<View,Wheel> WHEELS=new WeakHashMap<>();
     private MaterialLoadingTweaks() { }
+    public static void onProgressCreated(Object instance) {
+        View view = (View) instance;
+        view.setBackground(new MaterialLoadingDrawable(view.getContext()));
+        view.setVisibility(View.GONE);
+        int label = view.getResources().getIdentifier("m3_loading_indicator_content_description",
+                "string", view.getContext().getPackageName());
+        view.setContentDescription(view.getContext().getString(label));
+        view.setAccessibilityDelegate(new View.AccessibilityDelegate() {
+            @Override
+            public void onInitializeAccessibilityNodeInfo(View host,
+                    AccessibilityNodeInfo info) {
+                super.onInitializeAccessibilityNodeInfo(host, info);
+                info.setClassName(ProgressBar.class.getName());
+            }
+        });
+    }
+    public static void startProgress(Object instance) {
+        View view = (View) instance;
+        View parent = view.getParent() instanceof View ? (View) view.getParent() : view;
+        int refreshId = view.getResources().getIdentifier("swipe_refresh_layout", "id",
+                view.getContext().getPackageName());
+        View refresh = parent.findViewById(refreshId);
+        if (refresh != null && Boolean.TRUE.equals(CommentsChromeTweaks.field(refresh, "c"))) {
+            ((Animatable) view.getBackground()).stop();
+            view.setVisibility(View.GONE);
+            return;
+        }
+        view.setVisibility(View.VISIBLE);
+        view.getBackground().setVisible(view.isAttachedToWindow() && view.isShown()
+                && view.getWindowVisibility() == View.VISIBLE, false);
+        ((Animatable) view.getBackground()).start();
+    }
+    public static void stopProgress(Object instance) {
+        View view = (View) instance;
+        ((Animatable) view.getBackground()).stop();
+        view.setVisibility(View.GONE);
+    }
+    public static void onDialogShown(Object instance) {
+        if (!(instance instanceof Dialog)) {
+            return;
+        }
+        Dialog dialog = (Dialog) instance;
+        View view = dialog.findViewById(android.R.id.progress);
+        if (!(view instanceof ProgressBar)) {
+            return;
+        }
+        ProgressBar bar = (ProgressBar) view;
+        Drawable drawable = bar.getIndeterminateDrawable();
+        if (bar.isIndeterminate() && drawable != null && drawable.getClass().getName().equals(
+                "me.zhanghai.android.materialprogressbar.IndeterminateCircularProgressDrawable")) {
+            bar.setIndeterminateDrawable(new MaterialLoadingDrawable(bar.getContext()));
+        }
+    }
     public static void onRefreshCreated(Object owner) {
         if(!(owner instanceof View))return;
         try {

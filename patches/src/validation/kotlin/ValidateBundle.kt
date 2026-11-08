@@ -272,6 +272,8 @@ fun main(args: Array<String>) = runBlocking {
     var tokenHooks = 0
     var taskHooks = 0
     var searchHooks = 0
+    var circularDialogHooks = 0
+    var pageLoadingHooks = 0
     for (type in patched.values) for (method in type.methods) {
         if (type.type.startsWith(EXT)) continue
         val instructions = method.implementation?.instructions?.toList() ?: continue
@@ -280,6 +282,27 @@ fun main(args: Array<String>) = runBlocking {
             val target = (instruction as? ReferenceInstruction)?.reference as? MethodReference ?: continue
             if (!target.definingClass.startsWith(EXT)) continue
             modified = true
+            if (target.definingClass == "${EXT}MaterialLoadingTweaks;" &&
+                target.name in setOf("onProgressCreated", "startProgress", "stopProgress")) {
+                check(type.type == "Lcom/rubenmayayo/reddit/ui/customviews/progress/ProgressView;")
+                check(instruction.opcode == Opcode.INVOKE_STATIC_RANGE)
+                val call = instruction as RegisterRangeInstruction
+                val parameters = if (method.name == "<init>") 3 else 1
+                check(call.registerCount == 1 && call.startRegister == method.implementation!!.registerCount - parameters)
+                check(instructions[index + 1].opcode == Opcode.RETURN_VOID)
+                if (target.name != "onProgressCreated") check(index == 0)
+                pageLoadingHooks++
+                continue
+            }
+            if (target.definingClass == "${EXT}MaterialLoadingTweaks;" && target.name == "onDialogShown") {
+                check(type.type == "Ldp1;" && method.name == "show" && instruction.opcode == Opcode.INVOKE_STATIC_RANGE)
+                val call = instruction as RegisterRangeInstruction
+                check(call.registerCount == 1 && call.startRegister == method.implementation!!.registerCount - 1)
+                check(instructions[index - 1].let { (it as ReferenceInstruction).reference as MethodReference }.name == "show")
+                check(instructions[index + 1].opcode == Opcode.RETURN_VOID)
+                circularDialogHooks++
+                continue
+            }
             if(target.definingClass=="${EXT}NoticeTweaks;") {
                 check(instruction.opcode==Opcode.INVOKE_STATIC || instruction.opcode==Opcode.INVOKE_STATIC_RANGE)
                 if(target.name=="make") check(instructions[index+1].opcode==Opcode.MOVE_RESULT_OBJECT)
@@ -497,6 +520,8 @@ fun main(args: Array<String>) = runBlocking {
     check(noticeHooks >= 100) { "Expected the Toast callers to be redirected, got $noticeHooks" }
     check(tagHooks >= 2) { "Expected SPOILER and NSFW colour hooks, got $tagHooks" }
     check(dialogHooks == 1) { "Expected one dialog hook, got $dialogHooks" }
+    check(circularDialogHooks == 1) { "Expected one circular progress dialog hook, got $circularDialogHooks" }
+    check(pageLoadingHooks == 3) { "Expected three page loading hooks, got $pageLoadingHooks" }
     check(networkHooks == 1) { "Expected one network hook, got $networkHooks" }
     check(startupHooks == 7) { "Expected seven startup hooks, got $startupHooks" }
     check(initHooks == 1) { "Expected one network settings hook, got $initHooks" }
