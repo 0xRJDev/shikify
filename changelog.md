@@ -1,4 +1,4 @@
-# Unreleased
+# Version 1.1.2-dev.5
 
 Boost for Reddit:
 - Swiping a post to vote or reply now also works when you start on its image.
