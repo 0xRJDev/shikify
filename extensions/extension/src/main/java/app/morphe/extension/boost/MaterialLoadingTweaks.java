@@ -53,6 +53,36 @@ public final class MaterialLoadingTweaks {
         view.getBackground().setVisible(view.isAttachedToWindow() && view.isShown()
                 && view.getWindowVisibility() == View.VISIBLE, false);
         ((Animatable) view.getBackground()).start();
+        place(view, parent);
+        view.post(() -> place(view, parent));
+    }
+    /**
+     * An empty screen keeps the indicator centred. When posts are already showing, more are loading
+     * below them, so the indicator moves to the bottom, clear of the floating navigation bar.
+     */
+    private static void place(View view, View parent) {
+        View list = SurfaceAppearanceTweaks.find(parent, "recyclerview");
+        boolean content = list instanceof android.view.ViewGroup && ((android.view.ViewGroup) list).getChildCount() > 0;
+        if (!content || view.getHeight() == 0 || parent.getHeight() == 0) {
+            view.setTranslationY(0);
+            return;
+        }
+        int[] location = new int[2];
+        parent.getLocationInWindow(location);
+        float limit = location[1] + parent.getHeight();
+        View root = view.getRootView();
+        android.view.WindowInsets insets = root.getRootWindowInsets();
+        if (insets != null) limit = Math.min(limit, root.getHeight() - insets.getSystemWindowInsetBottom());
+        View nav = SurfaceAppearanceTweaks.find(root, "bottom_navigation_view");
+        if (nav == null) nav = SurfaceAppearanceTweaks.find(root, "bottom_navigation");
+        if (nav != null && nav.isShown() && nav.getHeight() > 0) {
+            nav.getLocationInWindow(location);
+            if (location[1] > 0) limit = Math.min(limit, location[1]);
+        }
+        float gap = 16 * view.getResources().getDisplayMetrics().density;
+        view.getLocationInWindow(location);
+        float restingTop = location[1] - view.getTranslationY();
+        view.setTranslationY(limit - gap - view.getHeight() - restingTop);
     }
     public static void stopProgress(Object instance) {
         View view = (View) instance;
