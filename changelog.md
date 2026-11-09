@@ -1,3 +1,8 @@
+# Unreleased
+
+Boost for Reddit:
+- While more posts load as you scroll, the loading indicator sits at the bottom of the screen instead of the middle.
+
 # Version 1.1.2-dev.6
 
 Boost for Reddit:
