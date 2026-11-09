@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView$l;
+import androidx.recyclerview.widget.RecyclerView$x;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.WeakHashMap;
@@ -21,6 +24,10 @@ import java.util.WeakHashMap;
 public final class MaterialLoadingTweaks {
     private static final WeakHashMap<Object,Refresh> REFRESH=new WeakHashMap<>();
     private static final WeakHashMap<View,Wheel> WHEELS=new WeakHashMap<>();
+    private static final WeakHashMap<View,PageFooter> PAGE_FOOTERS=new WeakHashMap<>();
+    private static final int PAGE_SPACE_DP=80;
+    private static final int PAGE_GAP_DP=16;
+    private static final int PAGE_INDICATOR_DP=48;
     private MaterialLoadingTweaks() { }
     public static void onProgressCreated(Object instance) {
         View view = (View) instance;
@@ -45,49 +52,144 @@ public final class MaterialLoadingTweaks {
                 view.getContext().getPackageName());
         View refresh = parent.findViewById(refreshId);
         if (refresh != null && Boolean.TRUE.equals(CommentsChromeTweaks.field(refresh, "c"))) {
-            ((Animatable) view.getBackground()).stop();
-            view.setVisibility(View.GONE);
+            stopProgress(instance);
             return;
         }
-        view.setVisibility(View.VISIBLE);
-        view.getBackground().setVisible(view.isAttachedToWindow() && view.isShown()
-                && view.getWindowVisibility() == View.VISIBLE, false);
-        ((Animatable) view.getBackground()).start();
-        place(view, parent);
-        view.post(() -> place(view, parent));
+        View list = SurfaceAppearanceTweaks.find(parent, "recyclerview");
+        if (list instanceof RecyclerView && ((RecyclerView) list).getChildCount() > 0) {
+            PageFooter footer = PAGE_FOOTERS.get(view);
+            if (footer == null || footer.list.get() != list) {
+                if (footer != null) footer.dispose();
+                footer = new PageFooter(view, (RecyclerView) list);
+                PAGE_FOOTERS.put(view, footer);
+            } else {
+                footer.reactivate();
+            }
+            ((Animatable) view.getBackground()).stop();
+            view.setVisibility(View.GONE);
+        } else {
+            PageFooter footer = PAGE_FOOTERS.get(view);
+            if (footer != null) footer.dispose();
+            view.setTranslationY(0);
+            view.setVisibility(View.VISIBLE);
+            view.getBackground().setVisible(view.isAttachedToWindow() && view.isShown()
+                    && view.getWindowVisibility() == View.VISIBLE, false);
+            ((Animatable) view.getBackground()).start();
+        }
+    }
+    public static void stopProgress(Object instance) {
+        View view = (View) instance;
+        PageFooter footer = PAGE_FOOTERS.get(view);
+        if (footer != null) footer.dispose();
+        ((Animatable) view.getBackground()).stop();
+        view.setVisibility(View.GONE);
     }
     /**
      * An empty screen keeps the indicator centred. When posts are already showing, more are loading
      * below them, so the indicator moves to the bottom, clear of the floating navigation bar.
      */
-    private static void place(View view, View parent) {
-        View list = SurfaceAppearanceTweaks.find(parent, "recyclerview");
-        boolean content = list instanceof android.view.ViewGroup && ((android.view.ViewGroup) list).getChildCount() > 0;
-        if (!content || view.getHeight() == 0 || parent.getHeight() == 0) {
-            view.setTranslationY(0);
-            return;
+    private static final class PageFooter extends RecyclerView$l {
+        final WeakReference<RecyclerView> list;
+        final WeakReference<View> owner;
+        final MaterialLoadingIndicator indicator;
+        final int size;
+        final int gap;
+        final float legacyScale;
+        boolean active = true;
+        boolean attached;
+        PageFooter(View view, RecyclerView recycler) {
+            list = new WeakReference<>(recycler);
+            owner = new WeakReference<>(view);
+            indicator = new MaterialLoadingIndicator(MaterialYouTweaks.color(view.getContext(),
+                    "colorPrimary", android.R.attr.colorAccent));
+            legacyScale = legacyScale(view.getContext());
+            size = Math.round(PAGE_INDICATOR_DP * view.getResources().getDisplayMetrics().density);
+            gap = Math.round(PAGE_GAP_DP * view.getResources().getDisplayMetrics().density);
+            if (recycler.P()) recycler.post(this::attach);
+            else attach();
+            recycler.announceForAccessibility(view.getContentDescription());
         }
-        int[] location = new int[2];
-        parent.getLocationInWindow(location);
-        float limit = location[1] + parent.getHeight();
-        View root = view.getRootView();
-        android.view.WindowInsets insets = root.getRootWindowInsets();
-        if (insets != null) limit = Math.min(limit, root.getHeight() - insets.getSystemWindowInsetBottom());
-        View nav = SurfaceAppearanceTweaks.find(root, "bottom_navigation_view");
-        if (nav == null) nav = SurfaceAppearanceTweaks.find(root, "bottom_navigation");
-        if (nav != null && nav.isShown() && nav.getHeight() > 0) {
-            nav.getLocationInWindow(location);
-            if (location[1] > 0) limit = Math.min(limit, location[1]);
+        int navigationOverlap(RecyclerView recycler) {
+            int[] location = new int[2];
+            recycler.getLocationInWindow(location);
+            int listBottom = location[1] + recycler.getHeight();
+            View root = recycler.getRootView();
+            root.getLocationInWindow(location);
+            android.view.WindowInsets insets = root.getRootWindowInsets();
+            int bottomInset = insets == null ? 0 : insets.getSystemWindowInsetBottom();
+            int safeBottom = location[1] + root.getHeight() - bottomInset;
+            int navigationTop = restingTop(
+                    SurfaceAppearanceTweaks.find(root, "bottom_navigation_view"), location);
+            navigationTop = Math.min(navigationTop, restingTop(
+                    SurfaceAppearanceTweaks.find(root, "bottom_navigation"), location));
+            return Math.max(0, Math.min(listBottom, safeBottom) - navigationTop);
         }
-        float gap = 16 * view.getResources().getDisplayMetrics().density;
-        view.getLocationInWindow(location);
-        float restingTop = location[1] - view.getTranslationY();
-        view.setTranslationY(limit - gap - view.getHeight() - restingTop);
-    }
-    public static void stopProgress(Object instance) {
-        View view = (View) instance;
-        ((Animatable) view.getBackground()).stop();
-        view.setVisibility(View.GONE);
+        int restingTop(View view, int[] location) {
+            if (view == null || !view.isShown() || view.getHeight() <= 0) return Integer.MAX_VALUE;
+            view.getLocationInWindow(location);
+            if (location[1] <= 0) return Integer.MAX_VALUE;
+            return Math.round(location[1] - view.getTranslationY());
+        }
+        void reactivate() {
+            active = true;
+            invalidateDecorations();
+        }
+        void invalidateDecorations() {
+            RecyclerView recycler = list.get();
+            if (recycler == null || !active) return;
+            if (recycler.P()) { recycler.post(this::invalidateDecorations); return; }
+            recycler.O();
+        }
+        void attach() {
+            RecyclerView recycler = list.get();
+            if (recycler == null || !active || attached) return;
+            if (recycler.P()) { recycler.post(this::attach); return; }
+            recycler.g(this);
+            attached = true;
+        }
+        private int lastPosition(RecyclerView recycler) {
+            return recycler.getAdapter() == null ? -1 : recycler.getAdapter().getItemCount() - 1;
+        }
+        @Override public void e(Rect offsets, View child, RecyclerView recycler, RecyclerView$x state) {
+            int last = lastPosition(recycler);
+            if (active && last >= 0 && RecyclerView.J(child) == last)
+                offsets.bottom = Math.round(PAGE_SPACE_DP * recycler.getResources().getDisplayMetrics().density)
+                        + navigationOverlap(recycler);
+        }
+        @Override public void g(Canvas canvas, RecyclerView recycler) {
+            if (!active) return;
+            int last = lastPosition(recycler);
+            if (last < 0) return;
+            for (int index = 0; index < recycler.getChildCount(); index++) {
+                View child = recycler.getChildAt(index);
+                if (RecyclerView.J(child) != last) continue;
+                int top = Math.round(child.getBottom() + child.getTranslationY()) + gap;
+                if (top >= recycler.getHeight() - recycler.getPaddingBottom() || top + size <= 0) return;
+                float motionScale = scale(recycler.getContext(), legacyScale);
+                indicator.draw(canvas, recycler.getWidth() / 2f, top + size / 2f, size, 255, true, 1,
+                        motionScale, System.nanoTime());
+                if (motionScale > 0 && recycler.isAttachedToWindow() && recycler.isShown() &&
+                        recycler.getWindowVisibility() == View.VISIBLE) recycler.postInvalidateOnAnimation();
+                return;
+            }
+        }
+        void dispose() {
+            active = false;
+            indicator.reset();
+            RecyclerView recycler = list.get();
+            if (recycler == null) return;
+            if (recycler.P()) recycler.post(this::remove);
+            else remove();
+        }
+        void remove() {
+            RecyclerView recycler = list.get();
+            if (recycler == null || active) return;
+            if (recycler.P()) { recycler.post(this::remove); return; }
+            if (attached) recycler.a0(this);
+            attached = false;
+            View view = owner.get();
+            if (view != null && PAGE_FOOTERS.get(view) == this) PAGE_FOOTERS.remove(view);
+        }
     }
     public static void onDialogShown(Object instance) {
         if (!(instance instanceof Dialog)) {
