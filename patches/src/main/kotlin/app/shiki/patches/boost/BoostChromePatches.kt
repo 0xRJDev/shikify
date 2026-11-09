@@ -78,6 +78,16 @@ private val boostChromeExtensionPatch = bytecodePatch {
                 bind.replaceInstruction(index, BuilderInstruction21t(branch.opcode, branch.registerA, returnLabel))
             }
             if (model == "SubmissionModel") {
+                val undeleteSettingIndex = instructions.indexOfFirst { it.methodReference()?.name ==
+                    "isEnabled_morphe_boost_reddit_undelete_enabled" }
+                if (undeleteSettingIndex >= 0) {
+                    val guardIndex = undeleteSettingIndex + 2
+                    check(instructions[undeleteSettingIndex + 1].opcode == Opcode.MOVE_RESULT &&
+                        instructions[guardIndex].opcode == Opcode.IF_EQZ)
+                    val branch = instructions[guardIndex] as BuilderInstruction21t
+                    bind.replaceInstruction(guardIndex, BuilderInstruction21t(branch.opcode,
+                        branch.registerA, returnLabel))
+                }
                 val third = instructions.withIndex().single { (index, instruction) ->
                     index > guards.last().index && instruction.opcode == Opcode.IF_NEZ
                 }
