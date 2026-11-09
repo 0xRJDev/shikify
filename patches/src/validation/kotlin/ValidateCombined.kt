@@ -5,6 +5,7 @@ import app.morphe.patcher.dex.BytecodeMode
 import app.morphe.patcher.patch.Patch
 import app.morphe.patcher.patch.loadPatchesFromJar
 import com.android.tools.smali.dexlib2.DexFileFactory
+import com.android.tools.smali.dexlib2.Opcode
 import com.android.tools.smali.dexlib2.Opcodes
 import com.android.tools.smali.dexlib2.iface.Method
 import com.android.tools.smali.dexlib2.iface.instruction.OffsetInstruction
@@ -17,6 +18,8 @@ import java.util.zip.ZipFile
 private const val BOOST = "com.rubenmayayo.reddit"
 private const val VERSION = "1.14.3"
 private const val EXTENSION = "Lapp/morphe/extension/boost/"
+private const val SUBMISSION_HOLDER = "Lcom/rubenmayayo/reddit/ui/adapters/SubmissionViewHolder;"
+private const val UNDELETE_SETTING = "isEnabled_morphe_boost_reddit_undelete_enabled"
 
 /** What Manager selects by default for this APK. Patches that need a value the user must supply are reported. */
 private fun selectable(patches: Set<Patch<*>>, source: String): List<Patch<*>> = patches.filter { patch ->
@@ -41,7 +44,7 @@ private fun hooks(apk: File): Map<String, Int> {
 private fun check(method: Method, found: HashMap<String, Int>) {
     val instructions = method.implementation?.instructions?.toList() ?: return
     var pc = 0
-    val addresses = instructions.map { instruction -> pc.also { pc += instruction.codeUnits } }.toSet()
+    val addresses = instructions.map { instruction -> pc.also { pc += instruction.codeUnits } }
     pc = 0
     for (instruction in instructions) {
         if (instruction is OffsetInstruction) check(pc + instruction.codeOffset in addresses) { "Branch targets a non-instruction address in ${method.definingClass}->${method.name}" }
@@ -51,6 +54,21 @@ private fun check(method: Method, found: HashMap<String, Int>) {
             found[key] = (found[key] ?: 0) + 1
         }
         pc += instruction.codeUnits
+    }
+    if (method.definingClass == SUBMISSION_HOLDER) {
+        val settingIndex = instructions.indexOfFirst { instruction ->
+            ((instruction as? ReferenceInstruction)?.reference as? MethodReference)?.name == UNDELETE_SETTING
+        }
+        if (settingIndex >= 0) {
+            val guardIndex = settingIndex + 2
+            check(instructions[settingIndex + 1].opcode == Opcode.MOVE_RESULT &&
+                instructions[guardIndex].opcode == Opcode.IF_EQZ &&
+                instructions.last().opcode == Opcode.RETURN_VOID)
+            val branch = instructions[guardIndex] as OffsetInstruction
+            check(addresses[guardIndex] + branch.codeOffset == addresses.last()) {
+                "Post binder undelete guard misses return-void"
+            }
+        }
     }
 }
 
