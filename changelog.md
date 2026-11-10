@@ -1,6 +1,7 @@
 # Unreleased
 
 Boost for Reddit:
+- The blurred header reaches a little below the top bar and fades out there, so the whole bar stays frosted without a visible line where the blur stops.
 - Smoother scrolling: Shikify's switches are read from memory instead of storage on every frame, and the bottom bar's profile button is no longer searched for on every layout pass.
 
 # Version 1.1.2-dev.8
