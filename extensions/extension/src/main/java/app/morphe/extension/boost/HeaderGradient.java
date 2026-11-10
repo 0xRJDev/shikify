@@ -299,6 +299,12 @@ final class HeaderGradient {
                     break;
                 }
             }
+            // Search screens keep their list in an unnamed container under the app bar.
+            Activity activity=owner.get();
+            if(content==null && activity!=null && activity.getClass().getName().startsWith("com.rubenmayayo.reddit.ui.search.")){
+                View list=SurfaceAppearanceTweaks.find(decor,"recyclerview"),container=list==null ? null:scrolling(list);
+                if(container!=null){content=container;source=new WeakReference<>(content);}
+            }
         }
         if(content!=null){View child=scrolling.get();if(child==null){child=strict && (settings || !overlaps(content)) ? null:scrolling(content);if(child!=null){
             if(!profile)try{
