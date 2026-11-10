@@ -112,6 +112,8 @@ public final class CommentSwipeActions {
                             event.getEventTime() - session.downTime >= ViewConfiguration.getLongPressTimeout()) {
                         session.finish();
                         SESSIONS.remove(activity);
+                        // A hold-to-preview keeps the list still until the finger lifts.
+                        if (MediaPreviewTweaks.peeking()) session.disallow(true);
                         return false;
                     }
                     // Rightward drags keep their original behaviour. All actions live on a left swipe.

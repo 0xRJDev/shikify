@@ -228,7 +228,7 @@ public final class MaterialYouTweaks {
             if(info instanceof TextView && info.getParent() instanceof View && ((View)info.getParent()).getParent() instanceof LinearLayout) {
                 LinearLayout main=(LinearLayout)((View)info.getParent()).getParent();
                 TextView chip=new TextView(row.getContext());chip.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX,((TextView)info).getTextSize());chip.setTypeface(((TextView)info).getTypeface());
-                chip.setVisibility(View.GONE);chip.setPadding(0,dp(row,2),0,dp(row,2));main.addView(chip,main.indexOfChild((View)info.getParent())+1,wrap());flair=new WeakReference<>(chip);
+                chip.setVisibility(View.GONE);chip.setPadding(0,dp(row,6),0,dp(row,2));main.addView(chip,main.indexOfChild((View)info.getParent())+1,wrap());flair=new WeakReference<>(chip);
             }
             if(score!=null && score.getParent() instanceof ViewGroup) {
                 ViewGroup original=(ViewGroup)score.getParent();badgeRow=new WeakReference<>(original);
@@ -309,8 +309,8 @@ public final class MaterialYouTweaks {
         for(BackgroundColorSpan span:spans) {
             int start=old.getSpanStart(span),end=old.getSpanEnd(span);if(start<0 || end<=start)continue;
             if(chips.length()>0)chips.append(" ");int offset=chips.length();
-            // Long flairs would push the whole line onto a second row.
-            chips.append(end-start>24 ? new android.text.SpannableStringBuilder(old.subSequence(start,start+22)).append('\u2026'):old.subSequence(start,end));
+            // Flairs get their own line, but a very long one is still cut short.
+            chips.append(end-start>40 ? new android.text.SpannableStringBuilder(old.subSequence(start,start+38)).append('\u2026'):old.subSequence(start,end));
             for(BackgroundColorSpan bg:chips.getSpans(offset,chips.length(),BackgroundColorSpan.class))chips.removeSpan(bg);
             for(ForegroundColorSpan fg:chips.getSpans(offset,chips.length(),ForegroundColorSpan.class))chips.removeSpan(fg);
             chips.setSpan(new Pill(color(view.getContext(),"colorSecondaryContainer",android.R.attr.colorAccent),color(view.getContext(),"colorOnSecondaryContainer",android.R.attr.textColorPrimary),dp(view,6)),offset,chips.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -322,10 +322,10 @@ public final class MaterialYouTweaks {
             if(from>0 && (metadata.charAt(from-1)=='·' || metadata.charAt(from-1)=='•'))from--;
             metadata.delete(from,end);
         }}
-        // Flairs lead the line: an inline label reads as part of the post, and saves a row.
+        // Flairs sit on their own line under the post details, so the details stay on one line.
         while(metadata.length()>0 && Character.isWhitespace(metadata.charAt(0)))metadata.delete(0,1);
-        if(chips.length()>0)metadata.insert(0,chips.append(" "));
-        view.setText(metadata);target.setVisibility(View.GONE);return true;
+        view.setText(metadata);
+        target.setText(chips);target.setVisibility(chips.length()>0 ? View.VISIBLE:View.GONE);return true;
     }
     public static final class Pill extends ReplacementSpan {
         final int background,foreground,pad;

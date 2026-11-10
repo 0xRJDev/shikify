@@ -1,3 +1,9 @@
+# Unreleased
+
+Boost for Reddit:
+- Post flairs sit on their own line under the subreddit, user and time, instead of in front of them.
+- Moving your finger while holding an image to preview it no longer scrolls the list or closes the preview. It closes when you let go.
+
 # Version 1.1.2-dev.7
 
 Boost for Reddit:
