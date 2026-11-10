@@ -180,6 +180,15 @@ public final class MaterialYouTweaks {
                 }
                 int visibility=visible ? View.VISIBLE:View.GONE;
                 if(badges.getVisibility()!=visibility)badges.setVisibility(visibility);
+                // The first visible badge starts at the edge; the rest keep a small gap.
+                boolean first=true;
+                for(int i=0;i<badges.getChildCount();i++){
+                    View child=badges.getChildAt(i);
+                    if(!hasBadge(child) || !(child.getLayoutParams() instanceof ViewGroup.MarginLayoutParams))continue;
+                    ViewGroup.MarginLayoutParams params=(ViewGroup.MarginLayoutParams)child.getLayoutParams();
+                    int start=first ? 0:dp(child,6);first=false;
+                    if(params.getMarginStart()!=start || params.leftMargin!=start){params.setMarginStart(start);params.leftMargin=start;child.setLayoutParams(params);}
+                }
             }
         }
         boolean hasBadge(View child) {
@@ -235,6 +244,14 @@ public final class MaterialYouTweaks {
                 if(original.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
                     ViewGroup.MarginLayoutParams margins=(ViewGroup.MarginLayoutParams)original.getLayoutParams();
                     margins.topMargin=0;margins.bottomMargin=0;original.setLayoutParams(margins);
+                }
+                // Flairs share the badge line, after NSFW and spoiler tags.
+                TextView chip=flair==null ? null:flair.get();
+                if(chip!=null && original instanceof LinearLayout && ((LinearLayout)original).getOrientation()==LinearLayout.HORIZONTAL && chip.getParent() instanceof ViewGroup){
+                    ((ViewGroup)chip.getParent()).removeView(chip);chip.setPadding(0,0,0,0);
+                    LinearLayout.LayoutParams place=new LinearLayout.LayoutParams(-2,-2);place.gravity=android.view.Gravity.CENTER_VERTICAL;
+                    original.addView(chip,place);
+                    original.setPadding(original.getPaddingLeft(),dp(row,6),original.getPaddingRight(),dp(row,2));
                 }
             }
             // Move existing bound views, retaining listeners, vote state and accessibility labels.

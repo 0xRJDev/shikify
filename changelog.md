@@ -3,7 +3,7 @@
 Boost for Reddit:
 - Fixed the feed crashing when patched together with Patcheddit 2.1.0.
 - The end of the feed leaves room for the loading indicator, so it no longer covers the last post.
-- Post flairs sit on their own line under the subreddit, user and time, instead of in front of them.
+- Post flairs sit on their own line under the subreddit, user and time, instead of in front of them, after any NSFW or spoiler tag.
 - Moving your finger while holding an image to preview it no longer scrolls the list or closes the preview. It closes when you let go.
 - The search page is Material 3: Feeds, Subscriptions and results sit in rounded sections, results scroll under a blurred header, the search bar is glass, and the back and filter buttons get glass circles when Glass header buttons is on.
 - New Subscriptions button option in Shikify Settings hides the bottom bar's Subscriptions button, and the bar shrinks to fit the other four. The side panel still lists your subscriptions.
