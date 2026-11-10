@@ -6,7 +6,7 @@ Boost for Reddit:
 - Post flairs sit on their own line under the subreddit, user and time, instead of in front of them.
 - Moving your finger while holding an image to preview it no longer scrolls the list or closes the preview. It closes when you let go.
 - The search page is Material 3: Feeds, Subscriptions and results sit in rounded sections, results scroll under a blurred header, the search bar is glass, and the back and filter buttons get glass circles when Glass header buttons is on.
-- New Subscriptions button option in Shikify Settings hides the bottom bar's Subscriptions button. The side panel still lists your subscriptions.
+- New Subscriptions button option in Shikify Settings hides the bottom bar's Subscriptions button, and the bar shrinks to fit the other four. The side panel still lists your subscriptions.
 
 # Version 1.1.2-dev.7
 

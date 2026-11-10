@@ -538,6 +538,10 @@ public final class SurfaceAppearanceTweaks {
                             safeRight=insets.getSystemWindowInsetRight();
                         }
                         int left=horizontal+safeLeft,right=horizontal+safeRight,below=gap+bottom;
+                        // Without the Subscriptions button, the pill keeps each button's width and stays centred.
+                        if(!SurfaceSettingsActivity.enabled(nav.getContext(),"nav_subscriptions",true) && root.getWidth()>0){
+                            int extra=(root.getWidth()-left-right)/10;left+=extra;right+=extra;
+                        }
                         if(params.leftMargin!=left || params.rightMargin!=right || params.bottomMargin!=below){
                             params.leftMargin=left;
                             params.rightMargin=right;
