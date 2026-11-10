@@ -8,6 +8,7 @@ Boost for Reddit:
 - The search page is Material 3: Feeds, Subscriptions and results sit in rounded sections, results scroll under a blurred header, the search bar is glass, and the back and filter buttons get glass circles when Glass header buttons is on.
 - New Subscriptions button option in Shikify Settings hides the bottom bar's Subscriptions button, and the bar shrinks to fit the other four. The side panel still lists your subscriptions.
 - Post flairs use each community's own colours again. Turn off Reddit flair colours in Shikify Settings for the Material You colours instead.
+- Inbox and profile tabs stand out from the cards below, with the selected tab in a filled pill. Inbox cards show the message type in the accent colour, and unread messages sit on a tinted card.
 
 # Version 1.1.2-dev.7
 

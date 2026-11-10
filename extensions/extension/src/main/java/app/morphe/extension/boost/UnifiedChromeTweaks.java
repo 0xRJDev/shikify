@@ -95,6 +95,40 @@ public final class UnifiedChromeTweaks {
             row.setLayoutParams(params);
         }
     }
+    /** Material 3 tabs: the selected tab sits in a filled tonal pill instead of over an underline. */
+    private static void pillTabs(View tabs){
+        Context context=tabs.getContext();
+        try{
+            android.graphics.drawable.GradientDrawable pill=new android.graphics.drawable.GradientDrawable();
+            pill.setCornerRadius(dp(tabs,20));pill.setColor(0xffffffff);
+            Class<?> type=tabs.getClass();
+            type.getMethod("setSelectedTabIndicator",Drawable.class).invoke(tabs,pill);
+            type.getMethod("setSelectedTabIndicatorGravity",int.class).invoke(tabs,3);
+            type.getMethod("setTabIndicatorFullWidth",boolean.class).invoke(tabs,true);
+            type.getMethod("setSelectedTabIndicatorColor",int.class).invoke(tabs,MaterialYouTweaks.color(context,"colorSecondaryContainer",android.R.attr.colorAccent));
+            int selected=MaterialYouTweaks.color(context,"colorOnSecondaryContainer",android.R.attr.textColorPrimary),normal=MaterialYouTweaks.color(context,"colorOnSurfaceVariant",android.R.attr.textColorSecondary);
+            type.getMethod("setTabTextColors",android.content.res.ColorStateList.class).invoke(tabs,new android.content.res.ColorStateList(new int[][]{{android.R.attr.state_selected},{}},new int[]{selected,normal}));
+            type.getMethod("setUnboundedRipple",boolean.class).invoke(tabs,false);
+        }catch(ReflectiveOperationException | RuntimeException ignored){
+        }
+    }
+    /** Inbox cards: the message type in the accent colour, and unread messages on a tonal card. */
+    private static void message(View row){
+        View subject=SurfaceAppearanceTweaks.find(row,"item_message_subject"),read=SurfaceAppearanceTweaks.find(row,"item_message_mark_read");
+        Context context=row.getContext();
+        if(subject instanceof TextView && subject.getTag(MESSAGE_TAG)==null){
+            subject.setTag(MESSAGE_TAG,Boolean.TRUE);
+            int accent=MaterialYouTweaks.color(context,"colorPrimary",android.R.attr.colorAccent);
+            ((TextView)subject).setTextColor(accent);((TextView)subject).setCompoundDrawableTintList(android.content.res.ColorStateList.valueOf(accent));
+            ((TextView)subject).setTypeface(android.graphics.Typeface.create("sans-serif-medium",android.graphics.Typeface.NORMAL));
+        }
+        boolean unread=read!=null && read.getVisibility()==View.VISIBLE;
+        Object shown=row.getTag(MESSAGE_TAG);
+        if(shown!=null && (Boolean)shown==unread)return;
+        row.setTag(MESSAGE_TAG,unread);
+        row.setBackground(unread ? SurfaceAppearanceTweaks.pillBackground(context,MaterialYouTweaks.color(context,"colorSecondaryContainer",android.R.attr.colorBackground),16):surface(context,16));
+    }
+    private static final int MESSAGE_TAG=0x7f5f0006;
     static final class Screen {
         final WeakReference<View> root;final boolean profile,reply,messages,search,settings;final int background;
         WeakReference<View> settingsList;
@@ -159,11 +193,14 @@ public final class UnifiedChromeTweaks {
                 View tabs=SurfaceAppearanceTweaks.find(decor,"tabs");
                 if(tabs!=null && !styled.containsKey(tabs)){
                     styled.put(tabs,true);
-                    tabs.setBackground(surface(tabs.getContext(),24));
+                    // A brighter tone than the cards below, with the selected tab in a filled pill.
+                    tabs.setBackground(SurfaceAppearanceTweaks.pillBackground(tabs.getContext(),MaterialYouTweaks.color(tabs.getContext(),"colorSurfaceContainerHighest",android.R.attr.colorBackground),24));
+                    tabs.setPadding(dp(tabs,4),dp(tabs,4),dp(tabs,4),dp(tabs,4));
+                    pillTabs(tabs);
                     if(tabs.getLayoutParams() instanceof ViewGroup.MarginLayoutParams){
                         ViewGroup.MarginLayoutParams p=(ViewGroup.MarginLayoutParams)tabs.getLayoutParams();
                         p.leftMargin=p.rightMargin=dp(tabs,12);
-                        p.topMargin=p.bottomMargin=dp(tabs,6);
+                        p.topMargin=dp(tabs,6);p.bottomMargin=dp(tabs,10);
                         tabs.setLayoutParams(p);
                     }
                 }
@@ -281,7 +318,7 @@ public final class UnifiedChromeTweaks {
                         if(profile){
                             if(SurfaceAppearanceTweaks.find(row,"submission_header_title")!=null)card(row);
                         }else if(messages && SurfaceAppearanceTweaks.find(row,"item_message_container")!=null){
-                            card(row);
+                            card(row);message(row);
                         }else if(SurfaceAppearanceTweaks.find(row,"item_search_text")!=null || SurfaceAppearanceTweaks.find(row,"item_subreddit_name")!=null || SurfaceAppearanceTweaks.find(row,"item_subreddit_view")!=null){
                             if(!styled.containsKey(row)){
                                 styled.put(row,true);
