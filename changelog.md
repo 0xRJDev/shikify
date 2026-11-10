@@ -2,7 +2,6 @@
 
 Boost for Reddit:
 - Smoother scrolling: Shikify's switches are read from memory instead of storage on every frame, and the bottom bar's profile button is no longer searched for on every layout pass.
-- Glass surfaces and the blurred header share one snapshot of the feed per frame, instead of each recording it separately while you scroll.
 
 # Version 1.1.2-dev.8
 
