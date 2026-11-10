@@ -199,13 +199,12 @@ final class HeaderGradient {
             if(dirty || !layers[0].hasDisplayList()){
                 int width=Math.max(1,(int)Math.ceil(bounds.width()/(float)SCALE)),height=Math.max(1,(int)Math.ceil(bounds.height()/(float)SCALE));
                 capture.setPosition(0,0,width,height);for(android.graphics.RenderNode layer:layers)layer.setPosition(0,0,width,height);
-                android.graphics.RenderNode shared=FeedPillBlur.snapshot(view);
                 android.graphics.RecordingCanvas layer=capture.beginRecording();recording=true;boolean success=false;
                 try{
                     layer.drawColor(0xff000000|color);layer.scale(1f/SCALE,1f/SCALE);
                     layer.clipRect(0,0,bounds.width(),bounds.height());
                     view.getLocationInWindow(location);layer.translate(location[0]-bounds.left,location[1]-bounds.top);
-                    layer.drawRenderNode(shared);success=true;
+                    view.draw(layer);success=true;
                 }catch(RuntimeException ignored){
                 }finally{capture.endRecording();recording=false;}
                 if(!success){super.draw(canvas);return;}

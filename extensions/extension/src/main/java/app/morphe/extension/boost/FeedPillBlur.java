@@ -138,24 +138,6 @@ final class FeedPillBlur extends Drawable implements ViewTreeObserver.OnPreDrawL
         windowOpacity=-1;
         dirty=true;
     }
-    /** One recording of each blurred view per frame, shared by every glass surface over it. */
-    private static final java.util.WeakHashMap<View,Snapshot> SNAPSHOTS=new java.util.WeakHashMap<>();
-    private static boolean sharing;
-    private static final class Snapshot {final RenderNode node=new RenderNode("Shikify shared snapshot");long frame=Long.MIN_VALUE;int width,height;}
-    /** Header buttons, the header blur and the bars each used to record the whole list themselves, every frame. */
-    static RenderNode snapshot(View content){
-        Snapshot shot=SNAPSHOTS.get(content);if(shot==null){shot=new Snapshot();SNAPSHOTS.put(content,shot);}
-        long frame=android.view.animation.AnimationUtils.currentAnimationTimeMillis();
-        int width=content.getWidth(),height=content.getHeight();
-        if(shot.frame!=frame || shot.width!=width || shot.height!=height || !shot.node.hasDisplayList()){
-            shot.node.setPosition(0,0,Math.max(1,width),Math.max(1,height));
-            RecordingCanvas canvas=shot.node.beginRecording();sharing=true;
-            try{content.draw(canvas);shot.frame=frame;shot.width=width;shot.height=height;}
-            catch(RuntimeException error){shot.frame=Long.MIN_VALUE;}
-            finally{shot.node.endRecording();sharing=false;}
-        }
-        return shot.node;
-    }
     @Override public void onGlobalLayout(){dirty=true;invalidateSelf();}
     @Override public boolean onPreDraw(){
         View content=source.get(),view=bar.get();if(!running || content==null || view==null)return true;
@@ -178,7 +160,7 @@ final class FeedPillBlur extends Drawable implements ViewTreeObserver.OnPreDrawL
     }
     @Override public void getOutline(Outline outline){if(header)outline.setRect(getBounds());else outline.setRoundRect(getBounds(),Math.min(radius,getBounds().height()/2f));outline.setAlpha(0);}
     @Override public void draw(Canvas canvas){
-        if(recording || sharing || (!running && !frozen) || !canvas.isHardwareAccelerated() || getBounds().isEmpty())return;
+        if(recording || (!running && !frozen) || !canvas.isHardwareAccelerated() || getBounds().isEmpty())return;
         View content=source.get(),view=bar.get();if(content==null || view==null || content.getWidth()==0 || content.getHeight()==0)return;
         if(effectDirty){
             if(android.os.Build.VERSION.SDK_INT>=33 && refraction!=null)edgeNode.setRenderEffect(header ? refraction.effect(getBounds().width(),getBounds().height(),padding,density,baseColor,0,headerHeight,headerOffset,0.6f):refraction.effect(getBounds().width(),getBounds().height(),padding,density,baseColor,Math.min(radius,getBounds().height()/2f)/2,getBounds().height(),0,0.4f));
@@ -198,7 +180,6 @@ final class FeedPillBlur extends Drawable implements ViewTreeObserver.OnPreDrawL
                 barLocation[1]+=getBounds().top;
             }
             else{content.getLocationInWindow(sourceLocation);view.getLocationInWindow(barLocation);}
-            RenderNode shared=snapshot(content);
             RecordingCanvas layer=capture.beginRecording();recording=true;boolean success=false;
             try{
                 layer.drawColor(baseColor);layer.scale(0.5f,0.5f);
@@ -207,7 +188,7 @@ final class FeedPillBlur extends Drawable implements ViewTreeObserver.OnPreDrawL
                 layer.clipRect(barLocation[0]-padding,barLocation[1]-padding,barLocation[0]+getBounds().width()+padding,barLocation[1]+getBounds().height()+padding);
                 if(includeWindow){Drawable background=content.getRootView().getBackground();if(background!=null && background!=this)background.draw(layer);}
                 layer.translate(sourceLocation[0],sourceLocation[1]);
-                layer.drawRenderNode(shared);dirty=false;lastRecord=now;recordings++;success=true;
+                content.draw(layer);dirty=false;lastRecord=now;recordings++;success=true;
             }catch(RuntimeException error){dirty=false;}
             finally{capture.endRecording();recording=false;if(!success){capture.discardDisplayList();node.discardDisplayList();edgeNode.discardDisplayList();}}
             if(success){
