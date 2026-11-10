@@ -7,6 +7,7 @@ Boost for Reddit:
 - Moving your finger while holding an image to preview it no longer scrolls the list or closes the preview. It closes when you let go.
 - The search page is Material 3: Feeds, Subscriptions and results sit in rounded sections, results scroll under a blurred header, the search bar is glass, and the back and filter buttons get glass circles when Glass header buttons is on.
 - New Subscriptions button option in Shikify Settings hides the bottom bar's Subscriptions button, and the bar shrinks to fit the other four. The side panel still lists your subscriptions.
+- Post flairs use each community's own colours again. Turn off Reddit flair colours in Shikify Settings for the Material You colours instead.
 
 # Version 1.1.2-dev.7
 
