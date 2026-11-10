@@ -98,7 +98,7 @@ public final class UnifiedChromeTweaks {
     static final class Screen {
         final WeakReference<View> root;final boolean profile,reply,messages,search,settings;final int background;
         WeakReference<View> settingsList;
-        Groups settingsGroups;final WeakHashMap<View,Boolean> styled=new WeakHashMap<>();
+        Groups settingsGroups,searchGroups;WeakReference<View> searchList;final WeakHashMap<View,Boolean> styled=new WeakHashMap<>();
         Screen(Activity activity,View root){
             this.root=new WeakReference<>(root);
             messages=activity.getClass().getName().startsWith("com.rubenmayayo.reddit.ui.messages.");
@@ -130,7 +130,12 @@ public final class UnifiedChromeTweaks {
                 Activity activity=CommentsChromeTweaks.activity(input.getContext());
                 Context palette=activity==null ? input.getContext():activity;
                 edit.setBackgroundTintList(null);
-                edit.setBackground(surface(palette,28));
+                // With glass on, the search pill blurs the results that scroll under the header.
+                View results=SurfaceAppearanceTweaks.find(decor,"recyclerview");
+                if(android.os.Build.VERSION.SDK_INT>=31 && results!=null && android.preference.PreferenceManager.getDefaultSharedPreferences(palette).getBoolean("shikify_feed_pill_blur",true)){
+                    FeedPillBlur glass=new FeedPillBlur(results,edit,SurfaceAppearanceTweaks.role(palette,false),false,24,true,0,1);
+                    edit.setBackground(glass);glass.start();
+                }else edit.setBackground(surface(palette,28));
                 edit.setPaddingRelative(dp(edit,16),0,dp(edit,48),0);
                 edit.setMinHeight(dp(edit,48));
                 int text=SurfaceAppearanceTweaks.foreground(palette,false),support=MaterialYouTweaks.color(palette,"colorOnSurfaceVariant",android.R.attr.textColorSecondary);
@@ -197,10 +202,21 @@ public final class UnifiedChromeTweaks {
                 action.setCompoundDrawableTintList(android.content.res.ColorStateList.valueOf(MaterialYouTweaks.color(context,"colorOnSurfaceVariant",android.R.attr.textColorSecondary)));
             }
         }
+        /** Search rows sit on rounded surfaces between their section titles, like the side panel. */
+        private void groupSearch(View decor){
+            View list=SurfaceAppearanceTweaks.find(decor,"recyclerview");if(!(list instanceof ViewGroup))return;
+            if(searchList==null || searchList.get()!=list){
+                searchList=new WeakReference<>(list);searchGroups=new Groups(list);
+                int side=dp(list,12);list.setPaddingRelative(side,list.getPaddingTop(),side,list.getPaddingBottom());
+                ((ViewGroup)list).setClipToPadding(false);
+            }
+            searchGroups.collect((ViewGroup)list,row->SurfaceAppearanceTweaks.find(row,"item_search_header_button")==null);
+        }
         /** Settings categories sit on rounded surfaces; a category title has no widget frame. */
         void frame(){
             View host=root.get();
             if(search && host!=null && Features.search() && SurfaceSettingsActivity.enabled(host.getContext(),"search_page"))searchHeaders();
+            if(search && host!=null)groupSearch(host);
             if(!settings)return;
             View decor=root.get(),list=decor==null ? null:SurfaceAppearanceTweaks.find(decor,"recycler_view");if(!(list instanceof ViewGroup))return;
             if(settingsList==null || settingsList.get()!=list){settingsList=new WeakReference<>(list);settingsGroups=new Groups(list);}
