@@ -1,3 +1,8 @@
+# Unreleased
+
+Boost for Reddit:
+- Smoother scrolling: Shikify's switches are read from memory instead of storage on every frame, and the bottom bar's profile button is no longer searched for on every layout pass.
+
 # Version 1.1.2-dev.8
 
 Boost for Reddit:

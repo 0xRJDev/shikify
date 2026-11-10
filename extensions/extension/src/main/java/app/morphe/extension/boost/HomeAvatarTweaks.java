@@ -93,10 +93,13 @@ public final class HomeAvatarTweaks {
             onGlobalLayout();
         }
         void stop(){ViewTreeObserver tree=observer==null ? null:observer.get();if(tree!=null && tree.isAlive())tree.removeOnGlobalLayoutListener(this);observer=null;}
+        WeakReference<View> found=new WeakReference<>(null);
         @Override public void onGlobalLayout(){
             View view=root.get();
             if(view==null)return;
-            View item=view.findViewById(profileId);
+            // Searching the whole window on every layout pass is costly while a feed scrolls.
+            View item=found.get();
+            if(item==null || !item.isAttachedToWindow() || item.getId()!=profileId){item=view.findViewById(profileId);found=new WeakReference<>(item);}
             if(!(item instanceof ViewGroup))return;
             Navigation nav=NAVIGATION.get(item);
             if(nav==null)navigation(view);
@@ -185,7 +188,13 @@ public final class HomeAvatarTweaks {
         header.home=home;header.community=community;header.subscription=new WeakReference<>(subscription);header.update();
     }
     static String string(Object value,String name){Object result=CommentsChromeTweaks.field(value,name);return result instanceof String ? (String)result:"";}
-    static Object reddit(Context context)throws ReflectiveOperationException{return Class.forName("pd2",false,context.getClassLoader()).getField("r").get(null);}
+    private static volatile java.lang.reflect.Field session;
+    /** Boost's account holder. The field is looked up once; it is read on every layout pass. */
+    static Object reddit(Context context)throws ReflectiveOperationException{
+        java.lang.reflect.Field field=session;
+        if(field==null){field=Class.forName("pd2",false,context.getClassLoader()).getField("r");session=field;}
+        return field.get(null);
+    }
     static String currentUser(Context context){try{return string(CommentsChromeTweaks.field(reddit(context),"a"),"name");}catch(ReflectiveOperationException | RuntimeException ignored){return "";}}
     static String clean(Context context,String url){
         if(TextUtils.isEmpty(url))return "";
