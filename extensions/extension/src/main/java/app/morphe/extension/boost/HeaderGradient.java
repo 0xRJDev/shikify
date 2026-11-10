@@ -164,9 +164,10 @@ final class HeaderGradient {
         private static final int SCALE=3;
         // Progressive blur: each layer is stronger and fades out higher up, so the blur eases off
         // towards the bottom edge. Radii in dp, and where each layer has faded out completely.
-        private static final float[] RADII={3,7,13,22},ENDS={1f,.8f,.6f,.42f};
-        // Each layer fades over this share of the header, so the weakest one reaches nothing at the bottom edge gradually.
-        private static final float FADE=.42f;
+        // The blur reaches EXTRA_DP below the top bar and fades out there, so the bar itself stays fully frosted
+        // and there is no line where the blur stops. Each layer is opaque until its start and gone by its end.
+        private static final float[] RADII={3,7,13,22},STARTS={.78f,.6f,.35f,.15f},ENDS={1f,.9f,.7f,.5f};
+        static final int EXTRA_DP=28;
         final android.graphics.RenderNode capture=new android.graphics.RenderNode("ShikifyHeaderCapture");
         final android.graphics.RenderNode[] layers=new android.graphics.RenderNode[RADII.length];
         final Paint[] masks=new Paint[RADII.length];
@@ -186,10 +187,10 @@ final class HeaderGradient {
         @Override protected void onBoundsChange(android.graphics.Rect bounds){
             if(bounds.isEmpty())return;
             for(int index=0;index<RADII.length;index++){
-                float end=ENDS[index],start=Math.max(0,end-FADE);
+                float end=ENDS[index],start=STARTS[index];
                 masks[index].setShader(new LinearGradient(0,bounds.top,0,bounds.bottom,new int[]{0xff000000,0xff000000,0x00000000,0x00000000},new float[]{0,start,end,1},Shader.TileMode.CLAMP));
             }
-            tintPaint.setShader(new LinearGradient(0,bounds.top,0,bounds.bottom,new int[]{0x66000000|color,0x40000000|color,0x00000000|color},new float[]{0,.5f,1},Shader.TileMode.CLAMP));
+            tintPaint.setShader(new LinearGradient(0,bounds.top,0,bounds.bottom,new int[]{0x66000000|color,0x40000000|color,0x26000000|color,0x00000000|color},new float[]{0,.6f,.78f,1},Shader.TileMode.CLAMP));
             dirty=true;
         }
         @Override void contentChanged(){dirty=true;invalidateSelf();}
@@ -223,8 +224,8 @@ final class HeaderGradient {
         }
     }
     private final class Slice extends Drawable {
-        int x,y;
-        @Override public void draw(Canvas canvas){int saved=canvas.save();canvas.clipRect(getBounds());canvas.translate(-x,-y);shade.draw(canvas);canvas.restoreToCount(saved);}
+        int x,y,extra;
+        @Override public void draw(Canvas canvas){int saved=canvas.save();android.graphics.Rect bounds=getBounds();canvas.clipRect(bounds.left,bounds.top,bounds.right,bounds.bottom+extra);canvas.translate(-x,-y);shade.draw(canvas);canvas.restoreToCount(saved);}
         @Override public void setAlpha(int alpha){shade.setAlpha(alpha);invalidateSelf();}
         @Override public void setColorFilter(ColorFilter filter){}
         @Override public int getOpacity(){return PixelFormat.TRANSLUCENT;}
@@ -410,7 +411,16 @@ final class HeaderGradient {
             }
         }
         toolbar.getLocationInWindow(location);
-        int bottom=location[1]+toolbar.getHeight(),height=Math.max(statusHeight,bottom);
+        int bottom=location[1]+toolbar.getHeight(),extra=shade instanceof BlurShade ? Math.round(BlurShade.EXTRA_DP*toolbar.getResources().getDisplayMetrics().density):0,height=Math.max(statusHeight,bottom)+extra;
+        if(extra>0){
+            // Let the bar draw the blur's fade below itself.
+            toolbarSlice.extra=extra;
+            for(android.view.ViewParent parent=toolbar.getParent();parent instanceof ViewGroup && parent!=decor;parent=parent.getParent()){
+                ViewGroup group=(ViewGroup)parent;
+                if(!clips.containsKey(group))clips.put(group,new boolean[]{group.getClipChildren(),group.getClipToPadding()});
+                if(group.getClipChildren())group.setClipChildren(false);
+            }
+        }
         boolean changed=toolbarSlice.x!=location[0] || toolbarSlice.y!=location[1] || shade.getBounds().width()!=decor.getWidth() || shade.getBounds().height()!=height;
         toolbarSlice.x=location[0];
         toolbarSlice.y=location[1];
