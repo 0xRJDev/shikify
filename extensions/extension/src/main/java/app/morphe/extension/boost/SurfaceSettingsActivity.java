@@ -132,6 +132,7 @@ public final class SurfaceSettingsActivity extends Activity {
             if(Features.dialogs())toggle("Floating menus","Option menus float above the bottom edge","material_dialogs");
             if(Features.flairs())toggle("Inline flairs","Show flairs with the post details","flair_style");
             if(Features.search())toggle("Search page","Show feeds and subscriptions","search_page");
+            toggle("Subscriptions button","Show the subscriptions button in the bottom bar","nav_subscriptions",true);
         }
         if(page==2){
             section("Comments");
