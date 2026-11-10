@@ -40,9 +40,29 @@ public final class SurfaceSettingsActivity extends Activity {
     private TextView title;
     private SeekBar blurStrength,glassTint;
     private int page,background,foreground,secondary,accent,outline;
-    static SharedPreferences prefs(Context context){return PreferenceManager.getDefaultSharedPreferences(context);}
-    static boolean enabled(Context context,String key){return prefs(context).getBoolean("shikify_"+key,true);}
-    static boolean enabled(Context context,String key,boolean fallback){return prefs(context).getBoolean("shikify_"+key,fallback);}
+    /** One shared preferences instance; switches are read on every frame and row, so their values are cached too. */
+    private static volatile SharedPreferences shared;
+    private static final java.util.concurrent.ConcurrentHashMap<String,Boolean> SWITCHES=new java.util.concurrent.ConcurrentHashMap<>();
+    // Held strongly: SharedPreferences keeps only weak references to its listeners.
+    private static final SharedPreferences.OnSharedPreferenceChangeListener CHANGED=(preferences,key)->SWITCHES.clear();
+    static SharedPreferences prefs(Context context){
+        SharedPreferences preferences=shared;if(preferences!=null)return preferences;
+        synchronized(SWITCHES){
+            if(shared==null){
+                Context app=context.getApplicationContext();
+                SharedPreferences created=PreferenceManager.getDefaultSharedPreferences(app==null ? context:app);
+                created.registerOnSharedPreferenceChangeListener(CHANGED);shared=created;
+            }
+            return shared;
+        }
+    }
+    static boolean enabled(Context context,String key){return enabled(context,key,true);}
+    static boolean enabled(Context context,String key,boolean fallback){
+        String name=fallback ? key:"!"+key;
+        Boolean known=SWITCHES.get(name);if(known!=null)return known;
+        boolean value=prefs(context).getBoolean("shikify_"+key,fallback);
+        SWITCHES.put(name,value);return value;
+    }
     static int number(Context context,String key,int fallback,int min,int max){
         try{
             return Math.max(min,Math.min(max,prefs(context).getInt("shikify_"+key,fallback)));
