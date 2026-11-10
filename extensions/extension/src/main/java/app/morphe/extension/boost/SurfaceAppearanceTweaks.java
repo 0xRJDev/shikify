@@ -116,6 +116,24 @@ public final class SurfaceAppearanceTweaks {
         // Opaque native media windows use the platform transition; no content animator.
         return null;
     }
+    private static java.lang.reflect.Method navigationMenu;
+    /** Shows or hides the bottom bar's Subscriptions button. Boost finds its buttons by id, so a hidden one is simply skipped. */
+    static void subscriptionsButton(View nav){
+        boolean show=SurfaceSettingsActivity.enabled(nav.getContext(),"nav_subscriptions",true);
+        Object applied=nav.getTag(SUBSCRIPTIONS_TAG);
+        if(applied!=null && (Boolean)applied==show)return;
+        try{
+            if(navigationMenu==null)navigationMenu=Class.forName("com.google.android.material.navigation.NavigationBarView",false,nav.getContext().getClassLoader()).getMethod("getMenu");
+            if(!navigationMenu.getDeclaringClass().isInstance(nav))return;
+            android.view.Menu menu=(android.view.Menu)navigationMenu.invoke(nav);
+            int id=nav.getResources().getIdentifier("item_subs","id",nav.getContext().getPackageName());
+            android.view.MenuItem item=id==0 ? null:menu.findItem(id);
+            if(item==null)return;
+            item.setVisible(show);nav.setTag(SUBSCRIPTIONS_TAG,show);
+        }catch(ReflectiveOperationException | RuntimeException error){
+        }
+    }
+    private static final int SUBSCRIPTIONS_TAG=0x7f5f0005;
     static View find(View root,String name){int id=Ids.view(root,name);return id==0 ? null:root.findViewById(id);}
     static View view(Object object,String field){Object result=CommentsChromeTweaks.field(object,field);return result instanceof View ? (View)result:null;}
     static int number(SharedPreferences prefs,String key,int fallback,int min,int max){
@@ -486,6 +504,7 @@ public final class SurfaceAppearanceTweaks {
                     }
                 }
                 if(nav!=null){
+                    subscriptionsButton(nav);
                     nav.setOnApplyWindowInsetsListener(navigationInsetsListener);
                     float density=root.getResources().getDisplayMetrics().density;int horizontal=Math.round(16*density),gap=Math.round(12*density);
                     if(feedPill==null)feedPill=pillBackground(root.getContext(),MaterialYouTweaks.color(root.getContext(),"colorSurfaceContainerHigh",android.R.attr.colorBackground),40);
