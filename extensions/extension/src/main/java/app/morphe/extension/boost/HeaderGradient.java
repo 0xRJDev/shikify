@@ -165,7 +165,8 @@ final class HeaderGradient {
         // Progressive blur: each layer is stronger and fades out higher up, so the blur eases off
         // towards the bottom edge. Radii in dp, and where each layer has faded out completely.
         private static final float[] RADII={3,7,13,22},ENDS={1f,.8f,.6f,.42f};
-        private static final float FADE=.24f;
+        // Each layer fades over this share of the header, so the weakest one reaches nothing at the bottom edge gradually.
+        private static final float FADE=.42f;
         final android.graphics.RenderNode capture=new android.graphics.RenderNode("ShikifyHeaderCapture");
         final android.graphics.RenderNode[] layers=new android.graphics.RenderNode[RADII.length];
         final Paint[] masks=new Paint[RADII.length];
@@ -188,7 +189,7 @@ final class HeaderGradient {
                 float end=ENDS[index],start=Math.max(0,end-FADE);
                 masks[index].setShader(new LinearGradient(0,bounds.top,0,bounds.bottom,new int[]{0xff000000,0xff000000,0x00000000,0x00000000},new float[]{0,start,end,1},Shader.TileMode.CLAMP));
             }
-            tintPaint.setShader(new LinearGradient(0,bounds.top,0,bounds.bottom,new int[]{0x66000000|color,0x40000000|color,0x26000000|color},new float[]{0,.6f,1},Shader.TileMode.CLAMP));
+            tintPaint.setShader(new LinearGradient(0,bounds.top,0,bounds.bottom,new int[]{0x66000000|color,0x40000000|color,0x00000000|color},new float[]{0,.5f,1},Shader.TileMode.CLAMP));
             dirty=true;
         }
         @Override void contentChanged(){dirty=true;invalidateSelf();}
