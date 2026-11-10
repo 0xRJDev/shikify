@@ -1,4 +1,4 @@
-# Unreleased
+# Version 1.1.2-dev.8
 
 Boost for Reddit:
 - Fixed the feed crashing when patched together with Patcheddit 2.1.0.
