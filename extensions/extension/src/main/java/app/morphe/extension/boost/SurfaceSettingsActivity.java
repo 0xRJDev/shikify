@@ -131,6 +131,7 @@ public final class SurfaceSettingsActivity extends Activity {
             if(Features.notices())toggle("Notices","Show toasts above the bottom bar","material_notices");
             if(Features.dialogs())toggle("Floating menus","Option menus float above the bottom edge","material_dialogs");
             if(Features.flairs())toggle("Inline flairs","Show flairs with the post details","flair_style");
+            if(Features.flairs())toggle("Reddit flair colours","Use each community's own flair colours","flair_colours",true);
             if(Features.search())toggle("Search page","Show feeds and subscriptions","search_page");
             toggle("Subscriptions button","Show the subscriptions button in the bottom bar","nav_subscriptions",true);
         }

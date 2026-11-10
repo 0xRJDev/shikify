@@ -306,14 +306,22 @@ public final class MaterialYouTweaks {
         if(spans.length==0) {if(target!=null && target.getVisibility()!=View.GONE){target.setVisibility(View.GONE);return true;}return false;}
         android.text.SpannableStringBuilder metadata=new android.text.SpannableStringBuilder(content),chips=new android.text.SpannableStringBuilder();
         java.util.Arrays.sort(spans,(a,b)->Integer.compare(old.getSpanStart(a),old.getSpanStart(b)));
+        boolean redditColours=SurfaceSettingsActivity.enabled(view.getContext(),"flair_colours",true);
         for(BackgroundColorSpan span:spans) {
             int start=old.getSpanStart(span),end=old.getSpanEnd(span);if(start<0 || end<=start)continue;
             if(chips.length()>0)chips.append(" ");int offset=chips.length();
             // Flairs get their own line, but a very long one is still cut short.
             chips.append(end-start>40 ? new android.text.SpannableStringBuilder(old.subSequence(start,start+38)).append('\u2026'):old.subSequence(start,end));
+            int fill=color(view.getContext(),"colorSecondaryContainer",android.R.attr.colorAccent),ink=color(view.getContext(),"colorOnSecondaryContainer",android.R.attr.textColorPrimary);
+            // Reddit's own flair colours, when the community set one and the option is on.
+            if(redditColours && android.graphics.Color.alpha(span.getBackgroundColor())>0){
+                fill=span.getBackgroundColor()|0xff000000;
+                ForegroundColorSpan[] text=old.getSpans(start,end,ForegroundColorSpan.class);
+                ink=text.length>0 && android.graphics.Color.alpha(text[0].getForegroundColor())>0 ? text[0].getForegroundColor()|0xff000000:readableOn(fill);
+            }
             for(BackgroundColorSpan bg:chips.getSpans(offset,chips.length(),BackgroundColorSpan.class))chips.removeSpan(bg);
             for(ForegroundColorSpan fg:chips.getSpans(offset,chips.length(),ForegroundColorSpan.class))chips.removeSpan(fg);
-            chips.setSpan(new Pill(color(view.getContext(),"colorSecondaryContainer",android.R.attr.colorAccent),color(view.getContext(),"colorOnSecondaryContainer",android.R.attr.textColorPrimary),dp(view,6)),offset,chips.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            chips.setSpan(new Pill(fill,ink,dp(view,6)),offset,chips.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         if(target==null) return false;
         for(int i=spans.length-1;i>=0;i--){int start=old.getSpanStart(spans[i]),end=old.getSpanEnd(spans[i]);if(start>=0 && end>start){
@@ -326,6 +334,11 @@ public final class MaterialYouTweaks {
         while(metadata.length()>0 && Character.isWhitespace(metadata.charAt(0)))metadata.delete(0,1);
         view.setText(metadata);
         target.setText(chips);target.setVisibility(chips.length()>0 ? View.VISIBLE:View.GONE);return true;
+    }
+    /** Black or white text, whichever reads better on the flair's colour. */
+    static int readableOn(int background){
+        double luminance=(0.299*android.graphics.Color.red(background)+0.587*android.graphics.Color.green(background)+0.114*android.graphics.Color.blue(background))/255;
+        return luminance>0.6 ? 0xff1c1b1f:0xffffffff;
     }
     public static final class Pill extends ReplacementSpan {
         final int background,foreground,pad;
