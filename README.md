@@ -110,6 +110,10 @@ Built with the official [Morphe patches template](https://github.com/MorpheApp/m
 
 📬 **[SIGN THE GUESTBOOK](https://github.com/0xRJDev/shikify/issues)** 📬
 
+☕ **[TIP JAR: BUY ME A COFFEE](https://ko-fi.com/shikify)** ☕
+
+<sub>Shikify is free and always will be. Boost itself is made by Ruben Mayayo: support him on <a href="https://ko-fi.com/mayayo">Ko-fi</a> too.</sub>
+
 <sub>© 1997 2026 Shikify Web Productions. All rights reserved, except the ones GPL-3.0 gives you.</sub>
 
 </div>
