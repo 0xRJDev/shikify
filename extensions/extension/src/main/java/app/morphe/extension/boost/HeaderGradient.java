@@ -169,7 +169,7 @@ final class HeaderGradient {
         // The blur reaches EXTRA_DP below the top bar and fades out there, so the bar itself stays fully frosted
         // and there is no line where the blur stops. Each layer is opaque until its start and gone by its end.
         private static final float[] RADII={3,7,13,22},STARTS={.78f,.6f,.35f,.15f},ENDS={1f,.9f,.7f,.5f};
-        static final int EXTRA_DP=28;
+        static final int EXTRA_DP=16;
         final android.graphics.RenderNode capture=new android.graphics.RenderNode("ShikifyHeaderCapture");
         final android.graphics.RenderNode[] layers=new android.graphics.RenderNode[RADII.length];
         final Paint[] masks=new Paint[RADII.length];
