@@ -1,3 +1,8 @@
+# Version 1.1.3
+
+Boost for Reddit:
+- Fixed Boost crashing on a user's Overview and Comments tabs when patched together with Patcheddit 2.2.0's undelete.
+
 # Version 1.1.2
 
 Boost for Reddit:
