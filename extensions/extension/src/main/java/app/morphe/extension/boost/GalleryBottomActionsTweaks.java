@@ -271,7 +271,8 @@ public final class GalleryBottomActionsTweaks {
     /**
      * The gallery's root fits the system windows, so its images stop below a black status bar
      * while a single image runs underneath it. Let the images run under the status bar too and
-     * move only the toolbar down by its height. The other insets stay as padding.
+     * move only the toolbar down by its height. The other insets stay as padding on the root,
+     * and the pages get none.
      */
     static void underStatusBar(Toolbar toolbar) {
         if (!(toolbar.getParent() instanceof ViewGroup) || !(toolbar.getLayoutParams() instanceof ViewGroup.MarginLayoutParams)) return;
@@ -285,7 +286,8 @@ public final class GalleryBottomActionsTweaks {
             view.setPadding(insets.getSystemWindowInsetLeft(), 0, insets.getSystemWindowInsetRight(), insets.getSystemWindowInsetBottom());
             int top = base + insets.getSystemWindowInsetTop();
             if (params.topMargin != top) { params.topMargin = top; toolbar.setLayoutParams(params); }
-            return insets;
+            // Each page also fits the system windows and would pad itself below the status bar again.
+            return insets.consumeSystemWindowInsets();
         });
         album.requestApplyInsets();
     }
