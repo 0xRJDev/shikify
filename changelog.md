@@ -1,6 +1,7 @@
 # Unreleased
 
 Boost for Reddit:
+- Galleries with more than one image run under the status bar like single images, instead of stopping below a black bar.
 - Now patches Boost 1.14.4. Patch it from the official 1.14.4 APK, and use Patcheddit 2.2.0 or later alongside Shikify.
 - The avatar on the bottom bar's profile button is left to Boost, which shows it itself from 1.14.4. Home account avatar still shows it beside Home and community icons beside their titles.
 - The blurred header reaches a little below the top bar and fades out there, so the whole bar stays frosted without a visible line where the blur stops.
