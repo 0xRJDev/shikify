@@ -1,3 +1,29 @@
+# Version 1.1.2
+
+Boost for Reddit:
+- Now patches Boost 1.14.4. Patch it from the official 1.14.4 APK, and use Patcheddit 2.2.0 or later alongside Shikify.
+- New Material 3 search page: Feeds, Subscriptions and results sit in rounded sections under a glass search bar.
+- New Blurred header option blurs what scrolls under the top bar and fades out just below it, without a visible edge.
+- New Glass header buttons option puts each top bar icon in a frosted glass circle.
+- New Subscriptions button option hides the bottom bar's Subscriptions button, and the bar shrinks to fit the other four.
+- New Subreddit colours option turns off the community colour tint on the top bar.
+- Post flairs sit on their own line under the post details, after any NSFW or spoiler tag, in each community's own colours. Turn off Reddit flair colours for Material You colours instead.
+- Inbox and profile tabs stand out from the cards, with the selected tab in a filled pill. Unread messages sit on a tinted card.
+- Page loading and the remaining circular loaders use the expressive Material shape animation. While more posts load, it sits at the bottom of the screen.
+- Swiping a post to vote or reply also works when you start on its image.
+- Glass surfaces use a lighter frost, so they look like clear glass over dark posts.
+- Galleries with more than one image run under the status bar like single images.
+- Shikify Settings uses Material 3 switches, and changing a Loading setting offers to restart Boost straight away.
+- Patches are grouped under Appearance, Comments, Media, Navigation and Performance in Morphe Manager.
+- Smoother scrolling: Shikify's switches are read from memory instead of storage on every frame.
+- The avatar on the bottom bar's profile button is left to Boost, which shows it itself from 1.14.4. Home account avatar still shows it beside Home and community icons beside their titles.
+- Fixed the feed crashing when patched together with Patcheddit.
+- Fixed videos playing on after leaving the video viewer.
+- Fixed a gallery going black when reopened straight after closing it.
+- Fixed the refresh circle sometimes staying stuck near the status bar.
+- Fixed moving your finger during a hold-to-preview scrolling the list.
+- Fixed the bottom navigation bar flickering between tabs and taking extra space for the system bar.
+
 # Version 1.1.2-dev.9
 
 Boost for Reddit:
