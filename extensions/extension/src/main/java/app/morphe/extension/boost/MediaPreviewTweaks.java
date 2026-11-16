@@ -25,12 +25,12 @@ public final class MediaPreviewTweaks {
     /** True while a hold-to-preview is open; other gestures must leave its touch stream alone. */
     static boolean peeking() { Controller active = peeking.get(); return active != null && active.holding; }
     public static void bindComment(Object holder) {
-        attach(holder, "mediaPreviewIv", "c0", CommentsChromeTweaks.inlineMediaEnabled());
+        attach(holder, "mediaPreviewIv", "b0", CommentsChromeTweaks.inlineMediaEnabled());
     }
     public static void bindPost(Object holder) {
         if (!CommentsChromeTweaks.mediaPeekEnabled()) return;
-        attach(holder, "previewImageview", "b0", false);
-        attach(holder, "thumbnailIv", "b0", false);
+        attach(holder, "previewImageview", "h0", false);
+        attach(holder, "thumbnailIv", "h0", false);
     }
     private static void attach(Object holder, String field, String modelField, boolean inline) {
         if (!inline && !CommentsChromeTweaks.mediaPeekEnabled()) return;

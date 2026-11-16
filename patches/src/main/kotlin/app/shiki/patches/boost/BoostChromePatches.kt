@@ -16,7 +16,7 @@ import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
 import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
 
-// Verified against the developer-signed 1.14.3 APK. See docs/VALIDATION.md.
+// Verified against the developer-signed 1.14.4 APK. See docs/VALIDATION.md.
 private const val SWIPE_EXTENSION = "Lapp/morphe/extension/boost/CommentSwipeActions;"
 private const val COMMENTS_ACTIVITY = "Lcom/rubenmayayo/reddit/ui/comments/CommentsActivity;"
 private const val COMMENTS_FRAGMENT = "Lcom/rubenmayayo/reddit/ui/comments/CommentsFragment;"
@@ -38,7 +38,7 @@ private object ShikifyCategory {
 private val boostCompatibility = Compatibility(
     name = "Boost for Reddit",
     packageName = "com.rubenmayayo.reddit",
-    targets = listOf(AppTarget(version = "1.14.3")),
+    targets = listOf(AppTarget(version = "1.14.4")),
 )
 
 // Unnamed dependencies are internal. The Manager shows thirteen user-facing patches.
@@ -52,7 +52,7 @@ private val boostChromeExtensionPatch = bytecodePatch {
         val bind = Fingerprint(
             definingClass = holder, name = "w", returnType = "V", isStatic = false,
             parameters = listOf("Lcom/rubenmayayo/reddit/models/reddit/$model;",
-                "Z", "Z", "Z", "Lhg2;"),
+                "Z", "Z", "Z", "Lpg2;"),
         ).method
         val instructions = bind.implementation!!.instructions
         if (instructions.any { it.methodReference()?.name == "getExtraEmoji" } &&
@@ -117,7 +117,7 @@ private fun app.morphe.patcher.patch.BytecodePatchContext.enableCommentFeature(n
         parameters = emptyList(), isStatic = true).method.replaceInstruction(0, "const/4 v0, 0x1")
     val bind = Fingerprint(
         definingClass = COMMENT_HOLDER, name = "w", returnType = "V", isStatic = false,
-        parameters = listOf("Lcom/rubenmayayo/reddit/models/reddit/CommentModel;", "Z", "Z", "Z", "Lhg2;"),
+        parameters = listOf("Lcom/rubenmayayo/reddit/models/reddit/CommentModel;", "Z", "Z", "Z", "Lpg2;"),
     ).method
     // Both comment features share this single prefix. Never add a second hook to the wrapper.
     val oldHooks = bind.implementation!!.instructions.withIndex().filter { (_, instruction) ->
@@ -156,10 +156,10 @@ private fun app.morphe.patcher.patch.BytecodePatchContext.enableRowCompletion() 
 
 private fun app.morphe.patcher.patch.BytecodePatchContext.enableFeedCompletion() {
     val extension = "Lapp/morphe/extension/boost/MaterialYouTweaks;"
-    // Exact 1.14.3 binding dispatchers: regular subreddit/search feeds, grid, front feed,
+    // Exact 1.14.4 binding dispatchers: regular subreddit/search feeds, grid, front feed,
     // and profile submissions. Keep the shared native post/emoji binder prefix unchanged.
-    for (owner in listOf("Lcom/rubenmayayo/reddit/ui/fragments/k\$a;",
-        "Lcom/rubenmayayo/reddit/ui/fragments/m\$a;", "Lft0;",
+    for (owner in listOf("Lcom/rubenmayayo/reddit/ui/fragments/j\$a;",
+        "Lcom/rubenmayayo/reddit/ui/fragments/l\$a;", "Ljt0;",
         "Lcom/rubenmayayo/reddit/ui/profile/UserContributionListFragment\$f;")) {
         val method = Fingerprint(definingClass = owner, name = "onBindViewHolder", returnType = "V", isStatic = false,
             parameters = listOf("Landroidx/recyclerview/widget/RecyclerView\$a0;", "I")).method
@@ -370,10 +370,10 @@ val boostPredictiveBackPatch = bytecodePatch(
         if (!application.hasHook(extension, "install")) application.addInstruction(0,
             "invoke-static/range {p0 .. p0}, $extension->install(Ljava/lang/Object;)V")
 
-        // il is BoostSwipeBackActivity, verified in the original 1.14.3 APK. Its setup makes
+        // kl is BoostSwipeBackActivity, verified in the original 1.14.4 APK. Its setup makes
         // comments translucent and installs a competing content-wide swipe panel. On Android 13+
         // keep the original opaque Activity window and let the system own the edge gesture.
-        val setup = Fingerprint(definingClass = "Lil;", name = "a1", returnType = "V",
+        val setup = Fingerprint(definingClass = "Lkl;", name = "a1", returnType = "V",
             parameters = emptyList(), isStatic = false).method
         if (!setup.hasHook(extension, "isSupported")) {
             check(setup.implementation!!.registerCount >= 2) { "No safe local in legacy swipe setup" }
@@ -385,7 +385,7 @@ val boostPredictiveBackPatch = bytecodePatch(
                 return-void
             """.trimIndent(), ExternalLabel("boost_legacy_swipe", original))
         }
-        val finish = Fingerprint(definingClass = "Lil;", name = "finish", returnType = "V",
+        val finish = Fingerprint(definingClass = "Lkl;", name = "finish", returnType = "V",
             parameters = emptyList(), isStatic = false).method
         if (!finish.hasHook(extension, "legacyTransition")) {
             val transition = finish.implementation!!.instructions.withIndex().single { (_, instruction) ->
@@ -437,7 +437,7 @@ val boostPostSwipeActionsPatch = bytecodePatch(
 private fun app.morphe.patcher.patch.BytecodePatchContext.enablePostMediaBinder() {
         val binder = Fingerprint(definingClass = "Lcom/rubenmayayo/reddit/ui/adapters/SubmissionViewHolder;",
             name = "w", returnType = "V", isStatic = false,
-            parameters = listOf("Lcom/rubenmayayo/reddit/models/reddit/SubmissionModel;", "Z", "Z", "Z", "Lhg2;")).method
+            parameters = listOf("Lcom/rubenmayayo/reddit/models/reddit/SubmissionModel;", "Z", "Z", "Z", "Lpg2;")).method
         if (!binder.hasHook(SWIPE_EXTENSION, "bindPost")) binder.addInstruction(0,
             "invoke-static/range {p0 .. p0}, $SWIPE_EXTENSION->bindPost(Ljava/lang/Object;)V")
  }
@@ -506,7 +506,7 @@ val boostViewerPolishPatch = bytecodePatch(
         // A closing gallery is destroyed after the next one opens, and both use the same file for
         // the same image. Deleting it blacks out the reopened page. Boost trims media_cache itself.
         val closing=Fingerprint(definingClass="Lcom/rubenmayayo/reddit/ui/fragments/imagemodel/ImageModelFragment;",name="onDestroy",returnType="V",parameters=emptyList(),isStatic=false).method
-        val delete=closing.implementation!!.instructions.withIndex().single { (_,instruction)->instruction.methodReference()?.let { it.definingClass=="Lju0;" && it.name=="d" }==true }.index
+        val delete=closing.implementation!!.instructions.withIndex().single { (_,instruction)->instruction.methodReference()?.let { it.definingClass=="Lnu0;" && it.name=="d" }==true }.index
         closing.removeInstruction(delete)
         // The video viewer pauses only when it is not finishing, and leaves closing to onDestroy, which
         // Android can run seconds later. Pause in both cases so backing out stops the sound at once.
@@ -527,7 +527,7 @@ val boostViewerPolishPatch = bytecodePatch(
             parameters = listOf("Landroid/view/View;", "F", "F"), isStatic = false).method
         if (!release.hasHook("Lapp/morphe/extension/boost/ViewerPolishTweaks;", "settle")) {
             val settles = release.implementation!!.instructions.withIndex().filter { (_, instruction) ->
-                instruction.methodReference()?.let { it.definingClass == "Ljm3;" && it.name == "s" } == true
+                instruction.methodReference()?.let { it.definingClass == "Lgn3;" && it.name == "s" } == true
             }.toList()
             check(settles.size == 4) { "Unrecognized SwipeBackLayout release" }
             // Same width and same boolean result. p0 already holds the SwipeBackLayout here.
@@ -900,7 +900,7 @@ val shikifySystemFontPatch = bytecodePatch(
     dependsOn(shikifySystemFontResourcesPatch)
     execute {
         // Every Boost font preference resolves through this one lookup.
-        val lookup=Fingerprint(definingClass="Lps2;",name="e0",returnType="Landroid/graphics/Typeface;",isStatic=true,
+        val lookup=Fingerprint(definingClass="Lxs2;",name="e0",returnType="Landroid/graphics/Typeface;",isStatic=true,
             parameters=listOf("Landroid/content/Context;","Ljava/lang/String;")).method
         lookup.addInstruction(0,"return-object v0")
         lookup.addInstruction(0,"sget-object v0, Landroid/graphics/Typeface;->DEFAULT:Landroid/graphics/Typeface;")
@@ -1068,7 +1068,7 @@ private fun app.morphe.patcher.patch.BytecodePatchContext.reuseSavedLogin() {
     authenticate.addInstruction(permitted+2,"move-result v$answer")
     authenticate.addInstruction(permitted+2,"invoke-static {v$answer}, $tweaks->accountCheck(Z)Z")
     authenticate.addInstruction(0,"invoke-static {}, $tweaks->clearAccount()V")
-    val login=Fingerprint(definingClass="Lpd2;",name="M",returnType="V",parameters=emptyList(),isStatic=false).method
+    val login=Fingerprint(definingClass="Lxd2;",name="M",returnType="V",parameters=emptyList(),isStatic=false).method
     val body=login.implementation!!.instructions.toList()
     val read=body.withIndex().single { reads(it.value) }.index
     check(body[read+1].opcode==Opcode.MOVE_RESULT_OBJECT)
@@ -1254,7 +1254,7 @@ val shikifyMaterialLoadingPatch = bytecodePatch(
                 return-void
             """.trimIndent())
         }
-        val dialog = Fingerprint(definingClass = "Ldp1;", name = "show", returnType = "V",
+        val dialog = Fingerprint(definingClass = "Lip1;", name = "show", returnType = "V",
             parameters = emptyList(), isStatic = false).method
         if (!dialog.hasHook(extension, "onDialogShown")) {
             val end = dialog.implementation!!.instructions.indexOfLast { it.opcode == Opcode.RETURN_VOID }
@@ -1273,11 +1273,11 @@ val shikifyMaterialLoadingPatch = bytecodePatch(
             parameters = listOf("F")).method
         if(!pull.hasHook(extension,"onPull"))pull.addInstruction(0,
                 "invoke-static/range {p0 .. p1}, $extension->onPull(Ljava/lang/Object;F)V")
-        val stop=Fingerprint(definingClass = "Lrs;", name = "stop", returnType = "V", isStatic = false,
+        val stop=Fingerprint(definingClass = "Lts;", name = "stop", returnType = "V", isStatic = false,
             parameters = emptyList()).method
         if(!stop.hasHook(extension,"onRefreshStopped"))stop.addInstruction(0,
                 "invoke-static/range {p0 .. p0}, $extension->onRefreshStopped(Ljava/lang/Object;)V")
-        for ((owner, name, hook) in listOf(Triple("Lrs;","draw","drawRefresh"),
+        for ((owner, name, hook) in listOf(Triple("Lts;","draw","drawRefresh"),
             Triple("Lcom/pnikosis/materialishprogress/ProgressWheel;","onDraw","drawWheel"))) {
             val draw = Fingerprint(definingClass = owner,name = name,returnType = "V",isStatic = false,
                 parameters = listOf("Landroid/graphics/Canvas;")).method
@@ -1299,7 +1299,7 @@ val shikifyMaterialLoadingPatch = bytecodePatch(
 @Suppress("unused")
 val shikifyHomeAvatarPatch = bytecodePatch(
     name = "Home account avatar",
-    description = "Show the account avatar beside Home and in the bottom pill, with subreddit icons beside community titles; retain sorting and navigation.",
+    description = "Show the account avatar beside Home, with subreddit icons beside community titles; retain sorting and navigation.",
 ) {
     compatibleWith(boostCompatibility)
     category(ShikifyCategory.APPEARANCE)
@@ -1313,7 +1313,7 @@ val shikifyHomeAvatarPatch = bytecodePatch(
         if(title.hasHook("Lapp/morphe/extension/boost/HomeAvatarTweaks;","onTitleBind"))return@execute
         val instructions=title.implementation!!.instructions
         val index=instructions.withIndex().single { (_,instruction) -> instruction.methodReference()?.let {
-            it.definingClass=="Lkk3;" && it.name=="b0" && it.parameterTypes.map { p -> p.toString() }==
+            it.definingClass=="Lal3;" && it.name=="d0" && it.parameterTypes.map { p -> p.toString() }==
                 listOf("Landroid/content/Context;","Lcom/rubenmayayo/reddit/models/reddit/SubscriptionViewModel;")
         }==true }.index
         val cast=instructions[index-1] as? com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
@@ -1346,7 +1346,7 @@ private val shikifyTokenLockPatch = bytecodePatch {
     dependsOn(shikifyNetworkSettingsPatch)
     execute {
         // Dex has no runtime synchronized flag for ordinary methods, so the lock lives in the extension.
-        val token=Fingerprint(definingClass="Lpd2;",name="b",returnType="V",parameters=emptyList(),isStatic=false).method
+        val token=Fingerprint(definingClass="Lxd2;",name="b",returnType="V",parameters=emptyList(),isStatic=false).method
         token.addInstructionsWithLabels(0,"""
             invoke-static {p0}, Lapp/morphe/extension/boost/NetworkTweaks;->token(Ljava/lang/Object;)Z
             move-result v0
@@ -1419,7 +1419,7 @@ val shikifyOnlineCheckPatch = bytecodePatch(
     category(ShikifyCategory.PERFORMANCE)
     dependsOn(shikifyNetworkSettingsPatch)
     execute {
-        val online=Fingerprint(definingClass="Lkk3;",name="D",returnType="Z",isStatic=true,parameters=listOf("Landroid/content/Context;")).method
+        val online=Fingerprint(definingClass="Lal3;",name="F",returnType="Z",isStatic=true,parameters=listOf("Landroid/content/Context;")).method
         online.addInstruction(0,"return p0")
         online.addInstruction(0,"move-result p0")
         online.addInstruction(0,"invoke-static/range {p0 .. p0}, Lapp/morphe/extension/boost/NetworkTweaks;->online(Landroid/content/Context;)Z")
@@ -1447,7 +1447,7 @@ val shikifyDialogsPatch = bytecodePatch(
     category(ShikifyCategory.APPEARANCE)
     dependsOn(boostMaterialYouPatch)
     execute {
-        val dialog=Fingerprint(definingClass="Ldp1;",name="show",returnType="V",parameters=emptyList(),isStatic=false).method
+        val dialog=Fingerprint(definingClass="Lip1;",name="show",returnType="V",parameters=emptyList(),isStatic=false).method
         if(!dialog.hasHook("Lapp/morphe/extension/boost/DialogTweaks;","onShow"))dialog.addInstruction(0,
             "invoke-static/range {p0 .. p0}, Lapp/morphe/extension/boost/DialogTweaks;->onShow(Ljava/lang/Object;)V")
         enableFeature("dialogs")
@@ -1517,7 +1517,7 @@ val shikifySearchPatch = bytecodePatch(
         val searchTweaks="Lapp/morphe/extension/boost/SearchTweaks;"
         val searchList=Fingerprint(definingClass=searchPage,name="s1",returnType="V",parameters=emptyList(),isStatic=false).method
         if(!searchList.hasHook(searchTweaks,"onList"))searchList.addInstruction(0,"invoke-static/range {p0 .. p0}, $searchTweaks->onList(Ljava/lang/Object;)V")
-        val searchHeader=Fingerprint(definingClass=searchPage,name="e0",returnType="V",parameters=listOf("Lbn2;"),isStatic=false).method
+        val searchHeader=Fingerprint(definingClass=searchPage,name="e0",returnType="V",parameters=listOf("Ljn2;"),isStatic=false).method
         if(!searchHeader.hasHook(searchTweaks,"onHeader")){
             check(searchHeader.implementation!!.registerCount>=3) { "No free register in search header" }
             searchHeader.addInstructionsWithLabels(0,"""

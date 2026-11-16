@@ -210,14 +210,14 @@ public final class MaterialLoadingTweaks {
     public static void onRefreshCreated(Object owner) {
         if(!(owner instanceof View))return;
         try {
-            Object icon=CommentsChromeTweaks.field(owner,"N"),drawable=CommentsChromeTweaks.field(owner,"T");
+            Object icon=CommentsChromeTweaks.field(owner,"M"),drawable=CommentsChromeTweaks.field(owner,"S");
             if(!(icon instanceof ImageView) || !(drawable instanceof Drawable))return;
             Refresh state=new Refresh((View)owner,(ImageView)icon);
             REFRESH.put(drawable,state);state.theme();
         }catch(ReflectiveOperationException | RuntimeException ignored) { }
     }
     public static void onPull(Object owner,float distance) {
-        Object drawable=CommentsChromeTweaks.field(owner,"T");Refresh state=REFRESH.get(drawable);
+        Object drawable=CommentsChromeTweaks.field(owner,"S");Refresh state=REFRESH.get(drawable);
         if(state==null)return;
         try {float threshold=state.threshold.getFloat(owner),before=state.progress;state.progress=Math.max(0,Math.min(1,distance/Math.max(1,threshold)));if(before<1 && state.progress>=1 && owner instanceof View)Haptics.tick((View)owner);}
         catch(IllegalAccessException ignored) { }
@@ -283,7 +283,7 @@ public final class MaterialLoadingTweaks {
         float progress;
         Refresh(View view,ImageView image) throws ReflectiveOperationException {
             owner=new WeakReference<>(view);icon=new WeakReference<>(image);
-            refreshing=mapped(view.getClass(),"c");threshold=mapped(view.getClass(),"z");
+            refreshing=mapped(view.getClass(),"c");threshold=mapped(view.getClass(),"y");
             container=MaterialYouTweaks.color(view.getContext(),"colorPrimaryContainer",android.R.attr.colorBackground);
             indicator=new MaterialLoadingIndicator(MaterialYouTweaks.color(view.getContext(),"colorOnPrimaryContainer",android.R.attr.colorAccent));
             legacyScale=legacyScale(view.getContext());

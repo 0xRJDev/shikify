@@ -236,7 +236,7 @@ final class HeaderGradient {
         for(Class<?> type=view.getClass();type!=null;type=type.getSuperclass()){String name=type.getName();
             if(name.equals("androidx.recyclerview.widget.RecyclerView") || name.equals("com.rubenmayayo.reddit.ui.customviews.EmptyStateView")){lists.add((ViewGroup)view);if(name.endsWith("EmptyStateView"))UnifiedChromeTweaks.emptyState((ViewGroup)view);return;}
             if(name.equals("androidx.swiperefreshlayout.widget.SwipeRefreshLayout") && !circles.containsKey(view)){
-                Object icon=CommentsChromeTweaks.field(view,"N");
+                Object icon=CommentsChromeTweaks.field(view,"M");
                 if(icon instanceof View)circles.put(view,new Circle((View)icon));
             }
         }
@@ -264,7 +264,7 @@ final class HeaderGradient {
     }
     private void behavior(View view,String type)throws ReflectiveOperationException {
         Object params=view.getLayoutParams();ClassLoader loader=view.getContext().getClassLoader();Object behavior=Class.forName(type,true,loader).getConstructor().newInstance();
-        if(type.contains("search.SearchBar"))behavior.getClass().getField("B").setBoolean(behavior,true);
+        if(type.contains("search.SearchBar"))behavior.getClass().getField("A").setBoolean(behavior,true);
         params.getClass().getMethod("b",Class.forName("androidx.coordinatorlayout.widget.CoordinatorLayout$c",false,loader)).invoke(params,behavior);view.requestLayout();
     }
     /** The status bar shade sits above the window content, including an open drawer. */
@@ -491,7 +491,7 @@ final class HeaderGradient {
         if(icon.getVisibility()!=View.VISIBLE || Boolean.TRUE.equals(CommentsChromeTweaks.field(swipe,"c")))return false;
         android.view.animation.Animation animation=icon.getAnimation();
         if(animation!=null && !animation.hasEnded())return false;
-        Object rest=CommentsChromeTweaks.field(swipe,"Q");
+        Object rest=CommentsChromeTweaks.field(swipe,"P");
         return rest instanceof Integer && icon.getTop()<=(Integer)rest;
     }
     private static void clearScrim(View view,String getter,String setter){

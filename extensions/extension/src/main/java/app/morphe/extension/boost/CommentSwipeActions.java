@@ -213,7 +213,7 @@ public final class CommentSwipeActions {
                     !row.getGlobalVisibleRect(hit) || !hit.contains((int) event.getRawX(), (int) event.getRawY()))
                 continue;
             if (protectedChild(row, event.getRawX(), event.getRawY(), hit)) return null;
-            Object model = CommentsChromeTweaks.field(holder, POSTS.containsKey(row) ? "b0" : "c0");
+            Object model = CommentsChromeTweaks.field(holder, POSTS.containsKey(row) ? "h0" : "b0");
             if (model == null || !SurfaceSettingsActivity.enabled(activity,POSTS.containsKey(row) ? "post_swipes":"comment_swipes")) return null;
             Session session = new Session(row, holder, model, event);
             // Fully collapsed layouts omit the original action buttons: retain their tap-to-expand path.
@@ -256,7 +256,7 @@ public final class CommentSwipeActions {
         int previewAction;
         Session(View row, Object holder, Object model, MotionEvent down) {
             post = POSTS.containsKey(row);
-            modelField = post ? "b0" : "c0";
+            modelField = post ? "h0" : "b0";
             this.row = new WeakReference<>(row);
             this.holder = new WeakReference<>(holder);
             this.model = new WeakReference<>(model);

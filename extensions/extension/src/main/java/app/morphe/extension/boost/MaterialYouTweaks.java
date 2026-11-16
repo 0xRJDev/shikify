@@ -92,8 +92,8 @@ public final class MaterialYouTweaks {
     public static void bindPost(Object holder) {
         if(!CommentsChromeTweaks.materialYouEnabled())return;
         Haptics.tap(CommentsChromeTweaks.field(holder,"voteUpButton"));Haptics.tap(CommentsChromeTweaks.field(holder,"voteDownButton"));
-        if(Boolean.TRUE.equals(CommentsChromeTweaks.field(holder,"Q"))) { CommentsScreenTweaks.bindPost(holder);return; }
-        Object nativeType=CommentsChromeTweaks.field(holder,"P");
+        if(Boolean.TRUE.equals(CommentsChromeTweaks.field(holder,"W"))) { CommentsScreenTweaks.bindPost(holder);return; }
+        Object nativeType=CommentsChromeTweaks.field(holder,"O");
         if(!(nativeType instanceof Enum) || !"MiniCards".equals(((Enum<?>)nativeType).name()))return;
         Object value=CommentsChromeTweaks.field(holder,"a");
         if(!(value instanceof View))return;

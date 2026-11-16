@@ -24,7 +24,7 @@ if [[ -z "$GRADLE_COMMAND" ]]; then
     -path '*/gradle-9.8.2/bin/gradle' -type f -print -quit 2>/dev/null || true)"
 fi
 GRADLE_COMMAND="${GRADLE_COMMAND:-$PROJECT/gradlew}"
-APK="${BOOST_APK:-$HERE/inputs/boost-for-reddit-1.14.3.apk}"
+APK="${BOOST_APK:-$HERE/inputs/boost-for-reddit-1.14.4.apk}"
 TASKS=(buildAndroid :patches:generatePatchesList)
 if [[ -f "$APK" ]]; then TASKS=(:patches:validateBundle :patches:validateWrapper :patches:validatePostWrapper :patches:generatePatchesList); fi
 "$GRADLE_COMMAND" -p "$PROJECT" "${TASKS[@]}" \
@@ -42,5 +42,5 @@ cp "$BUNDLE" "$HERE/output/shikify-$VERSION.mpp"
 (cd "$HERE/output" && sha256sum shikify-$VERSION.mpp > shikify-$VERSION.mpp.sha256)
 printf '\nBundle: %s\n' "$HERE/output/shikify-$VERSION.mpp"
 if [[ "${TASKS[0]}" == buildAndroid ]]; then
-  printf 'APK application validation skipped: supply BOOST_APK=/path/to/original-1.14.3.apk and rebuild.\n'
+  printf 'APK application validation skipped: supply BOOST_APK=/path/to/original-1.14.4.apk and rebuild.\n'
 fi
