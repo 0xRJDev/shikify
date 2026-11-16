@@ -25,6 +25,8 @@ final class HeaderGradient {
     private final WeakHashMap<View,Circle> circles=new WeakHashMap<>();
     private final WeakHashMap<ViewGroup,Padding> paddings=new WeakHashMap<>();
     private final WeakHashMap<ViewGroup,boolean[]> clips=new WeakHashMap<>();
+    /** Views beside the bar that clip to their own outline while their parent lets the bar draw below itself. */
+    private final WeakHashMap<View,Object[]> outlines=new WeakHashMap<>();
     private final ArrayList<ViewGroup> lists=new ArrayList<>();
     private final int[] location=new int[2],parentLocation=new int[2];
     private String originalBehavior;
@@ -415,10 +417,23 @@ final class HeaderGradient {
         if(extra>0){
             // Let the bar draw the blur's fade below itself.
             toolbarSlice.extra=extra;
-            for(android.view.ViewParent parent=toolbar.getParent();parent instanceof ViewGroup && parent!=decor;parent=parent.getParent()){
+            View appbar=bar.get();boolean inside=false;View path=toolbar;
+            for(android.view.ViewParent up=toolbar.getParent();up instanceof View;up=up.getParent())if(up==appbar){inside=true;break;}
+            for(android.view.ViewParent parent=toolbar.getParent();parent instanceof ViewGroup && parent!=decor;path=(View)parent,parent=parent.getParent()){
                 ViewGroup group=(ViewGroup)parent;
                 if(!clips.containsKey(group))clips.put(group,new boolean[]{group.getClipChildren(),group.getClipToPadding()});
                 if(group.getClipChildren())group.setClipChildren(false);
+                // A parent that stops clipping also stops clipping the bar's siblings, such as the search
+                // screen's collapsed filters, which slide up behind the bar. Clip those to themselves instead.
+                if(inside){
+                    for(int index=0;index<group.getChildCount();index++){
+                        View sibling=group.getChildAt(index);
+                        if(sibling==path || outlines.containsKey(sibling))continue;
+                        outlines.put(sibling,new Object[]{sibling.getOutlineProvider(),sibling.getClipToOutline()});
+                        sibling.setOutlineProvider(android.view.ViewOutlineProvider.BOUNDS);sibling.setClipToOutline(true);
+                    }
+                    if(group==appbar)inside=false;
+                }
             }
         }
         boolean changed=toolbarSlice.x!=location[0] || toolbarSlice.y!=location[1] || shade.getBounds().width()!=decor.getWidth() || shade.getBounds().height()!=height;
@@ -525,6 +540,11 @@ final class HeaderGradient {
             entry.getKey().setClipToPadding(entry.getValue()[1]);
         }
         clips.clear();
+        for(java.util.Map.Entry<View,Object[]> entry:outlines.entrySet()){
+            entry.getKey().setOutlineProvider((android.view.ViewOutlineProvider)entry.getValue()[0]);
+            entry.getKey().setClipToOutline((Boolean)entry.getValue()[1]);
+        }
+        outlines.clear();
         lists.clear();
         View strip=progress.get();
         if(strip!=null)strip.setTranslationY(progressTranslation);
