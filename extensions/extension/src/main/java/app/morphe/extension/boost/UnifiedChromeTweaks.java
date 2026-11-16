@@ -341,12 +341,12 @@ public final class UnifiedChromeTweaks {
             if(view instanceof ViewGroup){ViewGroup group=(ViewGroup)view;for(int index=0;index<group.getChildCount();index++)lists(group.getChildAt(index));}
         }
         private void removeListDividers(View list){
-            Object value=CommentsChromeTweaks.field(list,"K");
+            Object value=CommentsChromeTweaks.field(list,"J");
             if(!(value instanceof java.util.List))return;
             java.util.List<?> decorations=(java.util.List<?>)value;
             for(int index=decorations.size()-1;index>=0;index--){
                 Object decoration=decorations.get(index);
-                if(!decoration.getClass().getName().equals("fp1"))continue;
+                if(!decoration.getClass().getName().equals("kp1"))continue;
                 try{
                     Class<?> type=Class.forName("androidx.recyclerview.widget.RecyclerView$l",false,list.getContext().getClassLoader());
                     list.getClass().getMethod("a0",type).invoke(list,decoration);

@@ -16,7 +16,7 @@ import java.io.File
 import java.util.zip.ZipFile
 
 private const val BOOST = "com.rubenmayayo.reddit"
-private const val VERSION = "1.14.3"
+private const val VERSION = "1.14.4"
 private const val EXTENSION = "Lapp/morphe/extension/boost/"
 private const val SUBMISSION_HOLDER = "Lcom/rubenmayayo/reddit/ui/adapters/SubmissionViewHolder;"
 private const val UNDELETE_SETTING = "isEnabled_morphe_boost_reddit_undelete_enabled"

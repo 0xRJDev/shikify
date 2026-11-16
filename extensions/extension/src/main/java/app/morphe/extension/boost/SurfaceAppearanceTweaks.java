@@ -281,7 +281,7 @@ public final class SurfaceAppearanceTweaks {
             }else{add(bar);add(view(activity,"collapsingToolbarLayout"));}
             View header=find(root,"header_content");
             if(!media && header!=null && activity.getClass().getName().equals("com.rubenmayayo.reddit.ui.submissions.subreddit.SubredditActivity"))try{
-                compactFlag=activity.getClass().getDeclaredField("F0");compactFlag.setAccessible(true);headerContent=new WeakReference<>(header);
+                compactFlag=activity.getClass().getDeclaredField("J0");compactFlag.setAccessible(true);headerContent=new WeakReference<>(header);
             }catch(ReflectiveOperationException ignored){}
             if(extraChrome(activity.getClass().getName()))unifiedChrome=new UnifiedChromeTweaks.Screen(activity,root);
             add(tools);add(nav);prepared=true;
@@ -390,7 +390,7 @@ public final class SurfaceAppearanceTweaks {
         void unwatchCollapse(){
             View bar=appBar==null ? null:appBar.get();
             if(bar!=null && collapseListener!=null){
-                Object listeners=CommentsChromeTweaks.field(bar,"C");
+                Object listeners=CommentsChromeTweaks.field(bar,"B");
                 if(listeners instanceof java.util.List)((java.util.List<?>)listeners).remove(collapseListener);
             }
             collapseListener=null;
@@ -570,7 +570,7 @@ public final class SurfaceAppearanceTweaks {
             }
             if(!media && corner==null){
                 View menu=find(root,"menu");
-                Object button=CommentsChromeTweaks.field(menu,"z");
+                Object button=CommentsChromeTweaks.field(menu,"y");
                 if(menu!=null && menu.getClass().getName().equals("com.rubenmayayo.reddit.ui.customviews.fab.FloatingActionMenu") && button instanceof View)corner=new UnifiedChromeTweaks.Corner(root,menu,(View)button,feedBlurEnabled);
             }
             if(active && corner!=null)corner.start();

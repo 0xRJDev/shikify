@@ -227,7 +227,7 @@ public final class GalleryBottomActionsTweaks {
         }
         void shareGallery(){
             try{
-                Activity activity=CommentsChromeTweaks.activity(root.getContext());Object models=CommentsChromeTweaks.field(activity,"A"),pager=CommentsChromeTweaks.field(activity,"viewPager");
+                Activity activity=CommentsChromeTweaks.activity(root.getContext());Object models=CommentsChromeTweaks.field(activity,"z"),pager=CommentsChromeTweaks.field(activity,"viewPager");
                 if(!(models instanceof java.util.List) || pager==null)return;
                 int index=(Integer)pager.getClass().getMethod("getCurrentItem").invoke(pager);java.util.List<?> images=(java.util.List<?>)models;if(index<0 || index>=images.size())return;
                 Object model=images.get(index);String url=(String)model.getClass().getMethod("getDownloadUrl").invoke(model);if(url==null || url.isEmpty())return;

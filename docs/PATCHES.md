@@ -1,6 +1,6 @@
 # Patches
 
-All 25 patches target Boost for Reddit 1.14.3 (`com.rubenmayayo.reddit`). Pick any combination in Morphe Manager, where they appear under these headers.
+All 25 patches target Boost for Reddit 1.14.4 (`com.rubenmayayo.reddit`). Pick any combination in Morphe Manager, where they appear under these headers.
 
 ## Appearance
 
