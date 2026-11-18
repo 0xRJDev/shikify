@@ -24,7 +24,7 @@ import java.util.WeakHashMap;
  */
 public final class ShikifyX {
     private static final WeakHashMap<Activity, Screen> SCREENS = new WeakHashMap<>();
-    private static final int CARD_TAG = 0x7f5e0001;
+    private static final int CARD_TAG = 0x7f5e0001, STATUS_TAG = 0x7f5e0002;
     private static boolean installed;
 
     private ShikifyX() { }
@@ -100,6 +100,14 @@ public final class ShikifyX {
 
         void start() {
             palette = new Palette(activity);
+            try {
+                activity.getWindow().setStatusBarColor(palette.surface);
+                // The status bar shows the window background above the content. Repaint it only when it is
+                // an opaque colour, so see-through windows such as the media viewer keep what is behind them.
+                Drawable window = activity.getWindow().getDecorView().getBackground();
+                if (window instanceof android.graphics.drawable.ColorDrawable && ((android.graphics.drawable.ColorDrawable) window).getAlpha() == 255)
+                    activity.getWindow().getDecorView().setBackgroundColor(palette.surface);
+            } catch (RuntimeException ignored) { }
             View decor = activity.getWindow().getDecorView();
             stop();
             observer = decor.getViewTreeObserver();
@@ -131,6 +139,8 @@ public final class ShikifyX {
             if (id == appBarId || id == toolbarId || id == fleetBarId) surface(group, palette.surface);
             if (id != bottomTabsId && isA(group, "com.google.android.material.tabs.TabLayout")) pillTabs(group);
             if (isA(group, "com.google.android.material.appbar.AppBarLayout")) surface(group, palette.surface);
+            // The drawer and coordinator paint the status bar area themselves; match it to the header.
+            if (isA(group, "androidx.drawerlayout.widget.DrawerLayout") || isA(group, "androidx.coordinatorlayout.widget.CoordinatorLayout")) statusBar(group);
             if (id == bottomContainerId && bottomContainerId != 0) bottomBar(group);
             if (id == fleetHolderId && fleetHolderId != 0) flat(group);
             if (group.getClass().getName().endsWith("SwipeRefreshLayout")) refresh(group);
@@ -249,6 +259,12 @@ public final class ShikifyX {
                 call(type, tabs, "setTabIndicatorFullWidth", boolean.class, true);
                 call(type, tabs, "setTabRippleColor", ColorStateList.class, ColorStateList.valueOf(0));
             } catch (ReflectiveOperationException | RuntimeException ignored) { }
+        }
+
+        void statusBar(ViewGroup layout) {
+            if (layout.getTag(STATUS_TAG) != null) return;
+            layout.setTag(STATUS_TAG, Boolean.TRUE);
+            try { call(layout.getClass(), layout, "setStatusBarBackgroundColor", int.class, palette.surface); } catch (ReflectiveOperationException | RuntimeException ignored) { }
         }
 
         /** The hairline under the top tabs: the M3 header has no divider. */
