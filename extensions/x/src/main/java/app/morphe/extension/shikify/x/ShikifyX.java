@@ -87,13 +87,14 @@ public final class ShikifyX {
         final Activity activity;
         Palette palette;
         ViewTreeObserver observer;
-        int listId, rowId, fabId, topTabsId, bottomTabsId, bottomContainerId, appBarId, toolbarId, fleetBarId;
+        int listId, rowId, fabId, topTabsId, bottomTabsId, bottomContainerId, appBarId, toolbarId, fleetBarId, fleetHolderId, bottomBarId, slidingId;
 
         Screen(Activity activity) {
             this.activity = activity;
             listId = id("list"); rowId = id("outer_layout_row_view_tweet"); fabId = id("composer_write");
             topTabsId = id("tab_layout"); bottomTabsId = id("tabs"); bottomContainerId = id("tabsContainer");
             appBarId = id("app_bar"); toolbarId = id("toolbar"); fleetBarId = id("fleetline_app_bar");
+            fleetHolderId = id("fleetline_holder"); bottomBarId = id("bottom_bar"); slidingId = id("tabsSlidingContainer");
         }
         int id(String name) { return activity.getResources().getIdentifier(name, "id", activity.getPackageName()); }
 
@@ -128,13 +129,21 @@ public final class ShikifyX {
             int id = group.getId();
             if ((id == android.R.id.list || id == listId && listId != 0) && group.getClass().getName().contains("RecyclerView")) { lists.add(group); list(group); return; }
             if (id == appBarId || id == toolbarId || id == fleetBarId) surface(group, palette.surface);
-            if (id == topTabsId && topTabsId != 0) pillTabs(group);
+            if (id != bottomTabsId && isA(group, "com.google.android.material.tabs.TabLayout")) pillTabs(group);
+            if (isA(group, "com.google.android.material.appbar.AppBarLayout")) surface(group, palette.surface);
             if (id == bottomContainerId && bottomContainerId != 0) bottomBar(group);
+            if (id == fleetHolderId && fleetHolderId != 0) flat(group);
+            if (group.getClass().getName().endsWith("SwipeRefreshLayout")) refresh(group);
             for (int index = 0; index < group.getChildCount(); index++) {
                 View child = group.getChildAt(index);
                 if (child.getId() == fabId && fabId != 0) fab(child);
                 else style(child);
             }
+        }
+
+        static boolean isA(Object object, String name) {
+            for (Class<?> type = object.getClass(); type != null; type = type.getSuperclass()) if (type.getName().equals(name)) return true;
+            return false;
         }
 
         void surface(View view, int color) {
@@ -155,8 +164,11 @@ public final class ShikifyX {
                 View child = list.getChildAt(index);
                 if (child.getTag(CARD_TAG) != null) continue;
                 // Rows sit in a GroupedRowView, which draws the dividers between them.
+                boolean grouped = child.getClass().getName().endsWith("GroupedRowView");
                 View row = child.getId() == rowId ? child : rowId == 0 ? null : child.findViewById(rowId);
-                if (child.getClass().getName().endsWith("GroupedRowView")) clearRowPaint(child);
+                // Any other grouped row (people, notifications, settings rows) gets a card around its content.
+                if (row == null && grouped && child instanceof ViewGroup && ((ViewGroup) child).getChildCount() > 0) row = ((ViewGroup) child).getChildAt(0);
+                if (grouped) clearRowPaint(child);
                 if (row != null && row.getTag(CARD_TAG) == null) { card(row); child.setTag(CARD_TAG, Boolean.TRUE); }
             }
         }
@@ -194,7 +206,11 @@ public final class ShikifyX {
             try {
                 Class<?> type = tabs.getClass();
                 GradientDrawable pill = rounded(palette.secondaryContainer, dp(tabs, 20));
-                call(type, tabs, "setSelectedTabIndicator", Drawable.class, new InsetDrawable(pill, dp(tabs, 24), dp(tabs, 8), dp(tabs, 24), dp(tabs, 8)));
+                // Fixed tabs are wide, so the pill is inset; scrolling tabs hug their label.
+                boolean scrolling = false;
+                try { scrolling = (Integer) type.getMethod("getTabMode").invoke(tabs) == 0; } catch (ReflectiveOperationException | RuntimeException ignored) { }
+                int side = dp(tabs, scrolling ? 2 : 24);
+                call(type, tabs, "setSelectedTabIndicator", Drawable.class, new InsetDrawable(pill, side, dp(tabs, 8), side, dp(tabs, 8)));
                 call(type, tabs, "setSelectedTabIndicatorColor", int.class, palette.secondaryContainer);
                 call(type, tabs, "setSelectedTabIndicatorGravity", int.class, 3);
                 call(type, tabs, "setTabIndicatorFullWidth", boolean.class, true);
@@ -202,22 +218,52 @@ public final class ShikifyX {
             } catch (ReflectiveOperationException | RuntimeException ignored) { }
         }
 
-        /** Bottom bar: an M3 navigation bar with a pill behind the selected icon. */
+        /** Bottom bar: a floating rounded M3 bar, like Boost's, with a pill behind the selected icon. */
         void bottomBar(ViewGroup container) {
             if (container.getTag(CARD_TAG) != null) return;
             container.setTag(CARD_TAG, Boolean.TRUE);
-            container.setBackgroundColor(palette.container);
+            for (View parent = (View) container.getParent(); parent != null; parent = parent.getParent() instanceof View ? (View) parent.getParent() : null) {
+                if (parent.getId() != slidingId && parent.getId() != bottomBarId) break;
+                parent.setBackground(null);
+                if (parent instanceof ViewGroup) { ((ViewGroup) parent).setClipChildren(false); ((ViewGroup) parent).setClipToPadding(false); }
+            }
+            if (container.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) container.getLayoutParams();
+                params.leftMargin = params.rightMargin = dp(container, 22);
+                params.bottomMargin = dp(container, 14);
+                params.topMargin = dp(container, 6);
+                container.setLayoutParams(params);
+            }
+            container.setBackground(rounded(palette.container, dp(container, 40)));
+            container.setClipToOutline(true);
+            container.setElevation(dp(container, 6));
             View tabs = bottomTabsId == 0 ? null : container.findViewById(bottomTabsId);
             if (tabs == null) return;
             tabs.setBackgroundColor(0);
             try {
                 Class<?> type = tabs.getClass();
                 GradientDrawable pill = rounded(palette.secondaryContainer, dp(tabs, 16));
-                call(type, tabs, "setSelectedTabIndicator", Drawable.class, new InsetDrawable(pill, dp(tabs, 14), dp(tabs, 12), dp(tabs, 14), dp(tabs, 12)));
+                call(type, tabs, "setSelectedTabIndicator", Drawable.class, new InsetDrawable(pill, dp(tabs, 10), dp(tabs, 10), dp(tabs, 10), dp(tabs, 10)));
                 call(type, tabs, "setSelectedTabIndicatorColor", int.class, palette.secondaryContainer);
                 call(type, tabs, "setSelectedTabIndicatorGravity", int.class, 3);
                 call(type, tabs, "setTabIndicatorFullWidth", boolean.class, true);
                 call(type, tabs, "setTabRippleColor", ColorStateList.class, ColorStateList.valueOf(0));
+            } catch (ReflectiveOperationException | RuntimeException ignored) { }
+        }
+
+        /** The hairline under the top tabs: the M3 header has no divider. */
+        void flat(ViewGroup holder) {
+            holder.setBackgroundColor(palette.surface);
+            for (int index = 0; index < holder.getChildCount(); index++) holder.getChildAt(index).setBackground(null);
+        }
+
+        /** Pull to refresh in Material You colours. */
+        void refresh(ViewGroup layout) {
+            if (layout.getTag(CARD_TAG) != null) return;
+            layout.setTag(CARD_TAG, Boolean.TRUE);
+            try {
+                layout.getClass().getMethod("setColorSchemeColors", int[].class).invoke(layout, (Object) new int[]{palette.primary});
+                call(layout.getClass(), layout, "setProgressBackgroundColorSchemeColor", int.class, palette.container);
             } catch (ReflectiveOperationException | RuntimeException ignored) { }
         }
 
