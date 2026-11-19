@@ -24,7 +24,7 @@ import java.util.WeakHashMap;
  */
 public final class ShikifyX {
     private static final WeakHashMap<Activity, Screen> SCREENS = new WeakHashMap<>();
-    private static final int CARD_TAG = 0x7f5e0001, STATUS_TAG = 0x7f5e0002, GLASS_TAG = 0x7f5e0003, PAD_TAG = 0x7f5e0004, TOP_TAG = 0x7f5e0005, ROW_TAG = 0x7f5e0006, BASE_TAG = 0x7f5e0007, INSET_TAG = 0x7f5e0008;
+    private static final int CARD_TAG = 0x7f5e0001, STATUS_TAG = 0x7f5e0002, GLASS_TAG = 0x7f5e0003, PAD_TAG = 0x7f5e0004, TOP_TAG = 0x7f5e0005, ROW_TAG = 0x7f5e0006, BASE_TAG = 0x7f5e0007, INSET_TAG = 0x7f5e0008, DIVIDER_TAG = 0x7f5e0009;
     private static boolean installed;
 
     private ShikifyX() { }
@@ -177,6 +177,7 @@ public final class ShikifyX {
             }
             replyPadding(list);
             headerPadding(list);
+            dividers(list);
             for (int index = 0; index < list.getChildCount(); index++) {
                 View child = list.getChildAt(index);
                 if (child.getTag(CARD_TAG) != null) continue;
@@ -207,6 +208,34 @@ public final class ShikifyX {
             } catch (ReflectiveOperationException | RuntimeException ignored) { }
         }
 
+        /**
+         * X's divider decoration (com.twitter.ui.widget.z: a line drawable between rows) paints full-width
+         * lines through the gaps between cards. Remove it; X can add it after the list first appears.
+         */
+        static void dividers(ViewGroup list) {
+            java.lang.reflect.Field field = (java.lang.reflect.Field) DECORATIONS[0];
+            if (field == null) {
+                for (Class<?> type = list.getClass(); type != null && field == null; type = type.getSuperclass())
+                    if (type.getName().equals("androidx.recyclerview.widget.RecyclerView"))
+                        for (java.lang.reflect.Field candidate : type.getDeclaredFields())
+                            if (candidate.getType() == java.util.ArrayList.class && candidate.getName().equals("q")) field = candidate;
+                if (field == null) return;
+                field.setAccessible(true);
+                DECORATIONS[0] = field;
+            }
+            try {
+                java.util.ArrayList<?> items = (java.util.ArrayList<?>) field.get(list);
+                if (items == null || items.isEmpty()) return;
+                boolean removed = false;
+                for (java.util.Iterator<?> iterator = items.iterator(); iterator.hasNext(); ) {
+                    Object item = iterator.next();
+                    if (item != null && isA(item, "com.twitter.ui.widget.z")) { iterator.remove(); removed = true; }
+                }
+                if (removed) list.requestLayout();
+            } catch (ReflectiveOperationException | RuntimeException ignored) { }
+        }
+        static final Object[] DECORATIONS = new Object[1];
+
         /** Joins a post's card to its neighbours when X draws the thread line through it. */
         void thread(View row) {
             if (!(row.getBackground() instanceof Card)) return;
@@ -214,6 +243,13 @@ public final class ShikifyX {
             View divider = bottomDividerId == 0 ? null : row.findViewById(bottomDividerId);
             if (divider != null && divider.getVisibility() == View.VISIBLE) divider.setVisibility(View.INVISIBLE);
             Card card = (Card) row.getBackground();
+            // New replies and unread notifications: X flags the row as highlighted; show it as a lighter card.
+            boolean highlighted = false;
+            if (row.getParent() instanceof View && ((View) row.getParent()).getClass().getName().endsWith("GroupedRowView")) {
+                try { java.lang.reflect.Field field = row.getParent().getClass().getDeclaredField("m"); field.setAccessible(true); highlighted = field.getBoolean(row.getParent()); }
+                catch (ReflectiveOperationException | RuntimeException ignored) { }
+            }
+            card.highlight(highlighted ? highlightColor() : palette.card);
             View top = connectorTopId == 0 ? null : row.findViewById(connectorTopId), bottom = connectorBottomId == 0 ? null : row.findViewById(connectorBottomId);
             boolean up = top != null && top.getVisibility() == View.VISIBLE, down = bottom != null && bottom.getVisibility() == View.VISIBLE;
             // "Show replies" under a thread is its own row with X's thread dots: it finishes the card above.
@@ -229,6 +265,16 @@ public final class ShikifyX {
             card.invalidateSelf();
         }
 
+        /** The card colour lifted towards the accent, for highlighted rows. */
+        int highlightColor() {
+            int base = palette.card, accent = palette.primary;
+            float amount = 0.18f;
+            int red = Math.round(((base >> 16) & 0xff) + ((((accent >> 16) & 0xff) - ((base >> 16) & 0xff)) * amount));
+            int green = Math.round(((base >> 8) & 0xff) + ((((accent >> 8) & 0xff) - ((base >> 8) & 0xff)) * amount));
+            int blue = Math.round((base & 0xff) + (((accent & 0xff) - (base & 0xff)) * amount));
+            return 0xff000000 | (red << 16) | (green << 8) | blue;
+        }
+
         /** A rounded card that squares and closes the edge it shares with a linked post. */
         static final class Card extends Drawable {
             final android.graphics.Paint paint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
@@ -236,6 +282,7 @@ public final class ShikifyX {
             final android.graphics.RectF rect = new android.graphics.RectF();
             final int side, gap; final float radius; boolean up, down; int extend;
             Card(int color, int side, int gap, float radius) { paint.setColor(color); this.side = side; this.gap = gap; this.radius = radius; }
+            void highlight(int color) { if (paint.getColor() != color) { paint.setColor(color); invalidateSelf(); } }
             @Override public void draw(android.graphics.Canvas canvas) {
                 android.graphics.Rect bounds = getBounds();
                 rect.set(bounds.left + side, bounds.top + (up ? 0 : gap), bounds.right - side, bounds.bottom - (down ? 0 : gap) + extend);

@@ -99,6 +99,7 @@ final class HeaderBlur extends Drawable implements ViewTreeObserver.OnPreDrawLis
             source.getLocationInWindow(contentLocation);
             bar.getLocationInWindow(headerLocation);
             recorder.translate(contentLocation[0] - headerLocation[0], contentLocation[1] - headerLocation[1]);
+            recorder.translate(-source.getScrollX(), -source.getScrollY());
             source.draw(recorder);
         } catch (RuntimeException ignored) {
         } finally {

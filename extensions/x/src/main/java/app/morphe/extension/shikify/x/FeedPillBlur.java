@@ -188,6 +188,8 @@ final class FeedPillBlur extends Drawable implements ViewTreeObserver.OnPreDrawL
                 layer.clipRect(barLocation[0]-padding,barLocation[1]-padding,barLocation[0]+getBounds().width()+padding,barLocation[1]+getBounds().height()+padding);
                 if(includeWindow){Drawable background=content.getRootView().getBackground();if(background!=null && background!=this)background.draw(layer);}
                 layer.translate(sourceLocation[0],sourceLocation[1]);
+                // A pager shows its current page by scrolling; draw() alone always shows the first page.
+                layer.translate(-content.getScrollX(),-content.getScrollY());
                 content.draw(layer);dirty=false;lastRecord=now;recordings++;success=true;
             }catch(RuntimeException error){dirty=false;}
             finally{capture.endRecording();recording=false;if(!success){capture.discardDisplayList();node.discardDisplayList();edgeNode.discardDisplayList();}}
