@@ -87,7 +87,7 @@ public final class ShikifyX {
         final Activity activity;
         Palette palette;
         ViewTreeObserver observer;
-        int listId, rowId, fabId, topTabsId, bottomTabsId, bottomContainerId, appBarId, toolbarId, fleetBarId, fleetHolderId, bottomBarId, slidingId, chromeInnerId, pagerId, replyId, separatorId, fragmentId, connectorTopId, connectorBottomId, dotsId;
+        int listId, rowId, fabId, topTabsId, bottomTabsId, bottomContainerId, appBarId, toolbarId, fleetBarId, fleetHolderId, bottomBarId, slidingId, chromeInnerId, pagerId, replyId, separatorId, fragmentId, connectorTopId, connectorBottomId, dotsId, bottomDividerId;
         java.lang.ref.WeakReference<View> replyBar = new java.lang.ref.WeakReference<>(null), headerBar = new java.lang.ref.WeakReference<>(null);
 
         Screen(Activity activity) {
@@ -97,7 +97,7 @@ public final class ShikifyX {
             appBarId = id("app_bar"); toolbarId = id("toolbar"); fleetBarId = id("fleetline_app_bar");
             fleetHolderId = id("fleetline_holder"); bottomBarId = id("bottom_bar"); slidingId = id("tabsSlidingContainer");
             chromeInnerId = id("gallery_chrome_inner_root"); pagerId = id("pager"); replyId = id("persistent_reply"); separatorId = id("top_separator"); fragmentId = id("fragment_container");
-            connectorTopId = id("tweet_connector_top"); connectorBottomId = id("tweet_connector_bottom"); dotsId = id("connector");
+            connectorTopId = id("tweet_connector_top"); connectorBottomId = id("tweet_connector_bottom"); dotsId = id("connector"); bottomDividerId = id("bottom_divider");
         }
         int id(String name) { return activity.getResources().getIdentifier(name, "id", activity.getPackageName()); }
 
@@ -190,26 +190,42 @@ public final class ShikifyX {
             }
             // Threads: a post linked to the next one shares its card. Rows are recycled, so check every frame.
             for (int index = 0; index < list.getChildCount(); index++) {
-                Object row = list.getChildAt(index).getTag(ROW_TAG);
-                if (row instanceof View) thread((View) row);
+                View child = list.getChildAt(index);
+                Object row = child.getTag(ROW_TAG);
+                if (row instanceof View) { thread((View) row); if (row != child) unclip(child); }
             }
+        }
+
+        /** GroupedRowView clips its row to a size worked out before the card's padding; use the full row. */
+        static void unclip(View grouped) {
+            try {
+                java.lang.reflect.Field field = grouped.getClass().getDeclaredField("g");
+                if (field.getType() != android.graphics.RectF.class) return;
+                field.setAccessible(true);
+                android.graphics.RectF clip = (android.graphics.RectF) field.get(grouped);
+                if (clip != null && (clip.bottom != grouped.getHeight() || clip.right != grouped.getWidth())) clip.set(0, 0, grouped.getWidth(), grouped.getHeight());
+            } catch (ReflectiveOperationException | RuntimeException ignored) { }
         }
 
         /** Joins a post's card to its neighbours when X draws the thread line through it. */
         void thread(View row) {
             if (!(row.getBackground() instanceof Card)) return;
+            // The main post on a post page ends with a divider line; cards don't need it.
+            View divider = bottomDividerId == 0 ? null : row.findViewById(bottomDividerId);
+            if (divider != null && divider.getVisibility() == View.VISIBLE) divider.setVisibility(View.INVISIBLE);
             Card card = (Card) row.getBackground();
             View top = connectorTopId == 0 ? null : row.findViewById(connectorTopId), bottom = connectorBottomId == 0 ? null : row.findViewById(connectorBottomId);
             boolean up = top != null && top.getVisibility() == View.VISIBLE, down = bottom != null && bottom.getVisibility() == View.VISIBLE;
             // "Show replies" under a thread is its own row with X's thread dots: it finishes the card above.
             boolean tail = top == null && bottom == null && dotsId != 0 && row.findViewById(dotsId) != null;
             if (tail) { up = true; down = false; }
-            if (up == card.up && down == card.down) return;
-            card.up = up; card.down = down;
+            int extend = tail ? dp(row, 10) : 0;
+            if (up == card.up && down == card.down && extend == card.extend) return;
+            card.up = up; card.down = down; card.extend = extend;
             int[] base = (int[]) row.getTag(BASE_TAG);
-            // The "Show replies" link gets room under it before the card's rounded bottom.
-            int extra = tail ? dp(row, 12) : 0;
-            if (base != null) row.setPadding(base[0] + card.side, base[1] + (up ? 0 : card.gap), base[2] + card.side, base[3] + (down ? 0 : card.gap) + extra);
+            if (base != null) row.setPadding(base[0] + card.side, base[1] + (up ? 0 : card.gap), base[2] + card.side, base[3] + (down ? 0 : card.gap));
+            // The "Show replies" row keeps X's height, so its card grows into the margin X leaves under it.
+            if (tail && row.getParent() instanceof ViewGroup) ((ViewGroup) row.getParent()).setClipChildren(false);
             card.invalidateSelf();
         }
 
@@ -218,11 +234,11 @@ public final class ShikifyX {
             final android.graphics.Paint paint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
             final android.graphics.Path path = new android.graphics.Path();
             final android.graphics.RectF rect = new android.graphics.RectF();
-            final int side, gap; final float radius; boolean up, down;
+            final int side, gap; final float radius; boolean up, down; int extend;
             Card(int color, int side, int gap, float radius) { paint.setColor(color); this.side = side; this.gap = gap; this.radius = radius; }
             @Override public void draw(android.graphics.Canvas canvas) {
                 android.graphics.Rect bounds = getBounds();
-                rect.set(bounds.left + side, bounds.top + (up ? 0 : gap), bounds.right - side, bounds.bottom - (down ? 0 : gap));
+                rect.set(bounds.left + side, bounds.top + (up ? 0 : gap), bounds.right - side, bounds.bottom - (down ? 0 : gap) + extend);
                 float top = up ? 0 : radius, bottom = down ? 0 : radius;
                 path.reset();
                 path.addRoundRect(rect, new float[]{top, top, top, top, bottom, bottom, bottom, bottom}, android.graphics.Path.Direction.CW);
@@ -327,6 +343,12 @@ public final class ShikifyX {
 
         /** "Post your reply" under a post: a floating glass pill like the bottom bar. */
         void replyPill(ViewGroup reply) {
+            // X can inflate or restyle the reply box later, so its underline is cleared on every layout.
+            for (int index = 0; index < reply.getChildCount(); index++) {
+                View child = reply.getChildAt(index);
+                clearFields(child);
+            }
+            centreBox(reply);
             if (reply.getTag(CARD_TAG) != null) return;
             reply.setTag(CARD_TAG, Boolean.TRUE);
             View separator = separatorId == 0 ? null : reply.findViewById(separatorId);
@@ -369,9 +391,29 @@ public final class ShikifyX {
             }
         }
 
+        /** The reply box sits below an offset X leaves on top; shift it to the pill's exact centre. */
+        void centreBox(ViewGroup reply) {
+            int boxId = activity.getResources().getIdentifier("tweet_box", "id", activity.getPackageName());
+            View box = boxId == 0 ? null : reply.findViewById(boxId);
+            if (box == null || box.getHeight() == 0 || reply.getHeight() == 0) return;
+            int top = 0;
+            for (View view = box; view != reply && view != null; view = view.getParent() instanceof View ? (View) view.getParent() : null) top += view.getTop();
+            float shift = (reply.getHeight() - box.getHeight()) / 2f - top;
+            if (Math.abs(box.getTranslationY() - shift) > 0.5f) box.setTranslationY(shift);
+        }
+
         /** The reply field's underline: the pill is the field's outline. */
         static void clearFields(View view) {
-            if (view instanceof android.widget.EditText) view.setBackground(null);
+            boolean container = view instanceof android.widget.LinearLayout || view instanceof android.widget.FrameLayout || view.getClass().getName().endsWith("TweetBox");
+            if ((view instanceof android.widget.EditText || container) && view.getBackground() != null) view.setBackground(null);
+            // TwitterEditText paints its own underline from an X drawable it holds; without it, it skips the line.
+            if (view instanceof android.widget.EditText)
+                for (Class<?> type = view.getClass(); type != null && type != android.widget.EditText.class; type = type.getSuperclass())
+                    for (java.lang.reflect.Field field : type.getDeclaredFields()) {
+                        if (!field.getType().getName().startsWith("com.twitter.ui.drawable.") || java.lang.reflect.Modifier.isStatic(field.getModifiers())) continue;
+                        try { field.setAccessible(true); if (field.get(view) != null) { field.set(view, null); view.invalidate(); } } catch (ReflectiveOperationException | RuntimeException ignored) { }
+                    }
+
             if (view instanceof ViewGroup) for (int index = 0; index < ((ViewGroup) view).getChildCount(); index++) clearFields(((ViewGroup) view).getChildAt(index));
         }
 
