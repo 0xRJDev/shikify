@@ -52,7 +52,7 @@ fun main(args: Array<String>) = runBlocking {
         }
     } }
     Patcher(PatcherConfig(fixture, work.resolve("patcher"), useBytecodeMode = BytecodeMode.FULL, validate = true)).use { patcher ->
-        patcher += loadPatchesFromJar(setOf(bundle))
+        patcher += loadPatchesFromJar(setOf(bundle)).boostOnly()
         patcher().collect { result ->
             result.exception?.let { throw it }
             println("MIXED APPLIED: ${result.patch.name}")

@@ -38,7 +38,14 @@ fun main(args: Array<String>) = runBlocking {
         check(zip.getEntry("extensions/extension.mpe") != null) { "Bundle lacks runtime extension" }
         check(zip.entries().asSequence().none { it.name.startsWith("app/template/") }) { "Template example included" }
     }
-    val patches = loadPatchesFromJar(setOf(bundle))
+    val everything = loadPatchesFromJar(setOf(bundle))
+    // X is a beta alongside Boost: exactly one X patch, named and described as a beta.
+    val xPatches = everything.filter { patch -> patch.compatibility?.any { it.packageName == "com.twitter.android" } == true }
+    check(xPatches.size == 1 && xPatches.single().name!!.contains("(beta)") && xPatches.single().description!!.startsWith("Beta:")) {
+        "Expected one X patch marked as a beta, got ${xPatches.map { it.name }}"
+    }
+    println("BUNDLE: ${xPatches.single().name}")
+    val patches = everything.boostOnly()
     val expectedNames = setOf(
         "Bottom gallery action buttons",
         "Expand inline comment media",

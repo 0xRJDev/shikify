@@ -41,3 +41,9 @@ All 25 patches target Boost for Reddit 1.14.4 (`com.rubenmayayo.reddit`). Pick a
 - Instant saved login
 - Smaller first page
 - Improved online check
+
+## X (beta)
+
+One patch for X 12.19.1-release.0 (`com.twitter.android`), used alongside Piko. It's a beta and only in beta releases.
+
+- Material 3 for X (beta): rounded post and thread cards, floating glass bottom bar and reply pill, pill tabs, a blurred post header and an M3 post button

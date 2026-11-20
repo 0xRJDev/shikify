@@ -60,6 +60,12 @@ No app APKs, account credentials or OAuth client IDs are included. Keep any patc
 
 **More Boost pages:** [All 25 patches](docs/PATCHES.md) • [Settings](docs/SETTINGS.md) • [Changelog](changelog.md)
 
+<h3 align="center">🧪 X (beta) 🧪</h3>
+
+<p align="center"><sub><code>com.twitter.android</code> • Version 12.19.1-release.0 • 1 patch • <b>Beta</b></sub></p>
+
+**Material 3 for X (beta)** brings Shikify's look to the classic X app, alongside [Piko](https://github.com/crimera/piko) 3.11.1: posts and threads on rounded cards, a floating glass bottom bar and reply pill, pill tabs, a blurred post header and an M3 post button, coloured from your wallpaper. It's a beta, so expect rough edges. It's only in beta releases for now, and X 12.43 and later (the rewritten app) aren't supported.
+
 **System requirements:** Android 7.0 or later. Wallpaper colours and blur need Android 12 or later.
 
 ### <a name="build"></a><img src=".github/assets/ep-build.png" alt="Episode 3: Build It Yourself! For those who like the hard way." width="100%">
