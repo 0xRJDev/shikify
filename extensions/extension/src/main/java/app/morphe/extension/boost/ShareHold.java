@@ -79,16 +79,10 @@ final class ShareHold {
         try {
             for (Class<?> type = owner.getClass(); type != null; type = type.getSuperclass()) {
                 String name = type.getName();
-                if (name.equals("com.rubenmayayo.reddit.ui.adapters.CommentViewHolder")) {
-                    Object comment = CommentsChromeTweaks.field(owner, "b0");
-                    return comment == null ? null : (String) comment.getClass().getMethod("s").invoke(comment);
-                }
-                if (name.equals("com.rubenmayayo.reddit.ui.adapters.SubmissionViewHolder")) {
-                    Object post = CommentsChromeTweaks.field(owner, "h0");
-                    return post == null ? null : (String) post.getClass().getMethod("p").invoke(post);
-                }
+                if (name.equals("com.rubenmayayo.reddit.ui.adapters.CommentViewHolder")) return ShareShortcuts.commentLink(owner);
+                if (name.equals("com.rubenmayayo.reddit.ui.adapters.SubmissionViewHolder")) return ShareShortcuts.postLink(owner);
             }
-        } catch (ReflectiveOperationException | RuntimeException ignored) { }
+        } catch (RuntimeException ignored) { }
         return null;
     }
 
