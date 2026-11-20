@@ -39,16 +39,22 @@ public final class DialogTweaks {
      */
     @android.annotation.TargetApi(31)
     private static void glass(Window window,Context context) {
-        float density=context.getResources().getDisplayMetrics().density;
         window.clearFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-        int base=SurfaceAppearanceTweaks.role(context,true)&0xffffff;
-        android.graphics.drawable.GradientDrawable bubble=new android.graphics.drawable.GradientDrawable();
-        bubble.setColor(0xb8000000|base);bubble.setCornerRadius(28*density);
-        window.setBackgroundDrawable(bubble);
-        window.setBackgroundBlurRadius(Math.round(28*density));
+        window.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(0));
         View content=window.getDecorView().findViewById(android.R.id.content);
-        // The menu's own card would hide the glass; the window background is the card now.
-        if(content instanceof ViewGroup)for(int index=0;index<((ViewGroup)content).getChildCount();index++)((ViewGroup)content).getChildAt(index).setBackground(null);
+        if(!(content instanceof ViewGroup) || ((ViewGroup)content).getChildCount()==0)return;
+        View host=((ViewGroup)content).getChildAt(0);
+        android.app.Activity activity=CommentsChromeTweaks.activity(context);
+        if(activity==null || activity.getWindow()==null)return;
+        // The same frosted glass as the pills and popup menus, sampling the screen behind the menu.
+        FeedPillBlur glass=new FeedPillBlur(activity.getWindow().getDecorView(),host,SurfaceAppearanceTweaks.role(context,true),false,28,true,72,2);
+        host.setBackground(glass);
+        host.setClipToOutline(true);
+        glass.start();
+        host.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener(){
+            @Override public void onViewAttachedToWindow(View view){glass.start();}
+            @Override public void onViewDetachedFromWindow(View view){glass.stop();}
+        });
     }
     static View find(View view) {
         if(view.getClass().getName().endsWith(".menu.MenuView"))return view;
