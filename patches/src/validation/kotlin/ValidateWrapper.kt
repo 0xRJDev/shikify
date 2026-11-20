@@ -67,7 +67,7 @@ fun main(args: Array<String>) = runBlocking {
     val mode = BytecodeMode.valueOf(System.getProperty("regressionMode", "STRIP_FAST"))
     Patcher(PatcherConfig(original, output.parentFile.resolve("wrapper-${output.nameWithoutExtension}"),
         useBytecodeMode = mode, validate = true)).use { patcher ->
-        patcher += loadPatchesFromJar(setOf(bundle)) + emoji
+        patcher += loadPatchesFromJar(setOf(bundle)).boostOnly() + emoji
         patcher().collect { it.exception?.let { error -> throw error } }
         original.copyTo(output, overwrite = true)
         patcher.get().applyTo(output)

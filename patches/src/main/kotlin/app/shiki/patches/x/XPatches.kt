@@ -26,10 +26,11 @@ private val applicationOnCreate = Fingerprint(
 
 @Suppress("unused")
 val xMaterial3Patch = bytecodePatch(
-    name = "Material 3 for X",
-    description = "Posts on rounded Material 3 cards, an M3 navigation bar and tabs with pill indicators, and an M3 post button, coloured from your wallpaper.",
+    name = "Material 3 for X (beta)",
+    description = "Beta: Material 3 for X 12.19.1 alongside Piko. Posts and threads on rounded cards, floating glass bottom bar and reply pill, pill tabs, a blurred post header and an M3 post button, coloured from your wallpaper.",
 ) {
     compatibleWith(xCompatibility)
+    category("Appearance")
     extendWith("extensions/x.mpe")
     execute {
         val method = applicationOnCreate.method

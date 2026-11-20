@@ -27,11 +27,11 @@ private suspend fun apply(apk: File, work: File, selected: Set<Patch<*>>): Int {
 /** Every patch must apply alone, and the rest must apply without it, so any selection in Manager works. */
 fun main(args: Array<String>) = runBlocking {
     val (bundle, apk, directory) = args.map(::File)
-    val names = loadPatchesFromJar(setOf(bundle)).filter { it.name != null }.map { it.name!! }.sorted()
+    val names = loadPatchesFromJar(setOf(bundle)).boostOnly().filter { it.name != null }.map { it.name!! }.sorted()
     var failures = 0
     for (name in names) {
         for ((label, keep) in listOf<Pair<String, (String) -> Boolean>>("alone" to { it == name }, "without" to { it != name })) {
-            val selected = loadPatchesFromJar(setOf(bundle)).filter { it.name != null && keep(it.name!!) }.toSet()
+            val selected = loadPatchesFromJar(setOf(bundle)).boostOnly().filter { it.name != null && keep(it.name!!) }.toSet()
             val found = apply(apk, directory, selected)
             failures += found
             println("${if (found == 0) "OK" else "FAIL"}: $label $name")

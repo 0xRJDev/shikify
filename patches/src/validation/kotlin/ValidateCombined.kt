@@ -78,7 +78,7 @@ fun main(args: Array<String>) = runBlocking {
     var failures = 0
     var baseline: Map<String, Int>? = null
     for (order in listOf("patcheddit-first", "shikify-first")) {
-        val ours = selectable(loadPatchesFromJar(setOf(shikify)), "shikify")
+        val ours = selectable(loadPatchesFromJar(setOf(shikify)).boostOnly(), "shikify")
         val theirs = selectable(loadPatchesFromJar(setOf(patcheddit)), "patcheddit")
         println("ORDER $order: ${ours.size} Shikify and ${theirs.size} Patcheddit patches")
         val selected = LinkedHashSet<Patch<*>>(if (order == "patcheddit-first") theirs + ours else ours + theirs)
