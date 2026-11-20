@@ -1,4 +1,4 @@
-# Unreleased
+# Version 1.1.4-dev.1
 
 Boost for Reddit:
 - Hold Share… in a post or comment menu to copy the link to it.
