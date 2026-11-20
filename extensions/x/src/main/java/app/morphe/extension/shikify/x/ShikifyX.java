@@ -87,7 +87,7 @@ public final class ShikifyX {
         final Activity activity;
         Palette palette;
         ViewTreeObserver observer;
-        int listId, rowId, fabId, topTabsId, bottomTabsId, bottomContainerId, appBarId, toolbarId, fleetBarId, fleetHolderId, bottomBarId, slidingId, chromeInnerId, pagerId, replyId, separatorId, fragmentId, connectorTopId, connectorBottomId, dotsId, bottomDividerId;
+        int listId, rowId, fabId, topTabsId, bottomTabsId, bottomContainerId, appBarId, toolbarId, fleetBarId, fleetHolderId, bottomBarId, slidingId, chromeInnerId, pagerId, replyId, separatorId, fragmentId, connectorTopId, connectorBottomId, dotsId, bottomDividerId, lineDividerId, topDividerId, contentId;
         java.lang.ref.WeakReference<View> replyBar = new java.lang.ref.WeakReference<>(null), headerBar = new java.lang.ref.WeakReference<>(null);
 
         Screen(Activity activity) {
@@ -98,6 +98,7 @@ public final class ShikifyX {
             fleetHolderId = id("fleetline_holder"); bottomBarId = id("bottom_bar"); slidingId = id("tabsSlidingContainer");
             chromeInnerId = id("gallery_chrome_inner_root"); pagerId = id("pager"); replyId = id("persistent_reply"); separatorId = id("top_separator"); fragmentId = id("fragment_container");
             connectorTopId = id("tweet_connector_top"); connectorBottomId = id("tweet_connector_bottom"); dotsId = id("connector"); bottomDividerId = id("bottom_divider");
+            lineDividerId = id("top_line_divider"); topDividerId = id("top_divider"); contentId = id("content");
         }
         int id(String name) { return activity.getResources().getIdentifier(name, "id", activity.getPackageName()); }
 
@@ -178,6 +179,7 @@ public final class ShikifyX {
             replyPadding(list);
             headerPadding(list);
             dividers(list);
+            for (int index = 0; index < list.getChildCount(); index++) showMore(list.getChildAt(index));
             for (int index = 0; index < list.getChildCount(); index++) {
                 View child = list.getChildAt(index);
                 if (child.getTag(CARD_TAG) != null) continue;
@@ -235,6 +237,24 @@ public final class ShikifyX {
             } catch (ReflectiveOperationException | RuntimeException ignored) { }
         }
         static final Object[] DECORATIONS = new Object[1];
+
+        /** "Show probable spam" and "Show more threads": a single-colour pill instead of banded strips. */
+        void showMore(View row) {
+            View line = lineDividerId == 0 ? null : row.findViewById(lineDividerId);
+            if (line == null || !(line.getParent() instanceof ViewGroup)) return;
+            ViewGroup section = (ViewGroup) line.getParent();
+            View text = contentId == 0 ? null : section.findViewById(contentId);
+            if (!(text instanceof android.widget.TextView)) return;
+            for (int id : new int[]{topDividerId, lineDividerId, bottomDividerId}) {
+                View band = id == 0 ? null : section.findViewById(id);
+                if (band != null && band.getVisibility() == View.VISIBLE) band.setVisibility(View.INVISIBLE);
+            }
+            if (section.getTag(CARD_TAG) != null) return;
+            section.setTag(CARD_TAG, Boolean.TRUE);
+            section.setBackground(null);
+            text.setBackground(new RippleDrawable(ColorStateList.valueOf(palette.onSurface & 0x1fffffff), rounded(palette.card, dp(text, 24)), null));
+            text.setPadding(dp(text, 24), text.getPaddingTop(), dp(text, 24), text.getPaddingBottom());
+        }
 
         /** Joins a post's card to its neighbours when X draws the thread line through it. */
         void thread(View row) {
@@ -528,7 +548,12 @@ public final class ShikifyX {
             Integer base = (Integer) list.getTag(TOP_TAG);
             if (base == null) { base = list.getPaddingTop(); list.setTag(TOP_TAG, base); }
             int top = base + header.getHeight();
-            if (list.getPaddingTop() != top) list.setPadding(list.getPaddingLeft(), top, list.getPaddingRight(), list.getPaddingBottom());
+            int delta = top - list.getPaddingTop();
+            if (delta != 0) {
+                list.setPadding(list.getPaddingLeft(), top, list.getPaddingRight(), list.getPaddingBottom());
+                // X has already scrolled the opened post to the top; keep it there, below the header.
+                if (list instanceof ViewGroup && ((ViewGroup) list).getChildCount() > 0) list.scrollBy(0, -delta);
+            }
             if (list instanceof ViewGroup) ((ViewGroup) list).setClipToPadding(false);
         }
 
